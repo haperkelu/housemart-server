@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ClientNotesEntity">
+
+	<resultMap id="clientNotes" class="org.housemart.server.dao.entities.ClientNotesEntity">
+		<result property="id" column="ID" />
+		<result property="clientUId" column="ClientUID" />
+		<result property="brokerId" column="BrokerID" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+		<result property="note" column="Note" />
+		<result property="type" column="Type" />
+	</resultMap>
+
+	<select id="findClientNotes" resultMap="clientNotes" parameterClass="map">
+		SELECT cn.*
+		FROM client_notes AS cn
+		WHERE 1
+		<isNotNull prepend="AND" property="clientUId"> 
+            cn.ClientUID = #clientUId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="brokerId"> 
+            cn.BrokerID = #brokerId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="type"> 
+            cn.Type = #type#
+        </isNotNull>
+		ORDER BY cn.AddTime DESC
+	</select>
+	
+	<insert id="addClientNotes" parameterClass="org.housemart.server.dao.entities.ClientNotesEntity">
+		INSERT INTO client_notes (ClientUID, BrokerID, Type, Note, AddTime, UpdateTime)
+		VALUES (#clientUId#, #brokerId#, #type#, #note#, NOW(), NOW());
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateClientNotes" parameterClass="map">
+		UPDATE client_notes SET
+			UpdateTime = NOW()
+		<isNotNull prepend="," property="note"> 
+            Note = #note#
+        </isNotNull>
+		WHERE 1
+		<isNotNull prepend="AND" property="clientUId"> 
+            ClientUID = #clientUId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="brokerId"> 
+            BrokerID = #brokerId#
+        </isNotNull>
+         <isNotNull prepend="AND" property="type"> 
+            Type = #type#
+        </isNotNull>
+        <isNotNull prepend="AND" property="id"> 
+            ID = #id#
+        </isNotNull> 
+	</update>
+
+</sqlMap>

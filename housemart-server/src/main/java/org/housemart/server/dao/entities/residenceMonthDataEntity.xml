@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ResidenceMonthDataEntity">
+
+	<resultMap id="residenceMonthData" class="org.housemart.server.dao.entities.ResidenceMonthDataEntity">
+		<result property="id" column="ID" />
+		<result property="residenceId" column="ResidenceID" />
+		<result property="residenceName" column="ResidenceName" />
+		<result property="year" column="Year" />
+		<result property="month" column="Month" />
+		<result property="annualPriceIncrement" column="AnnualPriceIncrement" />
+		<result property="annualTurnoverPercent" column="AnnualTurnoverPercent" />
+		<result property="rentRevenue" column="RentRevenue" />
+		<result property="averagePrice" column="AveragePrice" />
+		<result property="minRentPrice" column="MinRentPrice" />
+		<result property="maxRentPrice" column="MaxRentPrice" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+	</resultMap>
+
+	<select id="findMonthData" resultMap="residenceMonthData" parameterClass="map">
+		SELECT * FROM residence_month_data
+		WHERE 1
+		<dynamic>
+			<isNotNull prepend="AND" property="residenceId"> 
+	            ResidenceID = #residenceId#  
+	        </isNotNull>  
+			<isNotNull prepend="AND" property="year"> 
+	    		Year = #year#   
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="month"> 
+	    		Month = #month#   
+	        </isNotNull>  
+        </dynamic> 
+        ORDER BY Year DESC, Month DESC
+	</select>
+			
+	 
+		
+</sqlMap>

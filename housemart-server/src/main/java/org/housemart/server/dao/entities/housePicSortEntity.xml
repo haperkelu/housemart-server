@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HousePicSortEntity">
+
+	<resultMap id="HousePicSort" class="org.housemart.server.dao.entities.HousePicSortEntity">
+		<result property="id" column="ID" />
+		<result property="houseId" column="HouseID" />
+		<result property="type" column="Type" />
+		<result property="sort" column="Sort" />
+		<result property="lastUpdater" column="LastUpdater" />
+		<result property="updateTime" column="UpdateTime" />
+	</resultMap>
+	
+	<insert id="addHousePicSort" parameterClass="org.housemart.server.dao.entities.HousePicSortEntity">
+		INSERT INTO house_pic_sort(HouseID, Type, Sort, LastUpdater, UpdateTime)
+		VALUES(#houseId#, #type#, #sort#, #lastUpdater#, #updateTime#)
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<select id="loadHousePicSort" resultMap="HousePicSort" parameterClass="uniqueObject">
+		SELECT * FROM house_pic_sort
+		WHERE ID = #id#
+	</select>
+	
+	<select id="findHousePicSortByHouseIdAndType" resultMap="HousePicSort" parameterClass="map">
+		SELECT * FROM house_pic_sort
+		WHERE HouseID = #houseId# AND Type = #type#
+	</select>
+
+	<select id="findHousePicSortByResidenceIdAndType" resultMap="HousePicSort" parameterClass="map">
+		SELECT * FROM house_pic_sort
+		WHERE ResidenceID = #residenceId# AND Type = #type#
+	</select>
+	
+	<update id="updateSort" parameterClass="map">
+		UPDATE house_pic_sort SET Sort = #sort#, UpdateTime = #updateTime#, LastUpdater = #lastUpdater#
+		WHERE ID = #id#
+	</update>
+
+</sqlMap>

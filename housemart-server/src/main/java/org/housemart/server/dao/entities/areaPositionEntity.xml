@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="AreaPositionEntity">
+
+	<resultMap id="areaPosition" class="org.housemart.server.dao.entities.AreaPositionEntity">
+		<result property="id" column="ID"  nullValue="0"/>
+		<result property="cityId" column="CityID"  nullValue="0"/>
+		<result property="type" column="Type"  nullValue="0"/>
+		<result property="positionId" column="PositionID"  nullValue="0"/>
+		<result property="lat" column="Lat"  nullValue=""/>
+		<result property="lng" column="Lng"  nullValue=""/>
+		<result property="addTime" column="AddTime"  nullValue="1900/01/01 00:00:00"/>
+		<result property="updateTime" column="UpdateTime"  nullValue="1900/01/01 00:00:00"/>
+	</resultMap>
+	
+	<select id="findPlatePosition" resultMap="areaPosition" parameterClass="map">
+		SELECT * FROM area_position WHERE CityID = #cityId# AND Type = #type# AND PositionID = #positionId#
+	</select>
+	
+	<select id="findAllPlates" resultMap="areaPosition">
+		SELECT * FROM area_position WHERE type = 3
+	</select>
+</sqlMap>
+		

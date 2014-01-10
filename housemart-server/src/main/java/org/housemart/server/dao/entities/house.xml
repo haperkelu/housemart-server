@@ -1,0 +1,542 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseEntity">
+	<sql id="allValideHouseIds">
+		SELECT B_H.ID FROM basedata.house B_H 
+		INNER JOIN house_interaction V_HI ON V_HI.houseid = B_H.id AND V_HI.status > 0
+		INNER JOIN admin.account V_A ON V_HI.agentid = V_A.id AND V_A.status = 1
+		WHERE B_H.status = 1 AND <![CDATA[ V_HI.StartDate <= now() AND V_HI.EndDate >= now() ]]> 
+	</sql>
+	
+	<resultMap id="house" class="org.housemart.server.dao.entities.HouseEntity">
+		<result property="id" column="ID" nullValue="0"/>
+		<result property="status" column="Status" nullValue="0"/>
+		<result property="title" column="Title" nullValue=""/>
+		<result property="rentTitle" column="RentTitle" nullValue=""/>
+		<result property="cityId" column="CityID" nullValue="0"/>
+		<result property="regionId" column="RegionID" nullValue="0"/>
+		<result property="plateId" column="PlateID" nullValue="0"/>
+		<result property="residenceId" column="ResidenceID" nullValue="0"/>
+		<result property="residenceName" column="ResidenceName" nullValue=""/>
+		<result property="address" column="Address" nullValue=""/>
+		<result property="soldAddress" column="BuildingInfo" nullValue=""/>
+		<result property="buildingNo" column="BuildingNo" nullValue=""/>
+		<result property="cellNo" column="CellNo" nullValue=""/>
+		<result property="residencePicURL" column="ResidencePicURL" nullValue=""/>
+		<result property="picURL" column="PicURL" nullValue=""/>
+		<result property="price" column="SalePrice" nullValue="0"/>
+		<result property="avg" column="SaleAvg" nullValue="0"/>
+		<result property="rentPrice" column="RentPrice" nullValue="0"/>
+		<result property="equipment" column="Equipment" nullValue=""/>
+		<result property="decorating" column="Decorating" nullValue="0"/>
+		<result property="area" column="Area" nullValue="0"/>
+		<result property="roomType" column="RoomType" nullValue="0"/>
+		<result property="direction" column="Direction" nullValue="0"/>
+		<result property="type" column="Type" nullValue=""/>
+		<result property="floor" column="Floor" nullValue="0"/>
+		<result property="floorLevel" column="FloorLevel" nullValue="0"/>
+		<result property="buildDate" column="BuildDate" nullValue="1900/01/01 00:00:00"/>
+		<result property="isEmergent" column="IsEmergent" nullValue="false"/>
+		<result property="isRecommend" column="IsRecommend" nullValue="false"/>
+		<result property="houseMemo" column="HouseMemo" nullValue=""/>
+		<result property="sourceType" column="SourceType" nullValue="0"/>
+		<result property="viewHouseType" column="ViewHouseType" nullValue="0"/>
+		<result property="memo" column="Memo" nullValue=""/>
+		<result property="rentMemo" column="RentMemo" nullValue=""/>
+		<result property="brokerName" column="BrokerName" nullValue=""/>
+		<result property="brokerId" column="BrokerID" nullValue="0"/>
+		<result property="brokerMobile" column="BrokerMobile" nullValue="0"/>
+		<result property="isFollow" column="IsFollow" nullValue="false"/>
+		<result property="createTime" column="CreateTime" nullValue="1900/01/01 00:00:00"/>
+		<result property="rentStatus" column="RentStatus" nullValue="0"/>
+		<result property="combinedRent" column="CombinedRent" nullValue="false"/>
+		<result property="fansCount" column="FansCount" nullValue="0"/>
+		<result property="askedCount" column="AskedCount" nullValue="0"/>
+		<result property="isEmergentRent" column="IsEmergentRent" nullValue="false"/>
+		<result property="isRecommendRent" column="IsRecommendRent" nullValue="false"/>
+		<result property="isNew" column="IsNew" nullValue="false"/>
+		<result property="dealTimeRent" column="DealTimeRent" nullValue="1900/01/01 00:00:00"/>
+		<result property="dealPriceRent" column="DealPriceRent" nullValue="0"/>
+		<result property="saleStatus" column="SaleStatus" nullValue="0"/>
+		<result property="isHot" column="IsHot" nullValue="false"/>
+		<result property="dealTime" column="DealTime" nullValue="1900/01/01 00:00:00"/>
+		<result property="dealPrice" column="DealPrice" nullValue="0"/>
+		<result property="onboardTime" column="OnboardTime" nullValue="1900/01/01 00:00:00"/>
+		<result property="lat" column="Lat"  nullValue="0"/>
+		<result property="lng" column="Lng"  nullValue="0"/>
+		
+		<result property="regionName" column="RegionName"  nullValue=""/>
+		<result property="plateName" column="plateName"  nullValue=""/>
+		
+		<result property="contactName" column="ContactName"  nullValue=""/>
+		<result property="contactMobile" column="ContactMobile"  nullValue=""/>
+		<result property="contactMemo" column="ContactMemo"  nullValue=""/>
+		<result property="contactCommitter" column="ContactCommitter"  nullValue="0"/>
+		
+		<result property="updateTime" column="UpdateTime"  nullValue="1900/01/01 00:00:00"/>
+
+	</resultMap>
+	
+	<resultMap id="houseListExt" class="org.housemart.server.dao.entities.HouseEntity">
+		<result property="id" column="ID" nullValue="0"/>
+		<result property="status" column="Status" nullValue="0"/>
+		<result property="cityId" column="CityID" nullValue="0"/>
+		<result property="residenceId" column="ResidenceID" nullValue="0"/>
+		<result property="residenceName" column="ResidenceName" nullValue=""/>
+		<result property="buildingNo" column="BuildingNo" nullValue=""/>
+		<result property="cellNo" column="CellNo" nullValue=""/>
+		<result property="roomType" column="RoomType" nullValue="0"/>
+		<result property="picURL" column="PicURL" nullValue=""/>
+		<result property="price" column="SalePrice" nullValue="0"/>
+		<result property="rentPrice" column="RentPrice" nullValue="0"/>
+		<result property="sourceType" column="SourceType" nullValue="0"/>
+		<result property="rentStatus" column="RentStatus" nullValue="0"/>
+		<result property="saleStatus" column="SaleStatus" nullValue="0"/>
+	</resultMap>
+	
+	<resultMap id="houseExt" class="org.housemart.server.dao.entities.HouseEntity">
+		<result property="id" column="ID" nullValue="0"/>
+		<result property="status" column="Status" nullValue="0"/>
+		<result property="cityId" column="CityID" nullValue="0"/>
+		<result property="residenceId" column="ResidenceID" nullValue="0"/>
+		<result property="residenceName" column="ResidenceName" nullValue=""/>
+		<result property="buildingNo" column="BuildingNo" nullValue=""/>
+		<result property="cellNo" column="CellNo" nullValue=""/>
+		<result property="roomType" column="RoomType" nullValue="0"/>
+		<result property="picURL" column="PicURL" nullValue=""/>
+		<result property="price" column="SalePrice" nullValue="0"/>
+		<result property="rentPrice" column="RentPrice" nullValue="0"/>
+		<result property="sourceType" column="SourceType" nullValue="0"/>
+		<result property="rentStatus" column="RentStatus" nullValue="0"/>
+		<result property="saleStatus" column="SaleStatus" nullValue="0"/>
+		<result property="propertyArea" column="PropertyArea" nullValue="0"/>
+		<result property="occupiedArea" column="OccupiedArea" nullValue="0"/>
+		<result property="decorating" column="Decorating" nullValue="0"/>
+		<result property="direction" column="Direction" nullValue="0"/>
+		<result property="floor" column="Floor" nullValue="0"/>
+		<result property="houseType" column="HouseType" nullValue="0"/>
+		<result property="detailName" column="detailName" nullValue=""/>
+		<result property="memo" column="Memo" nullValue=""/>
+		<result property="buildDate" column="BuildTime" nullValue="1900/01/01 00:00:00"/>
+		<result property="creator" column="Creator" nullValue="-1"/>
+	</resultMap>
+	
+	<resultMap id="houseSale" class="org.housemart.server.dao.entities.HouseSale">
+		<result property="id" column="HouseID"  nullValue=""/>
+		<result property="tagList" column="TagList"  nullValue=""/>
+		<result property="priceValue" column="Price"  nullValue="0"/>
+		<result property="saleStatus" column="saleStatus"  nullValue="0"/>
+	</resultMap>
+	
+	<resultMap id="houseRent" class="org.housemart.server.dao.entities.HouseRent">
+		<result property="id" column="HouseID"  nullValue=""/>
+		<result property="tagList" column="TagList"  nullValue=""/>
+		<result property="priceValue" column="Price"  nullValue="0"/>
+		<result property="rentStatus" column="rentStatus"  nullValue="0"/>
+		<result property="equipmentList" column="EquipmentList"  nullValue=""/>
+		<result property="dealTime" column="DealTime"  nullValue="1900/01/01 00:00:00"/>
+	</resultMap>
+	
+	
+	<select id="findHouseListWithInteraction" resultMap="house" parameterClass="map">
+		SELECT H.ID ID, H.Status AS Status, (H_S.TagList) AS Title, (H_R.TagList) AS RentTitle, RGN.CityID CityID, RGN.ParentID RegionID, RGN2.Name RegionName, RGN.RegionID PlateID, 
+		RGN.Name PlateName, RSD.ID ResidenceID, RSD.Name ResidenceName, 
+		RSD.Address Address, (SELECT group_concat(Cloudurl ORDER BY H_P.TYPE DESC, H_P.UpdateTime DESC SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.HouseID = H.ID AND H_P.Type in (2,3) AND H_P.Status = 1 GROUP BY H.ID) PicURL,
+		IF((SELECT count(1) FROM house_pic H_P WHERE H_P.ResidenceId = H.ResidenceId AND H_P.Type = 0 AND H_P.Status = 1 AND H_P.ShowStatus = 1) = 0, (SELECT group_concat(Cloudurl ORDER BY H_P.UpdateTime DESC  SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceId = H.ResidenceId AND (H_P.Type = 0 OR H_P.Type = 1) GROUP BY H.ResidenceId), 
+			(SELECT group_concat(Cloudurl ORDER BY H_P.UpdateTime DESC  SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceId = H.ResidenceId AND H_P.Type = 0  GROUP BY H.ResidenceId)) ResidencePicURL,
+		H_S.Price AS SalePrice, 0 AS SaleAvg, H_R.Price RentPrice, H_R.EquipmentList Equipment, H.Decorating Decorating, H.PropertyArea Area, 
+		H.RoomType RoomType, H.Direction Direction, H.HouseType Type, CONCAT(RSD_B_C.FloorBegin, RSD_B_C.FloorEnd) Floor, H.Floor FloorLevel,
+		H.BuildTime BuildDate, (H_S.SaleRec = 1) IsEmergent, (H_S.SaleRec = 2) IsRecommend, H.Memo HouseMemo, H.SourceType SourceType, H.ViewHouseType ViewHouseType,
+		H.BuildingNo BuildingNo, H.CellNo CellNo, H.UpdateTime,
+		A.ID AS BrokerID, A.Name AS BrokerName, A.ContactInfo1 AS BrokerMobile, 
+		0 AS IsFollow, H.AddTime CreateTime, H_R.RentStatus RentStatus, (H_R.RentType = 2) CombinedRent,
+		0 AS FansCount, 0 AS AskedCount, (H_R.RentRec = 1) isEmergentRent, (H_R.RentRec = 2) isRecommendRent, false As isNew, H_R.DealTime DealTimeRent, H_R.Memo RentMemo,
+		H_R.Price DealPriceRent, H_S.SaleStatus SaleStatus, false As isHot, H_S.DealTime DealTime, H_S.Price DealPrice, H_S.Memo Memo,
+		IF(H.SourceType = 3, (SELECT AddTime FROM house_audit_history ah1 WHERE ah1.HouseID = H.ID AND ah1.Result = 1 AND ah1.Type = 1 ORDER BY AddTime DESC LIMIT 1) , (SELECT AddTime FROM house_audit_history ah1 WHERE ah1.HouseID = H.ID AND ah1.Result = 1 AND ah1.Type = 5 AND ah1.PostContent LIKE '%"saleStatus":1%' ORDER BY AddTime DESC LIMIT 1)) OnboardTime,
+		H_S_B.BuildingInfo BuildingInfo,
+		G_M.Lat AS Lat, G_M.Lng AS Lng,
+		HC.Name ContactName, HC.Mobile ContactMobile, HC.Memo ContactMemo, HC.Committer ContactCommitter
+		FROM house AS H
+		LEFT JOIN residence AS RSD ON H.ResidenceID = RSD.ID
+		LEFT JOIN region AS RGN ON RSD.RegionID = RGN.RegionID
+		LEFT JOIN region AS RGN2 ON RGN.parentID = RGN2.regionID
+		LEFT JOIN residence_building_cell AS RSD_B_C ON  RSD_B_C.ID = H.CellID
+		LEFT JOIN house_rent AS H_R ON H.ID = H_R.HouseID AND H_R.UpdateTime = (Select MAX(UpdateTime) From house_rent Where house_rent.houseid = H.ID)
+		LEFT JOIN house_sale AS H_S ON H.ID = H_S.HouseID AND H_S.UpdateTime = (Select MAX(UpdateTime) From house_sale Where house_sale.houseid = H.ID)
+		LEFT JOIN house_sold_building AS H_S_B ON H_S_B.HouseID = H.ID 
+		LEFT JOIN  `mobile`.`google_map_place_base` AS G_M ON H.ResidenceID = G_M.ResidenceID AND G_M.IsMain = 1
+		LEFT JOIN basedata.house_contact HC ON HC.HouseID = H.ID AND HC.UpdateTime = (SELECT MAX(UpdateTime) FROM house_contact WHERE  HouseID =  H.ID)
+		INNER JOIN house_interaction HI ON HI.houseid = H.id AND HI.status > 0
+		INNER JOIN admin.account A ON HI.agentid = A.id AND A.status = 1
+		WHERE  H.Status = 1 AND RSD.zombie = 0
+		AND <![CDATA[ HI.StartDate <= now() AND HI.EndDate >= now() ]]>
+		<isNotNull prepend="AND" property="houseIdFrom"> 
+            <![CDATA[ H.ID >= #houseIdFrom# ]]> 
+        </isNotNull>
+        <isNotNull prepend="AND" property="houseIdTo"> 
+            <![CDATA[ H.ID < #houseIdTo# ]]> 
+        </isNotNull>
+       	<isNotNull prepend="AND" property="houseIdsIn"> 
+            H.ID IN ($houseIdsIn$) 
+        </isNotNull>
+		<isNotNull prepend="AND" property="residenceId"> 
+            H.ResidenceID = #residenceId# 
+        </isNotNull>
+		<isNotNull prepend="AND" property="saleStatus"> 
+            H_S.SaleStatus = #saleStatus# 
+        </isNotNull>
+        <isNotNull prepend="AND" property="hasNewUpdate"> 
+			  <![CDATA[ (H.LastTaskTime IS NULL OR H.UpdateTime >= H.LastTaskTime )]]> 
+		</isNotNull>
+	</select>
+	
+	<select id="findHouseListWithoutInteraction" resultMap="house" parameterClass="map">
+		SELECT H.ID ID, H.Status AS Status, (H_S.TagList) AS Title, (H_R.TagList) AS RentTitle, RGN.CityID CityID, RGN.ParentID RegionID, RGN2.Name RegionName, RGN.RegionID PlateID, 
+		RGN.Name PlateName, RSD.ID ResidenceID, RSD.Name ResidenceName,  
+		RSD.Address Address, (SELECT group_concat(Cloudurl ORDER BY H_P.TYPE DESC, H_P.UpdateTime DESC  SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.HouseID = H.ID AND H_P.Type in (2,3) AND H_P.Status = 1 GROUP BY H.ID) PicURL,
+		IF((SELECT count(1) FROM house_pic H_P WHERE H_P.ResidenceId = H.ResidenceId AND H_P.Type = 0 AND H_P.Status = 1 AND H_P.ShowStatus = 1) = 0, (SELECT group_concat(Cloudurl ORDER BY H_P.UpdateTime DESC  SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceId = H.ResidenceId AND (H_P.Type = 0 OR H_P.Type = 1) GROUP BY H.ResidenceId), 
+			(SELECT group_concat(Cloudurl ORDER BY H_P.UpdateTime DESC  SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceId = H.ResidenceId AND H_P.Type = 0  GROUP BY H.ResidenceId)) ResidencePicURL,
+		H_S.Price AS SalePrice, 0 AS SaleAvg, H_R.Price RentPrice, H_R.EquipmentList Equipment, H.Decorating Decorating, H.PropertyArea Area, 
+		H.RoomType RoomType, H.Direction Direction, H.HouseType Type, CONCAT(RSD_B_C.FloorBegin, RSD_B_C.FloorEnd) Floor, H.Floor FloorLevel,
+		H.BuildTime BuildDate, (H_S.SaleRec = 1) IsEmergent, (H_S.SaleRec = 2) IsRecommend, H.Memo HouseMemo, H.SourceType SourceType, H.ViewHouseType ViewHouseType,
+		H.BuildingNo BuildingNo, H.CellNo CellNo, H.UpdateTime,
+		-1 AS BrokerID, '' AS BrokerName, '' AS BrokerMobile, 
+		0 AS IsFollow, H.AddTime CreateTime, H_R.RentStatus RentStatus, (H_R.RentType = 2) CombinedRent,
+		0 AS FansCount, 0 AS AskedCount, (H_R.RentRec = 1) isEmergentRent, (H_R.RentRec = 2) isRecommendRent, false As isNew, H_R.DealTime DealTimeRent, H_R.Memo RentMemo,
+		H_R.Price DealPriceRent, H_S.SaleStatus SaleStatus, false As isHot, H_S.DealTime DealTime, H_S.Price DealPrice, H_S.Memo Memo,
+		IF(H.SourceType = 3, (SELECT AddTime FROM house_audit_history ah1 WHERE ah1.HouseID = H.ID AND ah1.Result = 1 AND ah1.Type = 1 ORDER BY AddTime DESC LIMIT 1) , (SELECT AddTime FROM house_audit_history ah1 WHERE ah1.HouseID = H.ID AND ah1.Result = 1 AND ah1.Type = 5 AND ah1.PostContent LIKE '%"saleStatus":1%' ORDER BY AddTime DESC LIMIT 1)) OnboardTime,
+		H_S_B.BuildingInfo BuildingInfo,
+		G_M.Lat AS Lat, G_M.Lng AS Lng,
+		HC.Name ContactName, HC.Mobile ContactMobile, HC.Memo ContactMemo, HC.Committer ContactCommitter
+		FROM house AS H
+		LEFT JOIN residence AS RSD ON H.ResidenceID = RSD.ID
+		LEFT JOIN region AS RGN ON RSD.RegionID = RGN.RegionID
+		LEFT JOIN region AS RGN2 ON RGN.parentID = RGN2.regionID
+		LEFT JOIN residence_building_cell AS RSD_B_C ON  RSD_B_C.ID = H.CellID
+		LEFT JOIN house_rent AS H_R ON H.ID = H_R.HouseID AND H_R.UpdateTime = (Select MAX(UpdateTime) From house_rent Where house_rent.houseid = H.ID)
+		LEFT JOIN house_sale AS H_S ON H.ID = H_S.HouseID AND H_S.UpdateTime = (Select MAX(UpdateTime) From house_sale Where house_sale.houseid = H.ID)
+		LEFT JOIN house_sold_building AS H_S_B ON H_S_B.HouseID = H.ID 
+		LEFT JOIN  `mobile`.`google_map_place_base` AS G_M ON H.ResidenceID = G_M.ResidenceID AND G_M.IsMain = 1
+		LEFT JOIN basedata.house_contact HC ON HC.HouseID = H.ID AND HC.UpdateTime = (SELECT MAX(UpdateTime) FROM house_contact WHERE  HouseID =  H.ID)
+		WHERE  H.Status  <![CDATA[ <> ]]>  0 AND RSD.zombie = 0
+		<isNotNull prepend="AND" property="houseIdFrom"> 
+            <![CDATA[ H.ID >= #houseIdFrom# ]]> 
+        </isNotNull>
+        <isNotNull prepend="AND" property="houseIdTo"> 
+            <![CDATA[ H.ID < #houseIdTo# ]]> 
+        </isNotNull>
+        <isNotNull prepend="AND" property="houseIdsIn"> 
+            H.ID IN ($houseIdsIn$) 
+        </isNotNull>
+		<isNotNull prepend="AND" property="residenceId"> 
+            H.ResidenceID = #residenceId# 
+        </isNotNull>
+		<isNotNull prepend="AND" property="saleStatus"> 
+            H_S.SaleStatus = #saleStatus# 
+        </isNotNull>
+        <isNotNull prepend="AND" property="hasNewUpdate"> 
+			  <![CDATA[ (H.LastTaskTime IS NULL OR H.UpdateTime >= H.LastTaskTime )]]> 
+		</isNotNull>
+		AND H.ID NOT IN (<include refid="allValideHouseIds"/>)
+	</select>
+	
+	<select id="findHouseList" resultMap="house" parameterClass="map">
+		SELECT H.ID ID, H.Status AS Status, (H_S.TagList) AS Title, (H_R.TagList) AS RentTitle, RGN.CityID CityID, RGN.ParentID RegionID, RGN2.Name RegionName, RGN.RegionID PlateID, 
+		RGN.Name PlateName, RSD.ID ResidenceID, RSD.Name ResidenceName, 
+		RSD.Address Address, (SELECT group_concat(Cloudurl ORDER BY H_P.TYPE DESC, H_P.UpdateTime DESC SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.HouseID = H.ID AND H_P.Type in (2,3) AND H_P.Status = 1 GROUP BY H.ID) PicURL,
+		IF((SELECT count(1) FROM house_pic H_P WHERE H_P.ResidenceId = H.ResidenceId AND H_P.Type = 0 AND H_P.Status = 1 AND H_P.ShowStatus = 1) = 0, (SELECT group_concat(Cloudurl ORDER BY H_P.UpdateTime DESC  SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceId = H.ResidenceId AND (H_P.Type = 0 OR H_P.Type = 1) GROUP BY H.ResidenceId), 
+			(SELECT group_concat(Cloudurl ORDER BY H_P.UpdateTime DESC  SEPARATOR '12qwaszx,') FROM house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceId = H.ResidenceId AND H_P.Type = 0  GROUP BY H.ResidenceId)) ResidencePicURL,
+		H_S.Price AS SalePrice, 0 AS SaleAvg, H_R.Price RentPrice, H_R.EquipmentList Equipment, H.Decorating Decorating, H.PropertyArea Area, 
+		H.RoomType RoomType, H.Direction Direction, H.HouseType Type, CONCAT(RSD_B_C.FloorBegin, RSD_B_C.FloorEnd) Floor, H.Floor FloorLevel,
+		H.BuildTime BuildDate, (H_S.SaleRec = 1) IsEmergent, (H_S.SaleRec = 2) IsRecommend, H.Memo HouseMemo, H.SourceType SourceType, H.ViewHouseType ViewHouseType,
+		H.BuildingNo BuildingNo, H.CellNo CellNo, H.UpdateTime,
+		A.ID AS BrokerID, A.Name AS BrokerName, A.ContactInfo1 AS BrokerMobile, 
+		0 AS IsFollow, H.AddTime CreateTime, H_R.RentStatus RentStatus, (H_R.RentType = 2) CombinedRent,
+		0 AS FansCount, 0 AS AskedCount, (H_R.RentRec = 1) isEmergentRent, (H_R.RentRec = 2) isRecommendRent, false As isNew, H_R.DealTime DealTimeRent, H_R.Memo RentMemo,
+		H_R.Price DealPriceRent, H_S.SaleStatus SaleStatus, false As isHot, H_S.DealTime DealTime, H_S.Price DealPrice, H_S.Memo Memo,
+		IF(H.SourceType = 3, (SELECT AddTime FROM house_audit_history ah1 WHERE ah1.HouseID = H.ID AND ah1.Result = 1 AND ah1.Type = 1 ORDER BY AddTime DESC LIMIT 1) , (SELECT AddTime FROM house_audit_history ah1 WHERE ah1.HouseID = H.ID AND ah1.Result = 1 AND ah1.Type = 5 AND ah1.PostContent LIKE '%"saleStatus":1%' ORDER BY AddTime DESC LIMIT 1)) OnboardTime,
+		H_S_B.BuildingInfo BuildingInfo,
+		G_M.Lat AS Lat, G_M.Lng AS Lng,
+		HC.Name ContactName, HC.Mobile ContactMobile, HC.Memo ContactMemo, HC.Committer ContactCommitter
+		FROM house AS H
+		LEFT JOIN residence AS RSD ON H.ResidenceID = RSD.ID
+		LEFT JOIN region AS RGN ON RSD.RegionID = RGN.RegionID
+		LEFT JOIN region AS RGN2 ON RGN.parentID = RGN2.regionID
+		LEFT JOIN residence_building_cell AS RSD_B_C ON  RSD_B_C.ID = H.CellID
+		LEFT JOIN house_rent AS H_R ON H.ID = H_R.HouseID AND H_R.UpdateTime = (Select MAX(UpdateTime) From house_rent Where house_rent.houseid = H.ID)
+		LEFT JOIN house_sale AS H_S ON H.ID = H_S.HouseID AND H_S.UpdateTime = (Select MAX(UpdateTime) From house_sale Where house_sale.houseid = H.ID)
+		LEFT JOIN house_sold_building AS H_S_B ON H_S_B.HouseID = H.ID 
+		LEFT JOIN  `mobile`.`google_map_place_base` AS G_M ON H.ResidenceID = G_M.ResidenceID AND G_M.IsMain = 1
+		LEFT JOIN basedata.house_contact HC ON HC.HouseID = H.ID AND HC.UpdateTime = (SELECT MAX(UpdateTime) FROM house_contact WHERE HouseID =  H.ID)
+		INNER JOIN house_interaction HI ON HI.houseid = H.id AND HI.status > 0
+		INNER JOIN admin.account A ON HI.agentid = A.id AND A.status = 1
+		WHERE  H.Status  <![CDATA[ <> ]]>  0 AND RSD.zombie = 0
+		<isNotNull prepend="AND" property="houseIdFrom"> 
+            <![CDATA[ H.ID >= #houseIdFrom# ]]> 
+        </isNotNull>
+        <isNotNull prepend="AND" property="houseIdTo"> 
+            <![CDATA[ H.ID < #houseIdTo# ]]> 
+        </isNotNull>
+        <isNotNull prepend="AND" property="houseIdsIn"> 
+            H.ID IN ($houseIdsIn$) 
+        </isNotNull>
+		<isNotNull prepend="AND" property="residenceId"> 
+            H.ResidenceID = #residenceId# 
+        </isNotNull>
+		<isNotNull prepend="AND" property="saleStatus"> 
+            H_S.SaleStatus = #saleStatus# 
+        </isNotNull>
+        <isNotNull prepend="AND" property="hasNewUpdate"> 
+			  <![CDATA[ (H.LastTaskTime IS NULL OR H.UpdateTime >= H.LastTaskTime )]]> 
+		</isNotNull>
+		<isNotNull prepend="AND" property="status"> 
+			 H.Status = #status#
+		</isNotNull>
+	</select>
+	
+	<sql id="houseWhereClause">
+		<dynamic prepend="WHERE">
+			<isNotNull prepend="AND" property="residenceId"> 
+	            H.ResidenceID = #residenceId#
+	        </isNotNull>
+			<isNotNull prepend="AND" property="status"> 
+	            H.Status = #status#
+	        </isNotNull>
+	    	<isNotNull prepend="AND" property="sourceType"> 
+	            H.SourceType = #sourceType#
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="saleStatus"> 
+	        	S.SaleStatus = #saleStatus#
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="rentStatus">
+	        	R.RentStatus = #rentStatus#
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="creator">
+	        	H.Creator = #creator#
+	        </isNotNull>
+			<isNotNull prepend="AND" property="auditType" >
+		        HAH.Type = #auditType#
+		    </isNotNull>
+		    <isNotNull prepend="AND" property="auditResult" >
+		        HAH.Result = #auditResult#
+		    </isNotNull>
+		    <isNotNull prepend="AND" property="auditTypeNull" >
+		        HAH.Type IS NULL
+		    </isNotNull>
+		    <isNotNull prepend="AND" property="auditResultNull" >
+		        HAH.Result IS NULL
+		    </isNotNull>
+		    <isNotNull prepend="AND" property="onboard" >
+		        (R.RentStatus = 1 OR S.SaleStatus = 1)
+		    </isNotNull>
+		</dynamic>
+	</sql>
+	
+	<select id="countHouseExt" resultClass="int" parameterClass="map">
+		SELECT 
+			COUNT(DISTINCT H.ID)
+		FROM house AS H
+		LEFT JOIN house_rent AS R ON H.ID = R.HouseID
+		LEFT JOIN house_sale AS S ON H.ID = S.HouseID
+	    LEFT JOIN house_audit_history AS HAH ON HAH.HouseID = H.ID
+		<include refid="houseWhereClause" />
+	</select>
+	
+	<select id="findHouseExtList" resultMap="houseListExt" parameterClass="map">
+		SELECT 
+			H.ID, H.Status, H.ResidenceID, H.PropertyArea, H.RoomType, H.AddTime, H.UpdateTime,
+			H.Creator, H.LastUpdater, H.SourceType, H.BuildingNo, H.CellNo, H.DetailName, H.RoomType,
+			R.Price rentPrice, R.RentStatus,
+			S.Price salePrice, S.SaleStatus,
+			RES.Name AS residenceName, 
+			REG.Name AS regionName, REG.CityID,
+			(SELECT HP.CloudURL FROM house_pic HP WHERE HP.HouseID = H.ID AND HP.Type in (2,3) AND HP.Status = 1 ORDER BY HP.TYPE DESC, HP.UpdateTime DESC LIMIT 0, 1) AS picURL
+		FROM house AS H 
+		LEFT JOIN house_rent AS R ON H.ID = R.HouseID
+		LEFT JOIN house_sale AS S ON H.ID = S.HouseID
+		LEFT JOIN residence AS RES ON H.ResidenceID = RES.ID
+		LEFT JOIN region AS REG ON REG.RegionID = RES.RegionID
+		<isNotNull property="auditType"> 
+		LEFT JOIN house_audit_history AS HAH ON HAH.HouseID = H.ID AND HAH.AddTime = (
+			SELECT MAX(AddTime) FROM house_audit_history WHERE HouseID = H.ID AND Type = #auditType#
+		)
+		</isNotNull>
+		<isNotNull property="auditTypeNull"> 
+		LEFT JOIN house_audit_history AS HAH ON HAH.HouseID = H.ID
+		</isNotNull>
+		<include refid="houseWhereClause" />
+		GROUP BY H.ID
+		<include refid="common.orderBy" />
+		<include refid="common.limit" />
+	</select>
+	
+	<select id="loadHouse" resultMap="houseExt" parameterClass="uniqueObject">
+		SELECT
+			*,
+			0 AS RentPrice, 0 AS RentStatus,
+			0 AS SalePrice, 0 AS SaleStatus,
+			'' AS ResidenceName, 
+			'' AS RegionName, 0 AS CityID,
+			'' AS PicURL
+		FROM house
+		WHERE ID = #id#
+	</select>
+	
+	<insert id="addHouse" parameterClass="org.housemart.server.dao.entities.HouseEntity">
+		INSERT INTO house (
+			Status, ResidenceID, 
+			Direction, PropertyArea, OccupiedArea, BuildTime, HouseType,
+			RoomType, Decorating, Floor, Memo, 
+			AddTime, UpdateTime, 
+			Creator,
+			SourceType, BuildingNo, CellNo, DetailName)
+		VALUES (
+			#status#, #residenceId#, 
+			#direction#, #propertyArea#, #occupiedArea#, #buildDate#, #houseType#,
+			#roomType#, #decorating#, #floor#, #memo#,
+			NOW(), NOW(),
+			#creator#,
+			#sourceType#, #buildingNo#, #cellNo#, #detailName#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateHouse" parameterClass="org.housemart.server.dao.entities.HouseEntity">
+		UPDATE house
+		SET UpdateTime = NOW()
+		<isNotNull prepend="," property="status" >
+			Status = #status#
+		</isNotNull>
+		<isNotNull prepend="," property="residenceId" >
+			ResidenceID = #residenceId#
+		</isNotNull>
+		<isNotNull prepend="," property="direction" >
+			Direction = #direction#
+		</isNotNull>
+		<isNotNull prepend="," property="propertyArea" >
+			PropertyArea = #propertyArea#
+		</isNotNull>
+		<isNotNull prepend="," property="occupiedArea" >
+			OccupiedArea = #occupiedArea#
+		</isNotNull>
+		<isNotEmpty prepend="," property="buildDate" >
+			BuildTime = #buildDate#
+		</isNotEmpty>
+		<isNotNull prepend="," property="houseType" >
+			HouseType = #houseType#
+		</isNotNull>
+		<isNotNull prepend="," property="roomType" >
+			RoomType = #roomType#
+		</isNotNull>
+		<isNotNull prepend="," property="decorating" >
+			Decorating = #decorating#
+		</isNotNull>
+		<isNotNull prepend="," property="floor" >
+			Floor = #floor#
+		</isNotNull>
+		<isNotNull prepend="," property="memo" >
+			Memo = #memo#
+		</isNotNull>
+		<isNotNull prepend="," property="sourceType" >
+			SourceType = #sourceType#
+		</isNotNull>
+		<isNotNull prepend="," property="buildingNo" >
+			BuildingNo = #buildingNo#
+		</isNotNull>
+		<isNotNull prepend="," property="cellNo" >
+			CellNo = #cellNo#
+		</isNotNull>
+		<isNotNull prepend="," property="detailName" >
+			DetailName = #detailName#
+		</isNotNull>
+		WHERE ID = #id#
+	</update>	
+	
+	<select id="findMaxHouseId" resultClass="int">
+		SELECT MAX(ID) FROM house;
+	</select>
+	<select id="findMinHouseId" resultClass="int">
+		SELECT Min(ID) FROM house;
+	</select>
+	
+	<update id="updateLastTaskTime" parameterClass="map">
+		UPDATE basedata.house SET LastTaskTime = #lastTaskTime# WHERE  <![CDATA[ ID >= #houseIdFrom# ]]>  AND <![CDATA[ ID < #houseIdTo# ]]> 
+	</update>		
+	
+	<update id="resetAllTaskTime">
+		UPDATE basedata.house SET LastTaskTime = NULL 
+	</update>
+	
+	<select id="loadHouseSale" resultMap="houseSale" parameterClass="uniqueObject">
+		SELECT * FROM house_sale
+		WHERE HouseID = #id#
+		LIMIT 0, 1
+	</select>
+	
+	<insert id="addHouseSale" parameterClass="org.housemart.server.dao.entities.HouseSale">
+		INSERT INTO house_sale (
+			HouseID, TagList, Price, SaleStatus, Source,
+			AddTime, UpdateTime)
+		VALUES (
+			#id#, #tagList#, #priceValue#, #saleStatus#, #source#,
+			NOW(), NOW());
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateHouseSale" parameterClass="org.housemart.server.dao.entities.HouseSale">
+		UPDATE house_sale
+		SET UpdateTime = NOW()
+		<isNotNull prepend="," property="tagList" >
+			TagList = #tagList#
+		</isNotNull>
+		<isNotNull prepend="," property="priceValue" >
+			Price = #priceValue#
+		</isNotNull>
+		<isNotNull prepend="," property="saleStatus" >
+			SaleStatus = #saleStatus#
+		</isNotNull>
+		WHERE HouseID = #id#
+	</update>
+	
+	<select id="loadHouseRent" resultMap="houseRent" parameterClass="uniqueObject">
+		SELECT * FROM house_rent
+		WHERE HouseID = #id#
+		LIMIT 0, 1
+	</select>
+	
+	<insert id="addHouseRent" parameterClass="org.housemart.server.dao.entities.HouseRent">
+		INSERT INTO house_rent (
+			HouseID, TagList, EquipmentList, DealTime, Price, RentStatus,
+			AddTime, UpdateTime)
+		VALUES (
+			#id#, #tagList#, #equipmentList#, #dealTime#, #priceValue#, #rentStatus#,
+			NOW(), NOW());
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateHouseRent" parameterClass="org.housemart.server.dao.entities.HouseRent">
+		UPDATE house_rent
+		SET UpdateTime = NOW()
+		<isNotNull prepend="," property="tagList" >
+			TagList = #tagList#
+		</isNotNull>
+		<isNotNull prepend="," property="equipmentList" >
+			EquipmentList = #equipmentList#
+		</isNotNull>
+		<isNotNull prepend="," property="dealTime" >
+			DealTime = #dealTime#
+		</isNotNull>
+		<isNotNull prepend="," property="priceValue" >
+			Price = #priceValue#
+		</isNotNull>
+		<isNotNull prepend="," property="rentStatus" >
+			RentStatus = #rentStatus#
+		</isNotNull>
+		WHERE HouseID = #id#
+	</update>
+</sqlMap>

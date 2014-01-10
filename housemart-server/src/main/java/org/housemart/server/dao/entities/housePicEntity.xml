@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HousePicEntity">
+	<resultMap id="housePic" class="org.housemart.server.dao.entities.HousePicEntity">
+		<result property="id" column="ID" />
+		<result property="residenceId" column="residenceID" />
+		<result property="houseId" column="HouseID" />
+		<result property="type" column="Type" />
+		<result property="url" column="URL" />
+		<result property="cloudUrl" column="CloudURL" />
+		<result property="status" column="Status" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+	</resultMap>
+	
+	<insert id="addHousePic" parameterClass="org.housemart.server.dao.entities.HousePicEntity">
+		INSERT INTO house_pic(ResidenceID, HouseID, Type, URL, CloudURL, Status, AddTime, UpdateTime)
+		VALUES(#residenceId#, #houseId#, #type#, #url#, #cloudUrl#, #status#, #addTime#, #updateTime#)
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<select id="loadHousePic" resultMap="housePic" parameterClass="uniqueObject">
+		SELECT * FROM house_pic
+		WHERE ID = #id#
+	</select>
+	
+	<select id="findHousePicByHouseIdAndType" resultMap="housePic" parameterClass="map">
+		SELECT * FROM house_pic
+		WHERE HouseID = #houseId# AND Type = #type# AND Status = 1
+		ORDER BY UpdateTime DESC
+	</select>
+
+	<select id="findResidencePicById" resultMap="housePic" parameterClass="map">
+		SELECT * FROM house_pic
+		WHERE 1 
+		<isNotNull prepend="AND" property="residenceId"> 
+        	ResidenceID = #residenceId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="type"> 
+            Type = #type# 
+        </isNotNull>
+        AND (HouseID = 0 OR HouseID = -1 OR HouseID IS NULL)
+		AND Status = 1
+		AND ShowStatus = 1
+		ORDER BY UpdateTime DESC
+	</select>	
+	
+	<update id="updateHousePic" parameterClass="org.housemart.server.dao.entities.HousePicEntity">
+		UPDATE house_pic SET ResidenceID = #residenceId#, HouseID = #houseId#, Type = #type#, URL = #url#,
+		Status = #status#, AddTime = #addTime#, UpdateTime = #updateTime#
+		WHERE ID = #id#
+	</update>
+
+	<update id="updateCloudURL" parameterClass="map">
+		UPDATE house_pic SET CloudURL = #cloudURL#
+		WHERE ID = #id#
+	</update>	
+	
+	<update id="updateStatus" parameterClass="map">
+		UPDATE house_pic SET Status = #status#
+		WHERE ID = #id#
+	</update>	
+	
+	<update id="updateRepositoryPicCloudURL" parameterClass="map">
+		UPDATE repository.house_pic SET CloudURL = #cloudURL#, Status = #status#, URL = #url#
+		WHERE ID = #id#
+	</update>		
+	
+
+</sqlMap>
+		

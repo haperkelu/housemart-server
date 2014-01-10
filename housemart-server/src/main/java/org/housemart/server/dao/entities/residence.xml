@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ResidenceEntity">
+	<sql id="allValideHouses">
+		SELECT B_H.ID,B_H.ResidenceID, B_H.PropertyArea from basedata.house B_H 
+		INNER JOIN house_interaction V_HI ON V_HI.houseid = B_H.id AND V_HI.status > 0
+		INNER JOIN admin.account V_A ON V_HI.agentid = V_A.id AND V_A.status = 1
+		WHERE B_H.status = 1 AND <![CDATA[ V_HI.StartDate <= now() AND V_HI.EndDate >= now() ]]> 
+	</sql>
+	
+	<sql id="allValideHousesOfResidence">
+		SELECT B_H.ID,B_H.ResidenceID, B_H.PropertyArea from basedata.house B_H 
+		INNER JOIN house_interaction V_HI ON V_HI.houseid = B_H.id AND V_HI.status > 0
+		INNER JOIN admin.account V_A ON V_HI.agentid = V_A.id AND V_A.status = 1
+		WHERE B_H.status = 1 AND <![CDATA[ V_HI.StartDate <= now() AND V_HI.EndDate >= now() ]]> AND B_H.ResidenceID = #id#  
+	</sql>
+	
+	<resultMap id="residence" class="org.housemart.server.dao.entities.ResidenceEntity">
+		<result property="id" column="ID"  nullValue="0"/>
+		<result property="address" column="Address"  nullValue=""/>
+		<result property="cityId" column="CityID"  nullValue="0"/>
+		<result property="plateId" column="PlateID"  nullValue="0"/>
+		<result property="residenceName" column="ResidenceName"  nullValue=""/>
+		<result property="picURL" column="PicURL"  nullValue=""/>
+		<result property="price" column="Price"  nullValue="0"/>
+		<result property="onSaleCount" column="OnSaleCount"  nullValue="0"/>
+		<result property="minPrice" column="MinPrice"  nullValue="0"/>
+		<result property="maxPrice" column="MaxPrice"  nullValue="0"/>
+		<result property="lastYearDealCount" column="LastYearDealCount"  nullValue="0"/>
+		<result property="lastMonthDealCount" column="LastMonthDealCount"  nullValue="0"/>
+		<result property="lastSeasonDealCount" column="LastSeasonDealCount"  nullValue="0"/>
+		<result property="onRentCount" column="OnRentCount"  nullValue="0"/>
+		<result property="minRentPrice" column="MinRentPrice"  nullValue="0"/>
+		<result property="maxRentPrice" column="MaxRentPrice"  nullValue="0"/>
+		<result property="lastSeasonRentCount" column="LastSeasonRentCount"  nullValue="0"/>
+		<result property="houseHold" column="HouseHold"/>
+		<result property="greenRate" column="GreenRate"  nullValue="0"/>
+		<result property="parking" column="Parking"  nullValue=""/>
+		<result property="volumeRate" column="VolumeRate"  nullValue="0"/>
+		<result property="propertyType" column="PropertyType"  nullValue=""/>
+		<result property="propertyFee" column="PropertyFee"  nullValue=""/>
+		<result property="developer" column="Developer"  nullValue=""/>
+		<result property="finishedTime" column="FinishedTime"  nullValue=""/>
+		<result property="isFollow" column="IsFollow"  nullValue="false"/>
+		<result property="fansCount" column="FansCount"  nullValue="0"/>
+		<result property="lat" column="Lat"  nullValue=""/>
+		<result property="lng" column="Lng"  nullValue=""/>
+		<result property="plateName" column="PlateName"  nullValue=""/>
+		<result property="regionName" column="RegionName"  nullValue=""/>
+		<result property="rentRevenue" column="RentRevenue"  nullValue="0"/>
+		<result property="annualTurnoverRate" column="AnnualTurnoverRate"  nullValue=""/>
+		<result property="annualTurnoverPercent" column="annualTurnoverPercent"  nullValue="0"/>
+		<result property="annualPriceIncrement" column="AnnualPriceIncrement"  nullValue="0"/>
+		<result property="forceShow" column="ForceShow"  nullValue="0"/>
+		<result property="zombie" column="Zombie"  nullValue="0"/>
+		
+	</resultMap>
+	
+	<resultMap id="residenceForList" class="org.housemart.server.dao.entities.ResidenceEntity">
+		<result property="id" column="ID"  nullValue="0"/>
+		<result property="residenceName" column="ResidenceName"  nullValue=""/>
+		<result property="picURL" column="PicURL"  nullValue=""/>
+		<result property="price" column="Price"  nullValue="0"/>
+		<result property="lastYearDealCount" column="LastYearDealCount"  nullValue="0"/>
+		<result property="lastMonthDealCount" column="LastMonthDealCount"  nullValue="0"/>
+		<result property="lastSeasonDealCount" column="LastSeasonDealCount"  nullValue="0"/>
+		<result property="onSaleCount" column="OnSaleCount"  nullValue="0"/>
+		<result property="minPrice" column="MinPrice"  nullValue="0"/>
+		<result property="maxPrice" column="MaxPrice"  nullValue="0"/>
+		<result property="onRentCount" column="OnRentCount"  nullValue="0"/>
+		<result property="minRentPrice" column="MinRentPrice"  nullValue="0"/>
+		<result property="maxRentPrice" column="MaxRentPrice"  nullValue="0"/>
+		<result property="isFollow" column="IsFollow"  nullValue="false"/>
+		<result property="fansCount" column="FansCount"  nullValue="0"/>
+		<result property="lat" column="Lat"  nullValue=""/>
+		<result property="lng" column="Lng"  nullValue=""/>
+		<result property="rentRevenue" column="RentRevenue"  nullValue="0"/>
+		<result property="annualTurnoverRate" column="AnnualTurnoverRate"  nullValue=""/>
+		<result property="annualTurnoverPercent" column="annualTurnoverPercent"  nullValue="0"/>
+		<result property="annualPriceIncrement" column="AnnualPriceIncrement"  nullValue="0"/>
+		<result property="forceShow" column="ForceShow"  nullValue="0"/>
+		<result property="zombie" column="Zombie"  nullValue="0"/>
+	</resultMap>
+	
+	<resultMap id="accountResidenceList" class="org.housemart.server.dao.entities.ResidenceEntity">
+		<result property="id" column="ID"  nullValue="0"/>
+		<result property="address" column="Address"  nullValue=""/>
+		<result property="cityId" column="CityID"  nullValue="0"/>
+		<result property="plateId" column="PlateID"  nullValue="0"/>
+		<result property="residenceName" column="ResidenceName"  nullValue=""/>
+		<result property="plateName" column="PlateName"  nullValue=""/>
+		<result property="regionName" column="RegionName"  nullValue=""/>
+	</resultMap>
+	
+	<resultMap id="simpleResidence" class="org.housemart.server.dao.entities.ResidenceEntity">
+		<result property="id" column="ID" />	
+		<result property="residenceName" column="Name" />
+	</resultMap>
+
+	<select id="loadResidence" resultMap="residence" parameterClass="uniqueObject">
+		SELECT rd.ID, rd.Address, rg.CityID, rg.ParentID as PlateID, rg.Name plateName, rg2.Name regionName, rd.Name as residenceName, rd.ForceShow, rd.Zombie,
+		IF((SELECT count(1) FROM house_pic H_P WHERE H_P.ResidenceId = rd.ID AND H_P.Type = 0 AND H_P.status = 1 AND H_P.ShowStatus = 1) = 0, (SELECT group_concat(Cloudurl ORDER BY H_P.Type, H_P.UpdateTime ASC SEPARATOR '12qwaszx,') FROM basedata.house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND H_P.ResidenceID = rd.ID  AND (H_P.Type = 0 OR H_P.Type = 1) GROUP BY rd.ID),
+			(SELECT group_concat(Cloudurl ORDER BY H_P.Type, H_P.UpdateTime ASC SEPARATOR '12qwaszx,') FROM basedata.house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceID = rd.ID AND H_P.Type = 0 GROUP BY rd.ID)) PicURL,
+		(SELECT IFNULL(AVG(S.Price/H.PropertyArea), 0)  FROM basedata.house_sale S 
+			LEFT JOIN ( <include refid="allValideHousesOfResidence"/> ) H ON H.ID = S.HouseID WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) AS Price, 
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale S 
+			LEFT JOIN ( <include refid="allValideHousesOfResidence"/> ) H ON H.ID = S.HouseID WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) OnSaleCount,
+		(SELECT min(Price) FROM house_sale S LEFT JOIN ( <include refid="allValideHousesOfResidence"/> )  H ON H.ID = S.HouseID
+			WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) AS MinPrice,
+		(SELECT max(Price) FROM house_sale S LEFT JOIN ( <include refid="allValideHousesOfResidence"/> )  H ON H.ID = S.HouseID
+			WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) AS MaxPrice,
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale WHERE date_format(DATE_SUB(CURDATE(), INTERVAL 1 MONTH),'%Y-%m') = date_format(DealTime,'%Y-%m') AND
+			houseID in (SELECT ID FROM basedata.house WHERE ResidenceID = rd.ID) AND SaleStatus = 3) AS LastSeasonDealCount,
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale WHERE date_format(DATE_SUB(CURDATE(), INTERVAL 1 MONTH),'%Y-%m') = date_format(DealTime,'%Y-%m') AND
+			houseID in (SELECT ID FROM basedata.house WHERE ResidenceID = rd.ID) AND SaleStatus = 3) AS LastMonthDealCount,
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale WHERE date_format(DATE_SUB(CURDATE(), INTERVAL 12 MONTH),'%Y-%m') <![CDATA[ <= ]]> date_format(DealTime,'%Y-%m') AND
+			houseID in (SELECT ID FROM basedata.house WHERE ResidenceID = rd.ID) AND SaleStatus = 3) AS LastYearDealCount,	
+		(SELECT count(Distinct HouseID) FROM basedata.house_rent R
+			LEFT JOIN ( <include refid="allValideHousesOfResidence"/> ) H ON H.ID = R.HouseID
+			WHERE rd.ID = H.ResidenceID AND R.RentStatus = 1) OnRentCount,
+		(SELECT min(Price) FROM house_rent R LEFT JOIN ( <include refid="allValideHousesOfResidence"/> )  H ON H.ID = R.HouseID
+		WHERE rd.ID = H.ResidenceID  AND R.RentStatus = 1) AS MinRentPrice,
+		(SELECT max(Price) FROM house_rent R LEFT JOIN ( <include refid="allValideHousesOfResidence"/> )  H ON H.ID = R.HouseID
+		WHERE rd.ID = H.ResidenceID  AND R.RentStatus = 1) AS MaxRentPrice,
+		(SELECT count(Distinct HouseID) FROM basedata.house_rent WHERE DATE_SUB(CURDATE(), INTERVAL 3 MONTH) <![CDATA[ <= ]]>  date(UpdateTime) AND
+			houseID in (SELECT ID FROM basedata.house WHERE ResidenceID = rd.ID) AND RentStatus = 3)  AS LastSeasonRentCount,
+		rd.HeadCount AS HouseHold, rd.GreenRate, rd.Parking, rd.VolumeRate, rd.PropertyType, rd.PropertyFee,
+		rd.Developer, rd.FinishedTime, true AS IsFollow, mg.Lat Lat, mg.Lng lng, -1 AS FansCount,
+		md.AnnualPriceIncrement AnnualPriceIncrement, md.AnnualTurnoverRate AnnualTurnoverRate, md.AnnualTurnoverPercent AnnualTurnoverPercent, md.RentRevenue RentRevenue
+		FROM residence AS rd
+		JOIN region AS rg ON rd.regionID = rg.regionID
+		JOIN region AS rg2 ON rg.parentID = rg2.regionID
+		JOIN mobile.google_map_place_base AS mg ON rd.ID = mg.ResidenceID
+		LEFT JOIN residence_month_data AS md ON rd.ID = md.ResidenceID 
+		AND md.Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID) 
+		AND md.Month = (SELECT MAX(Month) FROM residence_month_data WHERE Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID) AND ResidenceID = rd.ID) 
+		WHERE rd.status = 1 AND mg.IsMain = 1 AND rd.ID = #id# 
+	</select>
+	
+	<select id="findResidence" resultMap="residenceForList" parameterClass="map">
+		SELECT rd.ID, rd.Name as residenceName, rd.ForceShow, rd.Zombie,
+		IF((SELECT count(1) FROM house_pic H_P WHERE H_P.ResidenceId = rd.ID AND H_P.Type = 0 AND H_P.status = 1 AND H_P.ShowStatus = 1) = 0, (SELECT group_concat(Cloudurl ORDER BY H_P.Type, H_P.UpdateTime ASC SEPARATOR '12qwaszx,') FROM basedata.house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceID = rd.ID  AND (H_P.Type = 0 OR H_P.Type = 1) GROUP BY rd.ID),
+			(SELECT group_concat(Cloudurl ORDER BY H_P.Type, H_P.UpdateTime ASC SEPARATOR '12qwaszx,') FROM basedata.house_pic H_P WHERE H_P.Status = 1 AND H_P.ShowStatus = 1 AND  H_P.ResidenceID = rd.ID AND H_P.Type = 0 GROUP BY rd.ID)) PicURL,
+		(SELECT IFNULL(AVG(S.Price/H.PropertyArea), 0)  FROM basedata.house_sale S 
+			LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = S.HouseID WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) AS Price, 
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale WHERE date_format(DATE_SUB(CURDATE(), INTERVAL 1 MONTH),'%Y-%m') = date_format(DealTime,'%Y-%m') AND
+			houseID in (SELECT ID FROM basedata.house WHERE ResidenceID = rd.ID) AND SaleStatus = 3) AS LastSeasonDealCount,
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale WHERE date_format(DATE_SUB(CURDATE(), INTERVAL 1 MONTH),'%Y-%m') = date_format(DealTime,'%Y-%m') AND
+			houseID in (SELECT ID FROM basedata.house WHERE ResidenceID = rd.ID) AND SaleStatus = 3) AS LastMonthDealCount,
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale WHERE date_format(DATE_SUB(CURDATE(), INTERVAL 12 MONTH),'%Y-%m') <![CDATA[ <= ]]> date_format(DealTime,'%Y-%m') AND
+			houseID in (SELECT ID FROM basedata.house WHERE ResidenceID = rd.ID) AND SaleStatus = 3) AS LastYearDealCount,	
+		(SELECT count(Distinct HouseID) FROM basedata.house_sale S LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = S.HouseID
+			WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) OnSaleCount,
+		(SELECT min(Price) FROM house_sale S LEFT JOIN ( <include refid="allValideHouses"/> )  H ON H.ID = S.HouseID
+			WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) AS MinPrice,
+		(SELECT max(Price) FROM house_sale S LEFT JOIN ( <include refid="allValideHouses"/> )  H ON H.ID = S.HouseID
+			WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) AS MaxPrice,
+		(SELECT count(Distinct HouseID) FROM basedata.house_rent R LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = R.HouseID
+			WHERE rd.ID = H.ResidenceID AND R.RentStatus = 1) OnRentCount,
+		(SELECT min(Price) FROM house_rent R LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = R.HouseID
+			WHERE rd.ID = H.ResidenceID  AND R.RentStatus = 1) AS MinRentPrice,
+		(SELECT max(Price) FROM house_rent R LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = R.HouseID
+			WHERE rd.ID = H.ResidenceID  AND R.RentStatus = 1) AS MaxRentPrice,
+		true AS IsFollow, mg.Lat Lat, mg.Lng lng, -1 AS FansCount,
+		md.AnnualPriceIncrement AnnualPriceIncrement, md.AnnualTurnoverRate AnnualTurnoverRate, md.AnnualTurnoverPercent AnnualTurnoverPercent, md.RentRevenue RentRevenue
+		FROM residence AS rd
+		JOIN region AS rg ON rd.RegionID = rg.RegionID
+		JOIN mobile.google_map_place_base AS mg ON rd.ID = mg.ResidenceID
+		LEFT JOIN residence_month_data AS md ON rd.ID = md.ResidenceID AND md.Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID) AND md.Month = (SELECT MAX(Month) FROM residence_month_data WHERE Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID))
+		WHERE rd.status = 1  AND mg.IsMain = 1
+		<isNotNull prepend="AND" property="cityId"> 
+            rg.CityID = #cityId#
+        </isNotNull> 
+		<isNotNull prepend="AND" property="plateId"> 
+            rg.RegionID = #plateId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="regionId"> 
+            rg.ParentID = #regionId#  
+        </isNotNull>
+        <isNotNull prepend="AND" property="keyword"> 
+            rd.name like '$keyword$' OR rd.AliasName like '$keyword$'
+        </isNotNull>        
+		<dynamic prepend="HAVING">
+			<isNotNull prepend="AND" property="onSaleCount"> 
+	            <![CDATA[ (OnSaleCount >= #onSaleCount# OR ForceShow = 1)]]> 
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="onRentCount"> 
+	            <![CDATA[ (OnRentCount >= #onRentCount# OR ForceShow = 1)]]> 
+	        </isNotNull>
+	    </dynamic>
+	</select>
+	
+	
+	<resultMap id="residencePrice" class="org.housemart.server.dao.entities.ResidenceEntity">
+		<result property="id" column="ID" />	
+		<result property="price" column="Price" />
+	</resultMap>
+	
+	<select id="findThisMonthAvg" resultMap="residencePrice" parameterClass="map">
+		SELECT rd.ID,
+		(SELECT IFNULL(AVG(S.Price/H.PropertyArea), 0)  FROM basedata.house_sale S 
+			LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = S.HouseID WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) AS Price
+		FROM residence AS rd
+		WHERE rd.status = 1 AND (SELECT count(1) FROM basedata.house BH WHERE rd.ID = BH.ResidenceID) > 0
+	</select>
+	
+	<select id="findAccountResidenceList" resultMap="accountResidenceList" parameterClass="map">
+		SELECT rd.ID, rd.Address, rg.CityID, rg.ParentID as PlateID, rg.Name plateName, rg2.Name regionName, rd.Name as residenceName
+		FROM residence AS rd
+		JOIN region AS rg ON rd.regionID = rg.regionID
+		JOIN region AS rg2 ON rg.parentID = rg2.regionID
+		JOIN admin.account_residence_relationship rs ON rs.ResidenceID =  rd.ID
+		WHERE rd.status = 1 AND rs.accountID = #brokerId#
+	</select>
+	
+</sqlMap>

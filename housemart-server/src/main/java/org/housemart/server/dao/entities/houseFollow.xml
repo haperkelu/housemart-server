@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseFollowEntity">
+
+	<resultMap id="houseFollow" class="org.housemart.server.dao.entities.HouseFollowEntity">
+		<result property="id" column="ID" />
+		<result property="houseId" column="HouseID" />
+		<result property="clientId" column="ClientUID" />
+		<result property="type" column="Type" />
+		<result property="addTime" column="AddTime" />
+	</resultMap>
+	
+	<select id="selectAll" resultMap="houseFollow" parameterClass="map">
+		SELECT *
+		FROM house_follow_info
+		order by 1
+	</select>
+		
+	<select id="loadHouseFollowByCondition" resultMap="houseFollow" parameterClass="map">
+		SELECT * 
+		FROM house_follow_info
+		WHERE HouseID = #houseId# and Type = #type# and ClientUID  = #clientId#
+	</select>
+
+	<select id="findClientListByHouseID" resultClass="java.lang.String" parameterClass="map">
+		SELECT ClientUID
+		FROM house_follow_info
+		WHERE HouseID = #houseId# and Type = #type#
+	</select>		
+	
+	<select id="findHouseFollowByCondition" resultMap="houseFollow" parameterClass="map">
+		SELECT * 
+		FROM house_follow_info
+		WHERE Type = #type# and ClientUID  = #clientId#
+		Order by AddTime desc
+	</select>	
+
+	<insert id="addHouseFollow" parameterClass="org.housemart.server.dao.entities.HouseFollowEntity">
+		INSERT INTO house_follow_info(HouseID, Type, ClientUID, AddTime, UpdateTime)
+		VALUES(#houseId#, #type#, #clientId#, Now(), Now());
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<delete id="deleteHouseFollow" parameterClass="org.housemart.server.dao.entities.HouseFollowEntity">
+		Delete FROM  house_follow_info
+		WHERE HouseID = #houseId# and Type = #type# and ClientUID  = #clientId#
+	</delete>
+	
+	
+</sqlMap>

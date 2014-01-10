@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="AccountEntity">
+
+	<resultMap id="account" class="org.housemart.server.dao.entities.AccountExtEntity">
+		<result property="id" column="ID" />
+		<result property="loginName" column="LoginName" />
+		<result property="name" column="Name" />
+		<result property="gender" column="Gender" />
+		<result property="identityID" column="IdentityID" />
+		<result property="contactInfo1" column="ContactInfo1" />
+		<result property="contactInfo2" column="ContactInfo2" />
+		<result property="positionType" column="PositionType" />
+		<result property="type" column="Type" />
+		<result property="managerID" column="ManagerID" />
+		<result property="countHouse" column="countHouse" />
+		<result property="countHouseMono" column="countHouseMono" />
+		<result property="countHouseInteraction" column="countHouseInteraction" />
+		<result property="picURL" column="PicURL" />
+	</resultMap>
+
+	<select id="findAccountList" resultMap="account" parameterClass="map">
+		SELECT 
+			acc.ID, acc.LoginName as loginName, acc.Name as name, acc.Gender as gender,
+			acc.IdentityID as identityID, acc.ContactInfo1 as contactInfo1, acc.ContactInfo2 as contactInfo2,
+			acc.PositionType as positionType, acc.ManagerID as managerID, acc.Type as type, acc.PicURL as picURL
+			<isNotNull prepend="," property="countHouse">
+				(SELECT count(*) FROM basedata.house_contact as hc WHERE hc.Committer = acc.ID) as countHouse
+			</isNotNull>
+			<isNotNull prepend="," property="countHouseMono">
+				(SELECT count(*) FROM basedata.house_interaction as him WHERE him.AgentID = acc.ID AND him.Status = 2) as countHouseMono
+			</isNotNull>
+			<isNotNull prepend="," property="countHouseInteraction">
+				(SELECT count(*) FROM basedata.house_interaction as hi WHERE hi.AgentID = acc.ID AND hi.Status = 1) as countHouseInteraction
+			</isNotNull>
+			
+			<isNull prepend="," property="countHouse">
+				0 as countHouse
+			</isNull>
+			<isNull prepend="," property="countHouseMono">
+				0 as countHouseMono
+			</isNull>
+			<isNull prepend="," property="countHouseInteraction">
+				0 as countHouseInteraction
+			</isNull>
+		FROM account AS acc
+		WHERE acc.Status = 1
+		<isNotNull prepend="AND" property="positionType"> 
+            acc.PositionType IN ($positionType$)
+        </isNotNull> 
+	</select>
+	
+	<select id="loadAccountById" resultMap="account" parameterClass="uniqueObject">
+		SELECT
+			acc.ID, acc.LoginName as loginName, acc.Name as name, acc.Gender as gender, 
+			acc.IdentityID as identityID, acc.ContactInfo1 as contactInfo1, acc.ContactInfo2 as contactInfo2,
+			acc.PositionType as positionType, acc.Type as type, acc.ManagerID as managerID,
+			acc.PicURL as picURL,
+			0 as countHouse, 0 as countHouseMono, 0 as countHouseInteraction
+		FROM account AS acc
+		WHERE acc.Status = 1 and acc.ID = #id#
+	</select>
+	
+	<select id="loadAccountAllStatusById" resultMap="account" parameterClass="uniqueObject">
+		SELECT
+			acc.ID, acc.LoginName as loginName, acc.Name as name, acc.Gender as gender, 
+			acc.IdentityID as identityID, acc.ContactInfo1 as contactInfo1, acc.ContactInfo2 as contactInfo2,
+			acc.PositionType as positionType, acc.Type as type, acc.ManagerID as managerID,
+			acc.PicURL as picURL,
+			0 as countHouse, 0 as countHouseMono, 0 as countHouseInteraction
+		FROM account AS acc
+		WHERE acc.ID = #id#
+	</select>
+	
+	<select id="loadAccountByNameAndPassword" resultMap="account" parameterClass="map">
+		SELECT
+			acc.ID, acc.LoginName as loginName, acc.Name as name, acc.Gender as gender,
+			acc.IdentityID as identityID, acc.ContactInfo1 as contactInfo1, acc.ContactInfo2 as contactInfo2,
+			acc.PositionType as positionType, acc.Type as type, acc.ManagerID as managerID,
+			acc.PicURL as picURL, 
+			0 as countHouse, 0 as countHouseMono, 0 as countHouseInteraction
+		FROM account AS acc
+		WHERE acc.Status = 1 and acc.LoginName = #loginName# and acc.Password = #password#
+	</select>			
+	
+</sqlMap>

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="NotificationEntity">
+
+	<resultMap id="notification" class="org.housemart.server.dao.entities.NotificationEntity">
+		<result property="id" column="ID" />
+		<result property="residenceId" column="ResidenceID" />
+		<result property="houseId" column="HouseID" />
+		<result property="clientUId" column="ClientUID" />
+		<result property="type" column="Type" />
+		<result property="action" column="Action" />
+		<result property="actionTime" column="actionTime" />
+		<result property="houseFollow" column="houseFollow" />
+		<result property="residenceFollow" column="residenceFollow" />
+	</resultMap>
+	
+	<select id="findNotificationList" resultMap="notification" parameterClass="map">
+		SELECT *
+		FROM notification AS n
+		INNER JOIN mobile.client_register AS cr ON n.ClientUID = cr.ClientID
+		LEFT JOIN mobile.house_follow_info AS hfi ON hfi.HouseID = n.HouseID AND hfi.ClientUID = n.ClientUID
+		LEFT JOIN mobile.residence_follow_info AS rfi ON rfi.ResidenceID = n.ResidenceID AND rfi.ClientUID = n.ClientUID
+		LEFT JOIN basedata.house_rent hr ON hr.houseid = n.houseid AND n.type IN (2, 3)
+		LEFT JOIN basedata.house_sale hs ON hs.houseid = n.houseid AND n.type IN (1, 3)
+		WHERE ((n.Type = 2 AND hr.RentStatus = 1) OR (n.Type = 1 and hs.SaleStatus = 1))
+		<isNotNull prepend="AND" property="clientUId"> 
+            n.ClientUID = #clientUId#
+        </isNotNull>
+		<isNotNull prepend="AND" property="status"> 
+            n.Status = #status#
+        </isNotNull>
+        <isNotNull prepend="AND" property="countStatus"> 
+            n.CountStatus = #countStatus#
+        </isNotNull>
+        <isNotNull prepend="AND" property="types"> 
+            n.Type IN ($types$)
+        </isNotNull>
+        <isNotNull prepend="AND" property="unnotified"> 
+            n.NotifyTime IS NULL
+        </isNotNull>
+		ORDER BY n.actionTime ASC
+	</select>
+	
+	<select id="getLastActionTime" resultClass="java.util.Date" parameterClass="map">
+		SELECT MAX(actionTime)
+		FROM notification
+		WHERE 1
+		<isNotNull prepend="AND" property="types">
+			type IN ($types$)
+		</isNotNull>
+	</select>			
+	
+	<insert id="addNotification" parameterClass="org.housemart.server.dao.entities.NotificationEntity">
+		INSERT INTO notification (ResidenceID, HouseID, ClientUID, Type, Action, ActionTime)
+		VALUES(#residenceId#, #houseId#, #clientUId#, #type#, #action#, #actionTime#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateNotification" parameterClass="map">
+		UPDATE notification
+		SET
+			UpdateTime = now()
+		<isNotNull prepend="," property="status">
+			Status = #status#
+		</isNotNull>
+		<isNotNull prepend="," property="countStatus">
+			CountStatus = #countStatus#
+		</isNotNull>
+		<isNotNull prepend="," property="sendTime">
+			SendTime = #sendTime#
+		</isNotNull>
+		<isNotNull prepend="," property="notifyTime">
+			NotifyTime = #notifyTime#
+		</isNotNull>
+		WHERE ID = #id#
+	</update>
+
+</sqlMap>

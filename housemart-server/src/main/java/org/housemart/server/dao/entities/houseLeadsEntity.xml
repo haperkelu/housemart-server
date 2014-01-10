@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseLeadsEntity">
+
+	<resultMap id="houseLeadsEntity" class="org.housemart.server.dao.entities.HouseLeadsEntity">
+		<result property="id" column="ID" />
+		<result property="contactName" column="ContactName" />
+		<result property="mobile" column="Mobile" />
+		<result property="residenceName" column="ResidenceName" />
+		<result property="address" column="Address" />
+		<result property="area" column="Address" />
+	</resultMap>
+	<insert id="addHouseLeads" parameterClass="org.housemart.server.dao.entities.HouseLeadsEntity">
+		INSERT INTO house_leads (ContactName, Mobile, ResidenceName,ClientUID, Address, Area, AddTime)
+		VALUES (#contactName#, #mobile#, #residenceName#,#clientUid#, #address#, #area#, Now());
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>	
+	
+	<insert id="addFeeback" parameterClass="org.housemart.server.dao.entities.FeedBackEntity">
+		INSERT INTO housemart_feedback (Content, Name, ClientUID, Mobile, AddTime)
+		VALUES (#content#, #name#, #clientUid#, #mobile#,Now());
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	
+</sqlMap>

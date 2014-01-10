@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="RegionEntity">
+
+	<resultMap id="region" class="org.housemart.server.dao.entities.RegionEntity">
+		<result property="id" column="RegionID"  nullValue="0"/>
+		<result property="name" column="Name"  nullValue=""/>
+	</resultMap>
+	
+	<select id="findRegionListByCity" resultMap="region">
+		SELECT RegionID, Name
+		FROM region
+		WHERE Level = 1 and CityID = #cityId#
+	</select>	
+
+	<select id="findPlateListByRegionId" resultMap="region">
+		SELECT RegionID, Name
+		FROM region
+		WHERE Level = 2 and ParentID = #parentId#
+	</select>
+	
+	<select id="loadByRegionId" resultMap="region">
+		SELECT RegionID, Name
+		FROM region where RegionID = #id#
+	</select>
+	
+	
+	<resultMap id="regionExt" class="org.housemart.server.dao.entities.RegionExtEntity">
+		<result property="id" column="RegionID"  nullValue="0"/>
+		<result property="name" column="Name"  nullValue=""/>
+		<result property="parentId" column="ParentID"  nullValue="0"/>
+		<result property="parentName" column="ParentName"  nullValue=""/>
+		<result property="level" column="Level"  nullValue="0"/>
+		<result property="cityId" column="CityID"  nullValue="0"/>
+		<result property="cityName" column="CityName"  nullValue="0"/>
+	</resultMap>
+	
+	<select id="loadRegionById" resultMap="regionExt">
+		SELECT rgn1.RegionID, rgn1.Name, rgn1.ParentID, rgn2.Name AS ParentName, rgn1.Level, rgn1.CityID, '上海' AS CityName
+		FROM region rgn1 
+		LEFT JOIN region AS rgn2 ON rgn1.parentID = rgn2.regionID
+		where rgn1.RegionID = #id#
+	</select>
+</sqlMap>

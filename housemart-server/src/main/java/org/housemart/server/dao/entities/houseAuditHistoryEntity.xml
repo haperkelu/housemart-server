@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseAuditHistoryEntity">
+
+	<resultMap id="followHouseAuditMap" class="java.util.HashMap">
+		<result property="houseId" column="houseId" />
+		<result property="residenceId" column="residenceId" />
+		<result property="auditType" column="auditType" />
+		<result property="houseClientUId" column="houseClientUId" />
+		<result property="residenceClientUId" column="residenceClientUId" />
+		<result property="followType" column="followType" />
+		<result property="auditTime" column="auditTime" />
+		<result property="postContent" column="postContent" />
+		<result property="houseFollow" column="houseFollow" />
+		<result property="residenceFollow" column="residenceFollow" />
+	</resultMap>
+	
+	<select id="findFollowHouseAuditHistoryList" resultMap="followHouseAuditMap" parameterClass="map">
+		SELECT
+			hah.HouseID AS houseId,
+			h.ResidenceID AS residenceId,
+			hah.Type AS auditType,
+			hah.PostContent AS postContent,
+			hfi.ClientUID AS houseClientUId,
+			rfi.ClientUID AS residenceClientUId,
+			hfi.Type AS followType,
+			hah.UpdateTime AS auditTime,
+			hfi.ID AS houseFollow,
+			rfi.ID AS residenceFollow
+		FROM basedata.house_audit_history AS hah
+		INNER JOIN basedata.house AS h ON hah.HouseID = h.ID
+		LEFT JOIN mobile.house_follow_info AS hfi ON hfi.HouseID = hah.HouseID
+		INNER JOIN mobile.client_register AS hcr ON hfi.ClientUID = hcr.ClientID
+		LEFT JOIN mobile.residence_follow_info AS rfi ON rfi.ResidenceID = h.ResidenceID
+		INNER JOIN mobile.client_register AS rcr ON rfi.ClientUID = rcr.ClientID
+		WHERE hah.Result = 1 AND hah.type IN (1, 5, 6) AND
+		(hfi.ID IS NOT NULL OR rfi.ID IS NOT NULL)
+		<isNotNull prepend="AND" property="lastAuditTime"> 
+            <![CDATA[ hah.UpdateTime > #lastAuditTime# ]]>
+        </isNotNull>
+		ORDER BY hah.UpdateTime ASC
+	</select>
+
+</sqlMap>
+		

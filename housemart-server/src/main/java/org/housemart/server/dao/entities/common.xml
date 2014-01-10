@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="common" >
+  <sql id="limit" >
+     <isGreaterThan prepend="" property="count" compareValue="0">
+     limit 
+      <isGreaterThan prepend="" property="skip" compareValue="0">
+         #skip# ,
+      </isGreaterThan>
+         #count#
+      </isGreaterThan>
+  </sql>
+  <sql id="orderBy" >
+	<isNotNull property="orderByClause" >
+	    order by $orderByClause$
+	</isNotNull>
+  </sql>
+</sqlMap>

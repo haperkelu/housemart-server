@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+<settings useStatementNamespaces="true"/>
+<typeAlias alias="uniqueObject" type="org.housemart.framework.dao.generic.UniqueIdObject"/>
+<sqlMap resource="org/housemart/server/dao/entities/houseFollow.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/google-place.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/houseChatMessage.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/areaPositionEntity.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/clientRegisterEntity.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/houseLeadsEntity.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/residenceFollow.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/notificationEntity.xml" />
+<sqlMap resource="org/housemart/server/dao/entities/clientNotesEntity.xml" />
+</sqlMapConfig>

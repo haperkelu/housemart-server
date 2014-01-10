@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ResidenceFollowEntity">
+
+	<resultMap id="resideneFollow" class="org.housemart.server.dao.entities.ResidenceFollowEntity">
+		<result property="id" column="ID" />
+		<result property="residenceId" column="ResidenceID" />
+		<result property="clientId" column="ClientUID" />
+		<result property="addTime" column="AddTime" />
+	</resultMap>
+
+	<select id="findClientListByResidenceID" resultClass="java.lang.String" parameterClass="map">
+		SELECT ClientUID
+		FROM residence_follow_info
+		WHERE ResidenceID = #residenceId#
+	</select>
+			
+	<select id="selectAll" resultMap="resideneFollow" parameterClass="map">
+		SELECT * 
+		FROM residence_follow_info
+		order by 1 desc
+	</select>
+	
+	<select id="findResidenceFollowByCondition" resultMap="resideneFollow" parameterClass="map">
+		SELECT * 
+		FROM residence_follow_info
+		WHERE ClientUID  = #clientId#
+		Order by AddTime desc
+	</select>	
+
+	<insert id="addResidenceFollow" parameterClass="org.housemart.server.dao.entities.ResidenceFollowEntity">
+		INSERT INTO residence_follow_info(ResidenceID, ClientUID, Status, AddTime, UpdateTime)
+		VALUES(#residenceId#, #clientId#, 1, Now(), Now());
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<delete id="deleteResidenceFollow" parameterClass="org.housemart.server.dao.entities.ResidenceFollowEntity">
+		Delete FROM residence_follow_info
+		WHERE ResidenceID = #residenceId# and ClientUID  = #clientId#
+	</delete>
+	
+	
+</sqlMap>

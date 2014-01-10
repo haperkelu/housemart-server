@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+    http://www.springframework.org/schema/beans/spring-beans-2.0.xsd  
+    http://www.springframework.org/schema/aop  
+    http://www.springframework.org/schema/aop/spring-aop-2.0.xsd  
+    http://www.springframework.org/schema/tx  
+    http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+
+	<bean name="jsonView" class="org.housemart.framework.web.views.JsonView">
+		<property name="contentType">
+			<value>application/json;charset=UTF-8</value>
+		</property>
+	</bean>
+
+	<bean name="textView" class="org.housemart.framework.web.views.TextView">
+		<property name="contentType">
+			<value>text/html</value>
+		</property>
+	</bean>
+	
+	<bean name="zipView" class="org.housemart.framework.web.views.ZipView">	
+		<property name="contentType">
+			<value>APPLICATION/OCTET-STREAM</value>
+		</property>
+	</bean>	
+
+</beans>  

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ResidencePriceHistoryEntity">
+	
+	<resultMap id="residencePriceHistory" class="org.housemart.server.dao.entities.ResidencePriceHistoryEntity">
+		<result property="residenceId" column="ResidenceID" nullValue="0"/>
+		<result property="avgPrice" column="AvgPrice" nullValue="0"/>
+		<result property="month" column="Month" nullValue="2013-05"/>
+	</resultMap>
+	
+	
+	<select id="findByResidenceId" resultMap="residencePriceHistory" parameterClass="map">
+		SELECT avg(AvgPrice) AvgPrice, date_format(AddTime,'%Y-%m') Month, #id# ResidenceID
+		FROM basedata.residence_price_history
+		WHERE ResidenceID = #id# AND AddTime <![CDATA[ < ]]> DATE_ADD(curdate(),interval -day(curdate())+1 day)
+		GROUP BY Month
+		ORDER BY Month DESC
+	</select>
+	
+	<insert id="addPriceHistory" parameterClass="map">
+		INSERT INTO basedata.residence_price_history(ResidenceID, AvgPrice, AddTime)
+		VALUES(#residenceId#, #avgPrice#, #addTime#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+</sqlMap>

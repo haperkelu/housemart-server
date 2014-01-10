@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseInteractionTransferEntity">
+
+	<resultMap id="houseInteractionTransfer" class="org.housemart.server.dao.entities.HouseInteractionTransferExtEntity">
+		<result property="id" column="ID" />
+		<result property="houseID" column="HouseID" />
+		<result property="fromBrokerID" column="FromBrokerID" />
+		<result property="toBrokerID" column="ToBrokerID" />
+		<result property="finalBrokerID" column="finalBrokerID" />
+		<result property="finalBrokerStatus" column="finalBrokerStatus" />
+		<result property="fromBrokerName" column="fromBrokerName" />
+		<result property="toBrokerName" column="ToBrokerName" />
+		<result property="finalBrokerName" column="finalBrokerName" />
+		<result property="status" column="Status" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+	</resultMap>
+
+	<select id="findHouseInteractionTransferList" resultMap="houseInteractionTransfer" parameterClass="map">
+		SELECT 
+			hif.*, accf.Name AS fromBrokerName, acct.Name AS toBrokerName, acc.Name AS finalBrokerName, acc.Status AS finalBrokerStatus
+		FROM house_interaction_transfer AS hif
+		INNER JOIN admin.account AS accf ON accf.ID = hif.FromBrokerID
+		INNER JOIN admin.account AS acct ON acct.ID = hif.ToBrokerID
+		INNER JOIN admin.account AS acc ON acc.ID = hif.FinalBrokerID
+		WHERE 1
+		<isNotNull prepend="AND" property="houseID"> 
+            hif.HouseID = #houseID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="fromBrokerID"> 
+            hif.FromBrokerID = #fromBrokerID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="status"> 
+            hif.Status = #status#
+        </isNotNull>
+		ORDER BY hif.AddTime DESC
+		<isNotNull property="limit"> 
+            LIMIT #limitStart#, #limitSize#
+        </isNotNull>
+	</select>
+	
+	<select id="loadHouseInteractionTransferById" resultMap="houseInteractionTransfer" parameterClass="uniqueObject">
+		SELECT 
+			hif.*, accf.Name AS fromBrokerName, acct.Name AS toBrokerName, acc.Name AS finalBrokerName, acc.Status AS finalBrokerStatus,
+			concat(ifnull(r.Name, ''), ' ', ifnull(rc.FloorBegin, '') , ' ', ifnull(rc.CodeBegin, '')) AS houseInfo
+		FROM house_interaction_transfer AS hif
+		INNER JOIN admin.account AS accf ON accf.ID = hif.FromBrokerID
+		INNER JOIN admin.account AS acct ON acct.ID = hif.ToBrokerID
+		INNER JOIN admin.account AS acc ON acc.ID = hif.FinalBrokerID
+		INNER JOIN house AS h ON h.ID = hif.HouseID 
+		INNER JOIN residence AS r ON r.ID = h.ResidenceID 
+		LEFT JOIN residence_building_cell AS rc ON rc.ID = h.CellID
+		WHERE hif.ID = #id#
+	</select>
+	
+	<insert id="addHouseInteractionTransfer" parameterClass="org.housemart.server.dao.entities.HouseInteractionTransferExtEntity">
+		INSERT INTO house_interaction_transfer (HouseID, FromBrokerID, ToBrokerID, FinalBrokerID, Status, AddTime, UpdateTime, Notes)
+		VALUES(#houseID#, #fromBrokerID#, #toBrokerID#, #finalBrokerID#, #status#, #addTime#, #updateTime#, #notes#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateHouseInteractionTransfer" parameterClass="map">
+		UPDATE house_interaction_transfer SET
+			UpdateTime = #updateTime#
+			<isNotNull prepend="," property="finalBrokerID">
+			FinalBrokerID = #finalBrokerID#
+			</isNotNull>
+			<isPropertyAvailable prepend="," property="status">
+			Status = #status#
+			</isPropertyAvailable>
+		WHERE ID = #id#
+	</update>
+</sqlMap>

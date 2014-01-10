@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseInteractionEntity">
+
+	<resultMap id="houseInteraction" class="org.housemart.server.dao.entities.HouseInteractionExtEntity">
+		<result property="id" column="ID" />
+		<result property="houseID" column="HouseID" />
+		<result property="houseInfo" column="houseInfo" />
+		<result property="agentID" column="AgentID" />
+		<result property="agentName" column="agentName" />
+		<result property="status" column="Status" />
+		<result property="startDate" column="StartDate" />
+		<result property="endDate" column="EndDate" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+	</resultMap>
+
+	<select id="findHouseInteractionList" resultMap="houseInteraction" parameterClass="map">
+		SELECT 
+			hi.*, acc.Name AS agentName, concat(ifnull(r.Name, ''), ' ', ifnull(rc.FloorBegin, '') , ' ', ifnull(rc.CodeBegin, '')) AS houseInfo
+		FROM house_interaction AS hi
+		INNER JOIN admin.account AS acc ON acc.ID = hi.AgentID AND acc.Status = 1
+		INNER JOIN house AS h ON h.ID = hi.HouseID 
+		INNER JOIN residence AS r ON r.ID = h.ResidenceID 
+		LEFT JOIN residence_building_cell AS rc ON rc.ID = h.CellID
+		WHERE 1
+		<isNotNull prepend="AND" property="agentID"> 
+            hi.AgentID = #agentID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="houseID"> 
+            hi.HouseID = #houseID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="status"> 
+            hi.Status = #status#
+        </isNotNull>
+        <isNotNull prepend="AND" property="currentTime"> 
+        	<![CDATA[ hi.StartDate <= #currentTime# AND hi.EndDate >= #currentTime# ]]>
+        </isNotNull>
+		ORDER BY hi.EndDate DESC
+		<isNotNull property="limit"> 
+            LIMIT #limitStart#, #limitSize#
+        </isNotNull>
+	</select>
+	
+	<select id="loadHouseInteractionById" resultMap="houseInteraction" parameterClass="uniqueObject">
+		SELECT 
+			hi.*, acc.Name as agentName, h.Name AS houseName
+		FROM house_interaction AS hi
+		INNER JOIN admin.account AS acc ON acc.ID = hi.AgentID AND acc.Status = 1
+		INNER JOIN house AS h ON h.ID = hi.HouseID 
+		WHERE hi.ID = #id#
+	</select>
+	
+	<insert id="addHouseInteraction" parameterClass="org.housemart.server.dao.entities.HouseInteractionEntity">
+		INSERT INTO house_interaction (HouseID, AgentID, Status, StartDate, EndDate, AddTime, UpdateTime)
+		VALUES(#houseID#, #agentID#, #status#, #startDate#, #endDate#, #addTime#, #updateTime#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateHouseInteraction" parameterClass="org.housemart.server.dao.entities.HouseInteractionEntity">
+		UPDATE house_interaction SET Status = #status#, UpdateTime = #updateTime#
+		WHERE ID = #id#
+	</update>
+</sqlMap>

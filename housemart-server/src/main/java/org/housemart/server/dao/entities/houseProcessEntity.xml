@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseProcessEntity">
+	<resultMap id="houseProcess" class="org.housemart.server.dao.entities.HouseProcessEntity">
+		<result property="id" column="ID" />
+		<result property="houseId" column="HouseID" />
+		<result property="memo" column="Memo" />
+		<result property="addTime" column="AddTime" />
+		<result property="brokerId" column="BrokerID" />
+		<result property="brokerName" column="brokerName" />
+	</resultMap>
+	
+	<insert id="addHouseProcess" parameterClass="org.housemart.server.dao.entities.HouseProcessEntity">
+		INSERT INTO house_process(HouseID, Memo, BrokerID, AddTime)
+		VALUES(#houseId#, #memo#, #brokerId#, #addTime#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<select id="loadHouseProcess" resultMap="houseProcess" parameterClass="uniqueObject">
+		SELECT * FROM house_process
+		WHERE ID = #id#
+	</select>
+	
+	<update id="updateHouseProcess" parameterClass="org.housemart.server.dao.entities.HouseProcessEntity">
+		UPDATE house_process
+		SET
+			HouseID = #houseId#, 
+			Memo = #memo#, 
+			AddTime = #addTime#,
+			BrokerID = #brokerId#
+		WHERE ID = #id#
+	</update>
+	
+	<select id="findHouseProcessListByHouseId" resultMap="houseProcess" parameterClass="map">
+		SELECT hp.*, acc.Name AS brokerName
+		FROM house_process hp
+		INNER JOIN admin.account acc ON acc.ID = hp.BrokerID
+		WHERE HouseID = #houseId#
+		ORDER BY hp.AddTime DESC
+	</select>
+</sqlMap>
+		

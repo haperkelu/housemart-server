@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings useStatementNamespaces="true"/>
+	<typeAlias alias="uniqueObject" type="org.housemart.framework.dao.generic.UniqueIdObject"/>
+	<sqlMap resource="org/housemart/server/dao/entities/common.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/region.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/house.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/housePicEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/housePicSortEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/houseInteractionEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/houseInteractionTransferEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/houseInteractionNoticeEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/houseTag.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/residence.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/residencePriceHistory.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/residenceMonthDataEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/houseAuditHistoryEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/houseProcessEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/maxinRawEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/keyValueEntity.xml" />
+	<sqlMap resource="org/housemart/server/dao/entities/appClientFileEntity.xml" />
+</sqlMapConfig>

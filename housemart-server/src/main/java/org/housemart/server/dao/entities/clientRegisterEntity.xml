@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ClientRegisterEntity">
+
+	<resultMap id="clientRegister" class="org.housemart.server.dao.entities.ClientRegisterEntity">
+		<result property="id" column="ID" />
+		<result property="clientID" column="ClientID" />
+		<result property="clientToken" column="ClientToken" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+		<result property="lastAPNSSign" column="LastAPNSSign" />
+		<result property="device" column="Device" />
+		<result property="version" column="Version" />
+		<result property="systemInfo" column="SystemInfo" />
+	</resultMap>
+
+	<select id="findClientRegisterList" resultMap="clientRegister" parameterClass="map">
+		SELECT cr.*
+		FROM client_register AS cr
+		WHERE 1
+		<isNotNull prepend="AND" property="clientID"> 
+            cr.ClientID = #clientID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="brokerID"> 
+            cr.BrokerID = #brokerID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="brokerLogin"> 
+            cr.BrokerLogin = #brokerLogin#
+        </isNotNull>
+		ORDER BY cr.UpdateTime DESC
+	</select>
+	
+	<insert id="addClientRegister" parameterClass="org.housemart.server.dao.entities.ClientRegisterEntity">
+		INSERT INTO client_register (ClientID, ClientToken, Device, Version, SystemInfo, AddTime, UpdateTime)
+		VALUES (#clientID#, #clientToken#, #device#, #version#, #systemInfo#, #addTime#, #updateTime#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateClientRegister" parameterClass="map">
+		UPDATE client_register SET
+			UpdateTime = #updateTime#
+		<isNotNull prepend="," property="clientToken"> 
+            ClientToken = #clientToken#
+        </isNotNull>
+        <isNotNull prepend="," property="lastAPNSSign"> 
+            LastAPNSSign = #lastAPNSSign#
+        </isNotNull>
+        <isNotNull prepend="," property="device"> 
+            Device = #device#
+        </isNotNull>
+        <isNotNull prepend="," property="version"> 
+            Version = #version#
+        </isNotNull>
+        <isNotNull prepend="," property="systemInfo"> 
+            SystemInfo = #systemInfo#
+        </isNotNull>
+        <isNotNull prepend="," property="brokerId"> 
+            BrokerID = #brokerId#
+        </isNotNull>
+         <isNotNull prepend="," property="brokerLogin"> 
+            BrokerLogin = #brokerLogin#
+        </isNotNull>
+		WHERE 1
+		<isNotNull prepend="AND" property="clientID"> 
+            ClientID = #clientID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="loginBrokerID"> 
+            BrokerID = #loginBrokerID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="id"> 
+            ID = #id#
+        </isNotNull> 
+	</update>
+
+</sqlMap>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="KeyValueEntity">
+
+	<resultMap id="keyValue" class="org.housemart.server.dao.entities.KeyValueEntity">
+		<result property="id" column="ID" />
+		<result property="key" column="KeyStr" />
+		<result property="value" column="ValueStr" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+	</resultMap>
+	
+	<insert id="addKeyValue" parameterClass="org.housemart.server.dao.entities.KeyValueEntity">
+		INSERT INTO basedata.key_value(KeyStr, ValueStr, AddTime, UpdateTime)
+		VALUES(#key#, #value#, #addTime#, #updateTime#)
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<select id="selectByKey" resultMap="keyValue" parameterClass="map">
+		SELECT * FROM basedata.key_value
+		WHERE KeyStr = #key#
+	</select>
+	
+	<update id="updateById" parameterClass="org.housemart.server.dao.entities.KeyValueEntity">
+		UPDATE basedata.key_value SET KeyStr = #key#, ValueStr = #value#, AddTime = #addTime#, UpdateTime = #updateTime#
+		WHERE ID = #id#
+	</update>
+	
+</sqlMap>

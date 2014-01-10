@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="MaxinRawEntity">
+
+	<resultMap id="maxinRaw" class="org.housemart.server.dao.entities.MaxinRawEntity">
+		<result property="id" column="A" />
+		<result property="clientName" column="B" />
+		<result property="phone1" column="C" />
+		<result property="phone2" column="D" />
+		<result property="phone3" column="E" />
+		<result property="contactMemo" column="F" />
+		<result property="region" column="G" />
+		<result property="plate" column="H" />
+		<result property="residence" column="I" />
+		<result property="address" column="J" />
+		<result property="buildingNo" column="K" />
+		<result property="cellNo" column="L" />
+		
+		<result property="houseArea" column="M" />
+		<result property="avg" column="N" />
+		<result property="totalValue" column="O" />
+		<result property="rentValue" column="P" />
+		<result property="saleIntention" column="Q" />
+		<result property="salePrice" column="R" />
+		<result property="rentIntention" column="S" />
+		<result property="rentPrice" column="T" />
+		<result property="memo" column="U" />
+		<result property="dialResult" column="V" />
+		
+		<result property="taskPerson" column="W" />
+		<result property="dialTime" column="X" />
+		<result property="assignTime" column="Y" />		
+		<result property="handleTime" column="Z" />
+	</resultMap>
+	
+	<select id="findLatestRecord" resultMap="maxinRaw">
+		SELECT *
+		FROM DumpData.Sheet1
+		WHERE HouseID is null
+	</select>
+	
+	<select id="loadRecord" resultMap="maxinRaw" parameterClass="uniqueObject">
+		SELECT *
+		FROM DumpData.Sheet1
+		WHERE HouseID = #id#
+		ORDER BY Z DESC
+		LIMIT 1
+	</select>
+	
+	<select id="findResidenceIdByName" resultClass="Integer">
+		SELECT t3.ID FROM DumpData.ResidenceAlias as t1
+		join DumpData.ResidenceAlias as t2 on t1.alias  =  t2.alias 
+		join basedata.residence as t3 on t2.Label = t3.name
+		where t1.Label = #name#
+	</select>
+	
+	<select id="findResidenceIdLikeName" resultClass="Integer">
+		SELECT t3.ID FROM DumpData.ResidenceAlias as t1
+		join DumpData.ResidenceAlias as t2 on t1.alias  =  t2.alias 
+		join basedata.residence as t3 on t2.Label = t3.name
+		where t1.Label like $name$ or t3.Name like $name$
+	</select>
+
+	<select id="findResidenceIdByNameDirect" resultClass="Integer">
+		SELECT t3.ID FROM 
+		basedata.residence as t3
+		where t3.name = #name#
+	</select>	
+	
+	<update id="updateRawDataByHouseId" parameterClass="map">
+		update  DumpData.Sheet1 set Z = Now(), HouseID = #houseId#
+		where A = #id#
+	</update>	
+	
+	<insert id="addRawData" parameterClass="org.housemart.server.dao.entities.MaxinRawEntity">
+		INSERT INTO DumpData.`Sheet1` (`A`, `B`, `C`, `D`, `E`, `F`, `G`, `H`, `I`, `J`, `K`, `L`, `M`, `N`, `O`, `P`, `Q`, `R`, `S`, `T`, `U`, `V`, `W`, `X`, `Y`, `Z`, `HouseID`) 
+		VALUES(#id#,#clientName#,#phone1#,#phone2#,#phone3#,#contactMemo#,#region#,#plate#,#residence#,#address#, #buildingNo#,#cellNo#,#houseArea#,#avg#,#totalValue#,#rentValue#,#saleIntention#,#salePrice#,#rentIntention#,#rentPrice#,#memo#,#dialResult#,#taskPerson#,#dialTime#,#assignTime#,Now(), null);
+	</insert>	
+	
+	<update id="updateRawDataByID" parameterClass="org.housemart.server.dao.entities.MaxinRawEntity">
+		Update DumpData.`Sheet1`
+		Set B = #clientName#,C = #phone1#,D = #phone2#,E = #phone3#,F = #contactMemo#,G = #region#,H = #plate#,I = #residence#,J = #address#, K = #buildingNo#,L = #cellNo#,M = #houseArea#,N = #avg#,O = #totalValue#,P = #rentValue#,Q = #saleIntention#,R = #salePrice#,S = #rentIntention#,T = #rentPrice#,U = #memo#,V = #dialResult#,W = #taskPerson#,X = #dialTime#,Y = #assignTime#,Z = Now()
+		WHERE A = #id#
+	</update>	
+	
+	<select id="findRecordListByMaxinId" resultMap="maxinRaw" parameterClass="uniqueObject">
+		SELECT *
+		FROM DumpData.Sheet1
+		WHERE A = #id#
+	</select>	
+
+</sqlMap>

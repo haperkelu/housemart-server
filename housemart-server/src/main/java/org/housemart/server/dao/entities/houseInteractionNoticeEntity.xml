@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseInteractionNoticeEntity">
+
+	<resultMap id="houseInteractionNotice" class="org.housemart.server.dao.entities.HouseInteractionNoticeEntity">
+		<result property="id" column="ID" />
+		<result property="type" column="Type" />
+		<result property="houseId" column="HouseID" />
+		<result property="status" column="Status" />
+		<result property="addTime" column="AddTime" />
+	</resultMap>
+
+	<select id="findHouseInteractionNoticeList" resultMap="houseInteractionNotice" parameterClass="map">
+		SELECT *  FROM house_interaction_notice
+		WHERE 
+		<isNotNull property="type"> 
+            Type = #type#
+        </isNotNull>
+		<isNotNull prepend="AND" property="status"> 
+            Status = #status#
+        </isNotNull>
+        <isNotNull property="limitCount"> 
+            Limit #limitCount#
+        </isNotNull>
+	</select>
+	
+	<update id="updateHouseInteractionNotice" parameterClass="map">
+		UPDATE house_interaction_notice SET Status = #status#, UpdateTime = #updateTime#
+		WHERE ID = #id#
+	</update>
+	
+	<insert id="addHouseInteractionNotice" parameterClass="org.housemart.server.dao.entities.HouseInteractionNoticeEntity">
+		INSERT INTO house_interaction_notice(Type, HouseID, Status, AddTime, UpdateTime)
+		VALUES(#type#, #houseId#, #status#, #addTime#, #updateTime#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<delete id="deleteHouseInteractionNotice" parameterClass="map">
+		Delete FROM  house_interaction_notice
+		WHERE Status = #status#
+	</delete>
+</sqlMap>

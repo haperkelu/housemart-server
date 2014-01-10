@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="HouseChatMessageEntity">
+
+	<resultMap id="houseChatMessage" class="org.housemart.server.dao.entities.HouseChatMessageEntity">
+		<result property="id" column="ID" />
+		<result property="brokerID" column="BrokerID" />
+		<result property="brokerName" column="brokerName" />
+		<result property="brokerPicURL" column="brokerPicURL" />
+		<result property="realBrokerID" column="RealBrokerID" />
+		<result property="houseID" column="HouseID" />
+		<result property="clientUID" column="ClientUID" />
+		<result property="type" column="Type" />
+		<result property="status" column="Status" />
+		<result property="content" column="Content" />
+		<result property="fromTo" column="FromTo" />
+		<result property="format" column="Format" />
+		<result property="addTime" column="AddTime" />
+		<result property="updateTime" column="UpdateTime" />
+	</resultMap>
+	
+	<resultMap id="userChatSummary" class="org.housemart.server.beans.UserChatSummaryBean">
+		<result property="houseId" column="HouseID" />
+		<result property="brokerId" column="BrokerID" />
+		<result property="brokerName" column="brokerName" />
+		<result property="houseId" column="HouseID" />
+		<result property="count" column="countChat" />
+		<result property="type" column="Type" />
+		<result property="clientUId" column="ClientUID" />
+	</resultMap>
+	
+	<resultMap id="brokerSummary" class="org.housemart.server.beans.BrokerSummaryBean">
+		<result property="brokerId" column="brokerID" />
+		<result property="brokerName" column="brokerName" />
+		<result property="brokerPicURL" column="brokerPicURL" />
+		<result property="countSession" column="countSession" />
+		<result property="countClient" column="countClient" />
+		<result property="status" column="status" />
+	</resultMap>
+	
+	<resultMap id="userUnreadCounts" class="org.housemart.server.beans.UserUnreadCountsBean">
+		<result property="brokerId" column="BrokerID" />
+		<result property="count" column="countChat" />
+		<result property="clientUId" column="ClientUID" />
+		<result property="lastId" column="lastID" />
+	</resultMap>
+
+	<select id="findHouseChatMessageList" resultMap="houseChatMessage" parameterClass="map">
+		SELECT 
+			hcm.*, a.Name AS brokerName, a.PicURL AS brokerPicURL
+		FROM house_chat_message AS hcm
+		INNER JOIN admin.account AS a ON a.ID = hcm.RealBrokerID
+		WHERE 1
+		<isNull prepend="AND" property="status"> 
+             <![CDATA[ hcm.Status <> 2 ]]>
+        </isNull>
+		<isNotNull prepend="AND" property="status"> 
+            hcm.Status IN ($status$)
+        </isNotNull>
+        <isNotNull prepend="AND" property="clientUID"> 
+            hcm.ClientUID = #clientUID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="brokerID"> 
+            hcm.BrokerID = #brokerID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="realBrokerID">
+        	(hcm.RealBrokerID = #realBrokerID# OR hcm.BrokerID = #transferBrokerID#)
+        </isNotNull>
+		<isNotNull prepend="AND" property="houseID"> 
+            hcm.HouseID IN ($houseID$)
+        </isNotNull>
+        <isNotNull prepend="AND" property="fromTo"> 
+            hcm.FromTo = #fromTo#
+        </isNotNull>
+        <isNotNull prepend="AND" property="type"> 
+            hcm.Type = #type#
+        </isNotNull>
+        <isNotNull prepend="AND" property="lastID"> 
+             <![CDATA[ hcm.ID > #lastID# ]]>
+        </isNotNull>
+        <isNotNull prepend="AND" property="clientDelete"> 
+		hcm.ClientDelete = #clientDelete#
+		</isNotNull>
+		<isNotNull prepend="AND" property="brokerDelete"> 
+		hcm.BrokerDelete = #brokerDelete#
+		</isNotNull>
+		<isNotNull property="idOrder"> 
+		ORDER BY hcm.ID $idOrder$
+		</isNotNull>
+		<isNull property="idOrder"> 
+        ORDER BY hcm.ID ASC
+        </isNull>
+        <isNotNull property="limit"> 
+             LIMIT #limitStart#, #limitSize#
+        </isNotNull>
+	</select>
+	
+	<select id="countUserUnreadChatMessage" resultMap="houseChatMessage" parameterClass="map">
+		SELECT hcm.*, a.Name AS brokerName, a.PicURL AS brokerPicURL
+		FROM house_chat_message AS hcm
+		INNER JOIN admin.account AS a ON a.ID = hcm.BrokerID
+		WHERE hcm.clientDelete = 0 AND hcm.Status = 0
+		<isNotNull prepend="AND" property="notify"> 
+            <![CDATA[
+				hcm.NotifyTime IS NULL AND hcm.AddTime < DATE_SUB(NOW(), INTERVAL 10 SECOND)
+			]]>
+        </isNotNull>
+		<isNotNull prepend="AND" property="accountStatus"> 
+            a.status = #accountStatus#
+        </isNotNull>
+		<isNotNull prepend="AND" property="countForClient"> 
+            hcm.FromTo = 2
+        </isNotNull>
+        <isNotNull prepend="AND" property="countForBroker"> 
+            hcm.FromTo = 1
+        </isNotNull>
+		<isNotNull prepend="AND" property="realBrokerId"> 
+            hcm.RealBrokerID = #realBrokerId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="clientUID"> 
+            hcm.ClientUID = #clientUID#
+        </isNotNull>
+        <isNotNull prepend="" property="countForClient"> 
+        	ORDER BY hcm.ClientUID ASC, hcm.AddTime ASC
+        </isNotNull>
+        <isNotNull prepend="" property="countForBroker"> 
+        	ORDER BY hcm.BrokerID ASC, hcm.AddTime ASC
+        </isNotNull>
+	</select>
+	
+	<select id="getUserChatSummary" resultMap="userChatSummary" parameterClass="map">
+		SELECT
+			hcm.HouseID, hcm.ClientUID, hcm.BrokerID, hcm.Type, 
+			a.Name AS brokerName, COUNT(*) AS countChat 
+		FROM house_chat_message AS hcm
+		INNER JOIN admin.account AS a ON a.ID = hcm.BrokerID
+		WHERE hcm.Status = 0 AND hcm.FromTo = 2 AND hcm.clientDelete = 0
+        <isNotNull prepend="AND" property="clientUID"> 
+            hcm.ClientUID = #clientUID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="type"> 
+            hcm.Type = #type#
+        </isNotNull>
+        GROUP BY hcm.HouseID, hcm.ClientUID, hcm.BrokerID, hcm.Type
+	</select>
+	
+	<select id="getBrokerChatSummary" resultMap="userChatSummary" parameterClass="map">
+		SELECT
+			hcm.HouseID, hcm.ClientUID, hcm.BrokerID, hcm.Type, 
+			a.Name AS brokerName, COUNT(*) AS countChat 
+		FROM house_chat_message AS hcm
+		INNER JOIN admin.account AS a ON a.ID = hcm.BrokerID
+		WHERE hcm.FromTo = 1
+		<isNull prepend="AND" property="showAll"> 
+            hcm.Status = 0 AND hcm.brokerDelete = 0
+        </isNull>
+        <isNotNull prepend="AND" property="realBrokerId"> 
+            hcm.RealBrokerID = #realBrokerId#
+        </isNotNull>
+        <isNotNull prepend="AND" property="type"> 
+            hcm.Type = #type#
+        </isNotNull>
+        GROUP BY hcm.HouseID, hcm.BrokerID, hcm.ClientUID, hcm.Type
+	</select>
+	
+	<select id="getChatBrokerList" resultMap="brokerSummary" parameterClass="map">
+		SELECT
+			a.ID AS brokerID,
+			a.Name AS brokerName, 
+			a.PicURL AS brokerPicURL,
+			(SELECT COUNT(DISTINCT HouseID, ClientUID, Type) FROM mobile.house_chat_message WHERE BrokerID = a.ID) AS countSession,
+			(SELECT COUNT(DISTINCT ClientUID) FROM mobile.house_chat_message WHERE BrokerID = a.ID) AS countClient,
+			a.Status AS status
+		FROM admin.account a
+		WHERE 1
+			<isNull prepend="AND" property="showAll">
+			a.ID IN (SELECT DISTINCT BrokerID FROM house_chat_message)
+			</isNull>
+			<isNotNull prepend="AND" property="status"> 
+	        a.Status IN ($status$)
+	        </isNotNull>
+		ORDER BY a.ID DESC
+	</select>
+	
+	<insert id="addHouseChatMessage" parameterClass="org.housemart.server.dao.entities.HouseChatMessageEntity">
+		INSERT INTO house_chat_message (BrokerID, RealBrokerID, HouseID, ClientUID, Type, Status, Content, FromTo, Format, AddTime, UpdateTime)
+		VALUES (#brokerID#, #realBrokerID#, #houseID#, #clientUID#, #type#, #status#, #content#, #fromTo#, #format#, #addTime#, #updateTime#);
+		<selectKey resultClass="int" keyProperty="id">
+			SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<update id="updateHouseChatMessageStatus" parameterClass="map">
+		UPDATE house_chat_message SET
+			UpdateTime = #updateTime#
+			<isNotNull prepend="," property="notifyTime"> 
+			NotifyTime = #notifyTime#
+			</isNotNull>
+			<isNotNull prepend="," property="status"> 
+			Status = #status#
+			</isNotNull>
+			<isNotNull prepend="," property="clientDelete"> 
+			ClientDelete = #clientDelete#
+			</isNotNull>
+			<isNotNull prepend="," property="brokerDelete"> 
+			BrokerDelete = #brokerDelete#
+			</isNotNull>	
+		WHERE 1
+		<isNotNull prepend="AND" property="id"> 
+            ID = #id#
+        </isNotNull>
+		<isNotNull prepend="AND" property="clientUId"> 
+            ClientUID = #clientUId#
+        </isNotNull>
+		<isNotNull prepend="AND" property="houseID"> 
+            HouseID IN ($houseID$)
+        </isNotNull>
+		<isNotNull prepend="AND" property="brokerID"> 
+            BrokerID = #brokerID#
+        </isNotNull>
+        <isNotNull prepend="AND" property="realBrokerID"> 
+            (RealBrokerID = #realBrokerID# OR BrokerID = #transferBrokerID#)
+        </isNotNull>
+        <isNotNull prepend="AND" property="type"> 
+            Type = #type#
+        </isNotNull>
+        <isNotNull prepend="AND" property="fromTo"> 
+            FromTo = #fromTo#
+        </isNotNull>
+		<isNotNull prepend="AND" property="lastID"> 
+             <![CDATA[ ID <= #lastID# AND Status = 0 ]]>
+        </isNotNull>
+	</update>
+	
+	<update id="deleteHouseChatMessage" parameterClass="uniqueObject">
+		UPDATE house_chat_message SET status = 2
+		WHERE ID = #id#
+	</update>
+	
+</sqlMap>

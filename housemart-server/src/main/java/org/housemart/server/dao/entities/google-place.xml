@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="GooglePlaceBaseEntity">
+
+	<sql id="allValideHouses">
+		SELECT B_H.ID,B_H.ResidenceID, B_H.PropertyArea from basedata.house B_H 
+		INNER JOIN basedata.house_interaction V_HI ON V_HI.houseid = B_H.id AND V_HI.status > 0
+		INNER JOIN admin.account V_A ON V_HI.agentid = V_A.id AND V_A.status = 1
+		WHERE B_H.status > 0 AND <![CDATA[ V_HI.StartDate <= now() AND V_HI.EndDate >= now() ]]> 
+	</sql>
+
+	<resultMap id="googlePlace" class="org.housemart.server.dao.entities.GooglePlaceBaseEntity">
+		<result property="residenceId" column="ResidenceId"  nullValue="0"/>
+		<result property="address" column="Address"  nullValue=""/>
+		<result property="name" column="Name"  nullValue=""/>
+		<result property="lat" column="Lat"  nullValue=""/>
+		<result property="lng" column="Lng"  nullValue=""/>
+		<result property="type" column="Type"  nullValue="0"/>
+		<result property="keyword" column="Search"  nullValue=""/>
+		<result property="id" column="ID"  nullValue="0"/>
+		<result property="onSaleCount" column="OnSaleCount"  nullValue="0"/>
+		<result property="onRentCount" column="OnRentCount"  nullValue="0"/>
+		<result property="forceShow" column="ForceShow"  nullValue="0"/>
+	</resultMap>	
+	
+
+	<select id="findRawDatByResidenceId" resultMap="googlePlace" parameterClass="map">
+		select * from mobile.google_map_place_base
+		where ResidenceID = #residenceId#
+	</select>
+	
+	<select id="findRawDat" resultMap="googlePlace" parameterClass="map">
+		SELECT G1.ID, G1.ResidenceID, G1.Address, G1.Name, G1.Lat, G1.Lng, G1.Type, G1.AddTime,
+		G1.Search, G1.IsMain, 
+		(SELECT count(1) FROM basedata.house_sale S 
+			LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = S.HouseID WHERE G1.ResidenceID = H.ResidenceID AND S.SaleStatus = 1) OnSaleCount,
+		(SELECT count(1) FROM basedata.house_rent R 
+			LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = R.HouseID WHERE G1.ResidenceID = H.ResidenceID AND R.RentStatus = 1) OnRentCount,
+		(SELECT ForceShow FROM basedata.residence R WHERE G1.ResidenceID = R.ID) ForceShow
+		FROM mobile.google_map_place_base G1
+		WHERE G1.IsMain = 1
+		<![CDATA[ AND G1.ID >= #idFrom# AND G1.ID <= #idTo# ]]>
+	</select>
+	
+	<select id="findMaxId" resultClass="int">
+		SELECT MAX(ID) FROM mobile.google_map_place_base;
+	</select>
+	<select id="findMinId" resultClass="int">
+		SELECT Min(ID) FROM mobile.google_map_place_base;
+	</select>
+</sqlMap>

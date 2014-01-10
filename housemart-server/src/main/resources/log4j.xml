@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n" />
+		</layout>
+
+		<!--限制输出级别 -->
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMax" value="ERROR" />
+			<param name="LevelMin" value="TRACE" />
+		</filter>
+	</appender>
+
+	<appender name="COMMON_FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/mnt/log/IOS-Server/common.log" />
+		<param name="DatePattern" value="yyyy-MM-dd" />		
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n" />
+		</layout>
+	</appender>
+
+	<appender name="ACCESS_FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/mnt/log/IOS-Server/access.log" />
+		<param name="DatePattern" value="yyyy-MM-dd" />		
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n" />
+		</layout>
+	</appender>	
+
+	<appender name="INDEX_FILE" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="/mnt/log/IOS-Server/index.log" />
+		<param name="DatePattern" value="yyyy-MM-dd" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d - %c -%-4r [%t] %-5p %x - %m%n" />
+		</layout>
+	</appender>
+	
+	<logger name="org.housemart.server.schedule" additivity="false">
+		<priority value="debug" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="INDEX_FILE" />
+	</logger>
+	
+	<logger name="org.housemart.server.service.SearchService" additivity="false">
+		<priority value="debug" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="INDEX_FILE" />
+	</logger>
+	
+	<logger name="org.housemart.framework.push.JavaPNSProvider" additivity="false">
+		<priority value="info" />
+		<appender-ref ref="COMMON_FILE" />
+	</logger>	
+
+	<logger name="CommonLogger" additivity="false">
+		<priority value="info" />
+		<appender-ref ref="COMMON_FILE" />
+	</logger>	
+
+	<logger name="AccessLogger" additivity="false">
+		<priority value="info" />
+		<appender-ref ref="ACCESS_FILE" />
+	</logger>
+	
+	<root>
+		<priority value="info" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="COMMON_FILE" />
+	</root>
+
+</log4j:configuration> 
