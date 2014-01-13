@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>org.housemart</groupId>
 			<artifactId>housemart-framework</artifactId>
-			<version>0.0.7-SNAPSHOT</version>
+			<version>0.0.8-SNAPSHOT</version>
 		</dependency>
 	<dependency>
 			<groupId>org.apache.lucene</groupId>

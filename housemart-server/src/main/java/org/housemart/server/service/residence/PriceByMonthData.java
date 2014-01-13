@@ -8,9 +8,11 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -27,6 +29,7 @@ public class PriceByMonthData implements IPriceStrategy {
   private GenericDao residenceMonthDataDao = SpringContextHolder.getBean("residenceMonthDataDao");
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
   
+  @SuppressWarnings("unchecked")
   @Override
   public MonthTrendWrapper getResidenceMonthTrendWrapper(ResidenceEntity r) {
     MonthTrendWrapper wrapper = new MonthTrendWrapper();
@@ -38,6 +41,7 @@ public class PriceByMonthData implements IPriceStrategy {
     Map<String,Object> param = new HashMap<String,Object>();
     param.put("residenceId", r.getId());
     List<ResidenceMonthDataEntity> monthTrends = residenceMonthDataDao.select("findMonthData", param);
+    Map<Integer,Double> finalMonthPrice = new TreeMap<Integer,Double>().descendingMap();
     
     if (CollectionUtils.isNotEmpty(monthTrends)) {
       Map<Integer,Double> monthPrice = new HashMap<Integer,Double>();
@@ -53,7 +57,6 @@ public class PriceByMonthData implements IPriceStrategy {
       }
       
       // complete month data
-      Map<Integer,Double> finalMonthPrice = new TreeMap<Integer,Double>().descendingMap();
       int minY = minMonth / 100;
       int maxY = maxMonth / 100;
       
@@ -103,7 +106,8 @@ public class PriceByMonthData implements IPriceStrategy {
       }
     }
     
-    if (trends == null || trends.length == 0) {
+    Set<Double> priceSet = new HashSet<Double>(finalMonthPrice.values());
+    if (trends == null || trends.length == 0 || (priceSet.size() == 1 && priceSet.contains((double) 0))) {
       MonthTrend thisMonth = new MonthTrend(sdf.format(Calendar.getInstance().getTime()), (int) r.getPrice(), 0);
       
       trends = new MonthTrend[1];
