@@ -818,6 +818,7 @@ public class BrokerController extends BaseController {
 		} else if (tabIndex == 4) {
 			// 下架
 			map.put("status", HouseEntity.StatusEnum.OffBoard.status);
+			map.put("auditType", AuditTypeEnum.OffboardAudit.getValue());
 		} else if (tabIndex == 5) {
 			// 未提交审核
 			map.put("status", HouseEntity.StatusEnum.Default.status);
