@@ -699,13 +699,7 @@ public class BrokerController extends BaseController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "broker/house/listSummary.controller")
-	public ModelAndView houseListSummary(@RequestParam String secret,
-			@RequestParam(required = false) Integer residenceId,
-			@RequestParam(required = false) Integer page, 
-			@RequestParam(required = false) Integer pageSize,
-			@RequestParam(required = false) String order, 
-			@RequestParam(required = false) Integer tabIndex,
-			@RequestParam(required = false) Integer saleRent) {
+	public ModelAndView houseListSummary(@RequestParam String secret) {
 		
 		ResultBean bean = new ResultBean();
 		
