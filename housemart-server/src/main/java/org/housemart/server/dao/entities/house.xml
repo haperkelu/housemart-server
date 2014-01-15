@@ -95,6 +95,7 @@
 		<result property="onboardTime" column="onboardTime" nullValue="1900/01/01 00:00:00"/>
 		<result property="applyTime" column="applyTime" nullValue="1900/01/01 00:00:00"/>
 		<result property="auditComments" column="auditComments" nullValue=""/>
+		<result property="updateTime" column="UpdateTime"  nullValue="1900/01/01 00:00:00"/>
 	</resultMap>
 	
 	<resultMap id="houseExt" class="org.housemart.server.dao.entities.HouseEntity">
