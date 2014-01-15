@@ -434,6 +434,7 @@ public class BrokerController extends BaseController {
 		rbean.setId(0);
 		rbean.setResidenceId(0);
 		rbean.setResidenceName("全部");
+		list.add(rbean);
 		
 		if (CollectionUtils.isNotEmpty(residences)) {
 			for (ResidenceEntity entity : residences) {
