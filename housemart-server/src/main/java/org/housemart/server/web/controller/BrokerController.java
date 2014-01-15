@@ -930,7 +930,9 @@ public class BrokerController extends BaseController {
 		}
 		catch(Exception ex)
 		{
-			
+			bean.setCode(ResutlCodeEnum.ERROR.getType());
+			bean.setMsg("删除失败");
+			log.error(ex.getMessage(), ex);
 		}
 
 		bean.setCode(ResutlCodeEnum.SUCCESS.getType());
@@ -957,7 +959,9 @@ public class BrokerController extends BaseController {
 		}
 		catch(Exception ex)
 		{
-			
+			bean.setCode(ResutlCodeEnum.ERROR.getType());
+			bean.setMsg("下架失败");
+			log.error(ex.getMessage(), ex);
 		}
 
 		bean.setCode(ResutlCodeEnum.SUCCESS.getType());
@@ -983,7 +987,9 @@ public class BrokerController extends BaseController {
 		}
 		catch(Exception ex)
 		{
-			
+			bean.setCode(ResutlCodeEnum.ERROR.getType());
+			bean.setMsg("申请失败");
+			log.error(ex.getMessage(), ex);
 		}
 
 
@@ -1041,7 +1047,9 @@ public class BrokerController extends BaseController {
 		}
 		catch(Exception ex)
 		{
-			
+			bean.setCode(ResutlCodeEnum.ERROR.getType());
+			bean.setMsg("删除失败");
+			log.error(ex.getMessage(), ex);
 		}
 
 		bean.setCode(ResutlCodeEnum.SUCCESS.getType());
