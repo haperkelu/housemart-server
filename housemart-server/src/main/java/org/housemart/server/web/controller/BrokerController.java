@@ -1,6 +1,7 @@
 package org.housemart.server.web.controller;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -428,7 +429,12 @@ public class BrokerController extends BaseController {
 		List<ResidenceEntity> residences = residenceService
 				.getBrokerResidences(brokerId);
 		List<ResidenceBean> list = new ArrayList<ResidenceBean>();
-
+		
+		ResidenceBean rbean = new ResidenceBean();
+		rbean.setId(0);
+		rbean.setResidenceId(0);
+		rbean.setResidenceName("全部");
+		
 		if (CollectionUtils.isNotEmpty(residences)) {
 			for (ResidenceEntity entity : residences) {
 				ResidenceBean rbean = ResidenceUtils
@@ -532,7 +538,14 @@ public class BrokerController extends BaseController {
 				house.setDecorating(decorating);
 				house.setDirection(direction);
 				house.setBuildDate(new Date(buildTime - 1900, 0, 1));
-				house.setMemo(memo);
+				if (type.equals(1))
+				{
+					house.setMemo(memo.equals("0") ? "" : memo);
+				}
+				else
+				{
+					house.setMemo(memo);
+				}
 				house.setSourceType(HouseEntity.SourceTypeEnum.external.value);
 				house.setCreator(brokerId);
 		
@@ -616,6 +629,9 @@ public class BrokerController extends BaseController {
 		
 		HouseEntity house = (HouseEntity) houseDao.load("loadHouse", id);
 		
+		DecimalFormat df_decimal_1 = new DecimalFormat("#.#");
+		DecimalFormat df_decimal_2 = new DecimalFormat("#.##");
+		
 		if (house.getCreator() != null && house.getCreator().equals(brokerId))
 		{
 			HouseSale sale = (HouseSale) houseDao.load("loadHouseSale", id);
@@ -631,8 +647,8 @@ public class BrokerController extends BaseController {
 			houseMap.put("houseType", house.getHouseType());
 			houseMap.put("buildingNo", house.getBuildingNo());
 			houseMap.put("cellNo", house.getCellNo());
-			houseMap.put("propertyArea", house.getPropertyArea());
-			houseMap.put("occupiedArea", house.getOccupiedArea());
+			houseMap.put("propertyArea", HouseEntity.formatFloat(house.getPropertyArea()));
+			houseMap.put("occupiedArea", HouseEntity.formatFloat(house.getOccupiedArea()));
 			houseMap.put("roomType", house.getRoomType());
 			houseMap.put("floor", house.getFloor());
 			houseMap.put("decorating", house.getDecorating());
@@ -643,14 +659,21 @@ public class BrokerController extends BaseController {
 			
 			if (sale != null)
 			{
-				houseMap.put("salePrice", sale.getPriceValue() / 10000);
+				houseMap.put("salePrice", HouseEntity.formatFloat(sale.getPriceValue() / 10000));
 				houseMap.put("tags", sale.getTagList());
 				houseMap.put("type", 1);
-				houseMap.put("saleMemo", house.getMemo());
+				if (house.getMemo() == null)
+				{
+					houseMap.put("saleMemo", "0");
+				}
+				else
+				{
+					houseMap.put("saleMemo", house.getMemo().length() == 0 ? "0" : house.getMemo());
+				}
 			}
 			if (rent != null)
 			{
-				houseMap.put("rentPrice", rent.getPriceValue());
+				houseMap.put("rentPrice", HouseEntity.formatFloat(rent.getPriceValue()));
 				houseMap.put("tags", rent.getTagList());
 				houseMap.put("equipments", rent.getEquipmentList());
 				
@@ -776,7 +799,7 @@ public class BrokerController extends BaseController {
 		pageSize = pageSize == null ? 50 : pageSize;
 
 		Map<Object, Object> map = new HashMap<Object, Object>();
-		if (residenceId != null)
+		if (residenceId != null && !residenceId.equals(0))
 		{
 			map.put("residenceId", residenceId);
 		}
@@ -832,12 +855,51 @@ public class BrokerController extends BaseController {
 		List<HouseRentBean> rentList = new ArrayList<HouseRentBean>();
 
 		for (HouseEntity houseInfo : houseList) {
+			String address = houseInfo.getResidenceName();
+			
+			if (houseInfo.getBuildingNo() != null && houseInfo.getBuildingNo().length() > 0)
+			{
+				address += " " + houseInfo.getBuildingNo() + "栋（号）";
+			}
+			
+			if (houseInfo.getCellNo() != null && houseInfo.getCellNo().length() > 0)
+			{
+				address += " " + houseInfo.getBuildingNo() + "单元（室）";
+			}
+			
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+			
+			String onboardTimeStr = "";
+			String applyTimeStr = "";
+			String updateTimeStr = "";
+			
+			if (houseInfo.getStatus().equals(HouseEntity.StatusEnum.Valid.status))
+			{
+				onboardTimeStr = df.format(houseInfo.getOnboardTime());
+			}
+			
+			applyTimeStr = df.format(houseInfo.getApplyTime());
+			
+			updateTimeStr = df.format(houseInfo.getUpdateTime());
+			
 			if (saleRent.equals(1)) {
 				HouseSaleBean houseSale = houseInfo.getHouseSaleBean();
-
+				houseSale.setResidenceName(address);
+				houseSale.setOnboardTimeString(onboardTimeStr);
+				houseSale.setApplyTimeString(applyTimeStr);
+				houseSale.setAuditComments(houseInfo.getAuditComments());
+				houseSale.setUpdateTimeString(updateTimeStr);
+				
 				saleList.add(houseSale);
 			} else if (saleRent.equals(2)) {
 				HouseRentBean houseRent = houseInfo.getHouseRentBean();
+				houseRent.setResidenceName(address);
+				houseRent.setOnboardTimeString(onboardTimeStr);
+				houseRent.setApplyTimeString(applyTimeStr);
+				houseRent.setAuditComments(houseInfo.getAuditComments());
+				houseRent.setUpdateTimeString(updateTimeStr);
+				houseRent.setRentPrice(houseRent.getPrice());
+				
 				rentList.add(houseRent);
 			}
 		}

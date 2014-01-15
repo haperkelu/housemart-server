@@ -1156,6 +1156,7 @@ public class HouseController extends BaseController {
     
     if (saleMemo == 1) {
       Map<Integer,String> saleMemoMap = new LinkedHashMap<Integer,String>();
+      saleMemoMap.put(0, "选择");
       saleMemoMap.put(1, "税费各付价");
       saleMemoMap.put(2, "房东到手价");
       
