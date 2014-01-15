@@ -437,7 +437,7 @@ public class BrokerController extends BaseController {
 		
 		if (CollectionUtils.isNotEmpty(residences)) {
 			for (ResidenceEntity entity : residences) {
-				ResidenceBean rbean = ResidenceUtils
+				rbean = ResidenceUtils
 						.residenceEntity2Bean(entity);
 				list.add(rbean);
 			}
