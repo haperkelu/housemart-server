@@ -629,9 +629,6 @@ public class BrokerController extends BaseController {
 		
 		HouseEntity house = (HouseEntity) houseDao.load("loadHouse", id);
 		
-		DecimalFormat df_decimal_1 = new DecimalFormat("#.#");
-		DecimalFormat df_decimal_2 = new DecimalFormat("#.##");
-		
 		if (house.getCreator() != null && house.getCreator().equals(brokerId))
 		{
 			HouseSale sale = (HouseSale) houseDao.load("loadHouseSale", id);
