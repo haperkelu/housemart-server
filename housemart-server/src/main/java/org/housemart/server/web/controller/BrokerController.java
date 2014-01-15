@@ -943,6 +943,8 @@ public class BrokerController extends BaseController {
 
 		ResultBean bean = new ResultBean();
 
+		comments = (comments == null ? "" : comments);
+		
 		int brokerId = authenticationService.decodeBrokerId(secret);
 
 		String url = resourceProvider.getValue("housemart.url.house.deactive") + 
