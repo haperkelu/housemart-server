@@ -713,7 +713,7 @@ public class BrokerController extends BaseController {
 	    mapCount.put("onboard", true);
 	    mapCount.put("auditType", AuditTypeEnum.LoggingAudit.getValue());
 	    
-	    Integer onboardCount = houseDao.count("countHouseWithPic", mapCount);
+	    Integer onboardCount = houseDao.count("countHouseExt", mapCount);
 	    onboardCount = (onboardCount == null ? 0 : onboardCount);
 	    
 	    // 审核房源数
@@ -725,7 +725,7 @@ public class BrokerController extends BaseController {
 	        HouseAuditHistoryEntity.ResultEnum.Default.getValue());
 	    mapCount.put("auditType", AuditTypeEnum.LoggingAudit.getValue());
 	    
-	    Integer auditCount = houseDao.count("countHouseWithPic", mapCount);
+	    Integer auditCount = houseDao.count("countHouseExt", mapCount);
 	    auditCount = (auditCount == null ? 0 : auditCount);
 	    
 	    // 拒绝房源数
@@ -735,7 +735,7 @@ public class BrokerController extends BaseController {
 	    mapCount.put("status", HouseEntity.StatusEnum.Invalid.status);
 	    mapCount.put("auditResult",
 	        HouseAuditHistoryEntity.ResultEnum.Reject.getValue());
-	    Integer rejectCount = houseDao.count("countHouseWithPic", mapCount);
+	    Integer rejectCount = houseDao.count("countHouseExt", mapCount);
 	    rejectCount = (rejectCount == null ? 0 : rejectCount);
 	    
 	    // 下架房源数
@@ -743,7 +743,7 @@ public class BrokerController extends BaseController {
 	    mapCount.put("sourceType", HouseEntity.SourceTypeEnum.external.value);
 	    mapCount.put("creator", brokerId);
 	    mapCount.put("status", HouseEntity.StatusEnum.OffBoard.status);
-	    Integer offboardCount = houseDao.count("countHouseWithPic", mapCount);
+	    Integer offboardCount = houseDao.count("countHouseExt", mapCount);
 	    offboardCount = (offboardCount == null ? 0 : offboardCount);
 	    
 	    // 未提交审核房源数
@@ -753,8 +753,7 @@ public class BrokerController extends BaseController {
 	    mapCount.put("status", HouseEntity.StatusEnum.Default.status);
 	    mapCount.put("auditResultNull", true);
 	    mapCount.put("auditTypeNull", null);
-	    Integer notRequestAuditCount = houseDao
-	        .count("countHouseWithPic", mapCount);
+	    Integer notRequestAuditCount = houseDao.count("countHouseExt", mapCount);
 	    notRequestAuditCount = (notRequestAuditCount == null ? 0
 	        : notRequestAuditCount);
 		
