@@ -495,7 +495,7 @@ public class BrokerController extends BaseController {
 			@RequestParam String detailName, @RequestParam String houseType,
 			@RequestParam String buildingNo, @RequestParam(required = false) String cellNo,
 			@RequestParam String propertyArea,
-			@RequestParam String occupiedArea, @RequestParam String price,
+			@RequestParam(required = false) String occupiedArea, @RequestParam String price,
 			@RequestParam String roomType, @RequestParam Integer floor,
 			@RequestParam Integer decorating, @RequestParam Integer direction,
 			@RequestParam Integer buildTime, @RequestParam String memo,
@@ -534,7 +534,10 @@ public class BrokerController extends BaseController {
 				house.setBuildingNo(buildingNo);
 				house.setCellNo(cellNo == null ? "" : cellNo);
 				house.setPropertyArea(Float.parseFloat(propertyArea));
-				house.setOccupiedArea(Float.parseFloat(occupiedArea));
+				if (occupiedArea != null)
+				{
+					house.setOccupiedArea(Float.parseFloat(occupiedArea));
+				}
 				house.setRoomType(Integer.parseInt(roomType));
 				house.setFloor(floor);
 				house.setDecorating(decorating);

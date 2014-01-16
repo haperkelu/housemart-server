@@ -971,6 +971,11 @@ public class HouseEntity {
 	
 	static public String formatFloat(Float f)
 	{
+		if (f == null)
+		{
+			return "";
+		}
+		
 		if (f.intValue() < f)
 		{
 			return new DecimalFormat("0.0").format(f);
