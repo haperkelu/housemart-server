@@ -1022,8 +1022,18 @@ public class BrokerController extends BaseController {
 			
 			if (code == 1)
 			{
-				bean.setData(ajax.getBizData());
-				bean.setCode(ResutlCodeEnum.SUCCESS.getType());
+				List<Map<String,Object>> bizData = (List<Map<String,Object>>)ajax.getBizData();
+				if (bizData.size() > 0)
+				{
+					bean.setData(bizData.get(0));
+					bean.setCode(ResutlCodeEnum.SUCCESS.getType());
+				}
+				else
+				{
+					bean.setCode(ResutlCodeEnum.ERROR.getType());
+					bean.setMsg("上传失败");
+				}
+				
 			}
 			else
 			{
