@@ -732,7 +732,7 @@ public class BrokerController extends BaseController {
 	    mapCount = new HashMap<Object,Object>();
 	    mapCount.put("sourceType", HouseEntity.SourceTypeEnum.external.value);
 	    mapCount.put("creator", brokerId);
-	    mapCount.put("status", HouseEntity.StatusEnum.Invalid.status);
+	    mapCount.put("status", HouseEntity.StatusEnum.InvalidExt.status);
 	    mapCount.put("auditResult",
 	        HouseAuditHistoryEntity.ResultEnum.Reject.getValue());
 	    Integer rejectCount = houseDao.count("countHouseExt", mapCount);
