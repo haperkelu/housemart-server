@@ -24,6 +24,7 @@ import org.housemart.server.dao.entities.HouseEntity;
 import org.housemart.framework.dao.generic.GenericDao;
 import org.housemart.framework.push.JavaPNSProvider;
 import org.housemart.framework.web.context.SpringContextHolder;
+import org.housemart.server.beans.AjaxResultBean;
 import org.housemart.server.beans.LandlordInfo;
 import org.housemart.server.beans.ResidenceBean;
 import org.housemart.server.beans.ResultBean;
@@ -1015,8 +1016,20 @@ public class BrokerController extends BaseController {
 			reqEntity.addPart("picType", new StringBody(picType.toString()));
 	    	reqEntity.addPart("imageFile", new FileBody(tempFile));
 	    	httpPost.setEntity(reqEntity); 
-			HttpUtils.requestJson(httpPost);
-			bean.setCode(ResutlCodeEnum.SUCCESS.getType());
+			AjaxResultBean ajax = HttpUtils.requestJson(httpPost);
+			
+			int code = ajax.getCode();
+			
+			if (code == 1)
+			{
+				bean.setData(ajax.getBizData());
+				bean.setCode(ResutlCodeEnum.SUCCESS.getType());
+			}
+			else
+			{
+				bean.setCode(ResutlCodeEnum.ERROR.getType());
+				bean.setMsg("上传失败");
+			}
 		}
 		catch(Exception ex)
 		{
