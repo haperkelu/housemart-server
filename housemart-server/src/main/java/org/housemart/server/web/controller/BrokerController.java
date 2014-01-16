@@ -534,7 +534,7 @@ public class BrokerController extends BaseController {
 				house.setBuildingNo(buildingNo);
 				house.setCellNo(cellNo == null ? "" : cellNo);
 				house.setPropertyArea(Float.parseFloat(propertyArea));
-				if (occupiedArea != null)
+				if (occupiedArea != null && occupiedArea.length() > 0)
 				{
 					house.setOccupiedArea(Float.parseFloat(occupiedArea));
 				}
