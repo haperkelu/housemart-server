@@ -858,11 +858,6 @@ public class BrokerController extends BaseController {
 				address += " " + houseInfo.getBuildingNo() + "栋（号）";
 			}
 			
-			if (houseInfo.getCellNo() != null && houseInfo.getCellNo().length() > 0)
-			{
-				address += " " + houseInfo.getBuildingNo() + "单元（室）";
-			}
-			
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 			
 			String onboardTimeStr = "";
