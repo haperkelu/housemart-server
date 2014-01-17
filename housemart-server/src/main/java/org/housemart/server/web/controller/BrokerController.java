@@ -651,7 +651,8 @@ public class BrokerController extends BaseController {
 			houseMap.put("cellNo", house.getCellNo());
 			houseMap.put("propertyArea", HouseEntity.formatFloat(house.getPropertyArea()));
 			houseMap.put("occupiedArea", HouseEntity.formatFloat(house.getOccupiedArea()));
-			houseMap.put("roomType", house.getRoomType());
+			String roomType = "0000" + house.getRoomType();
+			houseMap.put("roomType", roomType.substring(roomType.length() - 4));
 			houseMap.put("floor", house.getFloor());
 			houseMap.put("decorating", house.getDecorating());
 			houseMap.put("direction", house.getDirection());
