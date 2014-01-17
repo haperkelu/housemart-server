@@ -41,8 +41,11 @@ public class HouseSaleBean {
   private Double distance = (double) 0; // 离中心点的距离
   private String residenceName = ""; // 小区名称
   
+  private String updateTimeString = "";
   private String onboardTimeString = "";
   private String dealTimeString = "";
+  private String applyTimeString = "";
+  private String auditComments = "";
   
   private String saleRec = "";
   private String plateName = ""; // 板块 小区名称 区域
@@ -363,5 +366,29 @@ public class HouseSaleBean {
   public void setFollowTime(Long followTime) {
     this.followTime = followTime;
   }
+
+public String getApplyTimeString() {
+	return applyTimeString;
+}
+
+public void setApplyTimeString(String applyTimeString) {
+	this.applyTimeString = applyTimeString;
+}
+
+public String getAuditComments() {
+	return auditComments;
+}
+
+public void setAuditComments(String auditComments) {
+	this.auditComments = auditComments;
+}
+
+public String getUpdateTimeString() {
+	return updateTimeString;
+}
+
+public void setUpdateTimeString(String updateTimeString) {
+	this.updateTimeString = updateTimeString;
+}
 
 }

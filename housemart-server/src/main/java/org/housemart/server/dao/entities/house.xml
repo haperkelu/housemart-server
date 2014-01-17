@@ -92,6 +92,10 @@
 		<result property="sourceType" column="SourceType" nullValue="0"/>
 		<result property="rentStatus" column="RentStatus" nullValue="0"/>
 		<result property="saleStatus" column="SaleStatus" nullValue="0"/>
+		<result property="onboardTime" column="onboardTime" nullValue="1900/01/01 00:00:00"/>
+		<result property="applyTime" column="applyTime" nullValue="1900/01/01 00:00:00"/>
+		<result property="auditComments" column="auditComments" nullValue=""/>
+		<result property="updateTime" column="UpdateTime"  nullValue="1900/01/01 00:00:00"/>
 	</resultMap>
 	
 	<resultMap id="houseExt" class="org.housemart.server.dao.entities.HouseEntity">
@@ -350,6 +354,9 @@
 			S.Price salePrice, S.SaleStatus,
 			RES.Name AS residenceName, 
 			REG.Name AS regionName, REG.CityID,
+			HAH.UpdateTime AS onboardTime,
+			HAH.AddTime AS applyTime,
+			HAH.Comments AS auditComments,
 			(SELECT HP.CloudURL FROM house_pic HP WHERE HP.HouseID = H.ID AND HP.Type in (2,3) AND HP.Status = 1 ORDER BY HP.TYPE DESC, HP.UpdateTime DESC LIMIT 0, 1) AS picURL
 		FROM house AS H 
 		LEFT JOIN house_rent AS R ON H.ID = R.HouseID

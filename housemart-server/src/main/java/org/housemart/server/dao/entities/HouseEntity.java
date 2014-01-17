@@ -72,7 +72,10 @@ public class HouseEntity {
 	private Double lat = (double) 0; // 纬度
 	private Double lng = (double) 0; // 经度
 	private Double distance = (double) 0; // 中心点距离
+
 	private Date onboardTime = CommonUtils.getDefaultDate(); // 审核通过时间
+	private Date applyTime = CommonUtils.getDefaultDate(); // 提交审核时间
+	private String auditComments = ""; // 审核备注
 
 	private int interaction = 0; // 0有交互权，1无交互权
 	private String plateName = "";
@@ -965,7 +968,28 @@ public class HouseEntity {
 
 		return rent;
 	}
-
+	
+	static public String formatFloat(Float f)
+	{
+		if (f == null)
+		{
+			return "";
+		}
+		
+		if (f.intValue() < f)
+		{
+			return new DecimalFormat("0.0").format(f);
+		}
+		else if (f.intValue() == 0)
+		{
+			return "";
+		}
+		else
+		{
+			return String.valueOf(f.intValue());
+		}
+	}
+	
 	public HouseSaleBean getHouseSaleBean() {
 		HouseSaleBean sale = new HouseSaleBean();
 		sale.setAskedCount(getAskedCount() == null ? 0 : getAskedCount());
@@ -1717,6 +1741,22 @@ public class HouseEntity {
 
 	public void setSaleTagList(String saleTagList) {
 		this.saleTagList = saleTagList;
+	}
+
+	public Date getApplyTime() {
+		return applyTime;
+	}
+
+	public void setApplyTime(Date applyTime) {
+		this.applyTime = applyTime;
+	}
+
+	public String getAuditComments() {
+		return auditComments;
+	}
+
+	public void setAuditComments(String auditComments) {
+		this.auditComments = auditComments;
 	}
 
 }
