@@ -34,6 +34,7 @@ import org.housemart.server.util.PicSizeUtils;
 import org.housemart.server.util.PicSizeUtils.SizeType;
 import org.housemart.server.util.ResidenceUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -298,6 +299,7 @@ public class MapSearchController extends BaseController {
    */
   // http://localhost:8080/plate/nearBy.controller?lat=31.1829450&lng=121.5204490
   @SuppressWarnings("unchecked")
+  @Scope("request")
   @RequestMapping(value = "plate/nearBy.controller")
   public ModelAndView plate(@RequestParam double lat, @RequestParam double lng) {
     ResultBean bean = new ResultBean();
