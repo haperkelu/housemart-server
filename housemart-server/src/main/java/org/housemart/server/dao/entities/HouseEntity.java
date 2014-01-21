@@ -93,6 +93,7 @@ public class HouseEntity {
 	private Integer creator;
 
 	private Date updateTime;
+	private Integer clientType;
 
 	// Rent
 	private Integer rentStatus = 0;
@@ -153,6 +154,15 @@ public class HouseEntity {
 
 		SourceTypeEnum(Integer sourceType) {
 			this.value = sourceType;
+		}
+	}
+	
+	public static enum ClientTypeEnum {
+		web(1), ios(2), android(3);
+		public Integer value;
+
+		ClientTypeEnum(Integer clientType) {
+			this.value = clientType;
 		}
 	}
 
@@ -1759,4 +1769,12 @@ public class HouseEntity {
 		this.auditComments = auditComments;
 	}
 
+	public Integer getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(Integer clientType) {
+		this.clientType = clientType;
+	}
+	
 }

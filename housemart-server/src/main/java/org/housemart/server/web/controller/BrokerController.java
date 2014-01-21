@@ -489,7 +489,9 @@ public class BrokerController extends BaseController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "broker/house/edit.controller")
-	public ModelAndView houseEdit(@RequestParam String secret,
+	public ModelAndView houseEdit(
+			@RequestParam String appCode,
+			@RequestParam String secret,
 			@RequestParam(required = false) Integer id, 
 			@RequestParam Integer residenceId,
 			@RequestParam String detailName, @RequestParam String houseType,
@@ -573,6 +575,16 @@ public class BrokerController extends BaseController {
 				}
 		
 				if (id == null) {
+					
+					if (appCode.equals("iosClient"))
+					{
+						house.setClientType(HouseEntity.ClientTypeEnum.ios.value);
+					}
+					else 
+					{
+						house.setClientType(HouseEntity.ClientTypeEnum.android.value);
+					}
+					
 					id = houseDao.add("addHouse", house);
 					if (type.equals(1)) {
 						sale.setId(id);
