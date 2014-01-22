@@ -36,6 +36,7 @@ import org.housemart.server.service.HouseService;
 import org.housemart.server.service.HouseServiceMock;
 import org.housemart.server.service.ResidenceService;
 import org.housemart.server.service.SearchService;
+import org.housemart.server.util.CommonUtils;
 import org.housemart.server.util.PicSizeUtils;
 import org.housemart.server.util.PicSizeUtils.SizeType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1060,57 +1061,59 @@ public class HouseController extends BaseController {
     Map<String,Object> attributes = new HashMap<String,Object>();
     
     if (floor == 1) {
-      Map<Integer,String> floorMap = new LinkedHashMap<Integer,String>();
-      floorMap.put(1, "低层");
-      floorMap.put(2, "中低层");
-      floorMap.put(3, "中层");
-      floorMap.put(4, "中高层");
-      floorMap.put(5, "高层");
-      floorMap.put(6, "独栋");
-      floorMap.put(7, "双拼");
-      floorMap.put(8, "联排");
-      floorMap.put(9, "叠加");
-      floorMap.put(10, "新里");
-      floorMap.put(11, "老洋房");
+      Map<String,String> floorMap = new LinkedHashMap<String,String>();
+      floorMap.put("1", "低层");
+      floorMap.put("2", "中低层");
+      floorMap.put("3", "中层");
+      floorMap.put("4", "中高层");
+      floorMap.put("5", "高层");
+      floorMap.put("6", "独栋");
+      floorMap.put("7", "双拼");
+      floorMap.put("8", "联排");
+      floorMap.put("9", "叠加");
+      floorMap.put("10", "新里");
+      floorMap.put("11", "老洋房");
+      floorMap.put("_keyOrder", CommonUtils.getMapKeyOrder(floorMap));
       attributes.put("floor", floorMap);
     }
     
     if (type == 1) {
-      Map<Integer,String> typeMap = new LinkedHashMap<Integer,String>();
-      typeMap.put(4, "公寓");
-      typeMap.put(5, "老公房");
-      typeMap.put(7, "独栋");
-      typeMap.put(8, "双拼");
-      typeMap.put(2, "联排");
-      typeMap.put(9, "叠加");
-      typeMap.put(3, "新里");
-      typeMap.put(10, "洋房");
+      Map<String,String> typeMap = new LinkedHashMap<String,String>();
+      typeMap.put("4", "公寓");
+      typeMap.put("5", "老公房");
+      typeMap.put("7", "独栋");
+      typeMap.put("8", "双拼");
+      typeMap.put("2", "联排");
+      typeMap.put("9", "叠加");
+      typeMap.put("3", "新里");
+      typeMap.put("10", "洋房");
+      typeMap.put("_keyOrder", CommonUtils.getMapKeyOrder(typeMap));
       attributes.put("type", typeMap);
     }
     
     if (decorating == 1) {
-      Map<Integer,String> decoratingMap = new LinkedHashMap<Integer,String>();
-      decoratingMap.put(5, "豪装");
-      decoratingMap.put(1, "精装");
-      decoratingMap.put(2, "简装");
-      decoratingMap.put(3, "毛坯");
-      
+      Map<String,String> decoratingMap = new LinkedHashMap<String,String>();
+      decoratingMap.put("5", "豪装");
+      decoratingMap.put("1", "精装");
+      decoratingMap.put("2", "简装");
+      decoratingMap.put("3", "毛坯");
+      decoratingMap.put("_keyOrder", CommonUtils.getMapKeyOrder(decoratingMap));
       attributes.put("decorating", decoratingMap);
     }
     
     if (direction == 1) {
-      Map<Integer,String> directionMap = new LinkedHashMap<Integer,String>();
-      directionMap.put(1000, "东");
-      directionMap.put(100, "南");
-      directionMap.put(10, "西");
-      directionMap.put(1, "北");
-      directionMap.put(1100, "东南");
-      directionMap.put(1001, "东北");
-      directionMap.put(110, "西南");
-      directionMap.put(11, "西北");
-      directionMap.put(101, "南北");
-      directionMap.put(1010, "东西");
-      
+      Map<String,String> directionMap = new LinkedHashMap<String,String>();
+      directionMap.put("1000", "东");
+      directionMap.put("100", "南");
+      directionMap.put("10", "西");
+      directionMap.put("1", "北");
+      directionMap.put("1100", "东南");
+      directionMap.put("1001", "东北");
+      directionMap.put("110", "西南");
+      directionMap.put("11", "西北");
+      directionMap.put("101", "南北");
+      directionMap.put("1010", "东西");
+      directionMap.put("_keyOrder", CommonUtils.getMapKeyOrder(directionMap));
       attributes.put("direction", directionMap);
     }
     
@@ -1140,7 +1143,7 @@ public class HouseController extends BaseController {
       rentEquipmentMap.put("waterHeater", "热水机");
       rentEquipmentMap.put("microwave", "微波炉");
       rentEquipmentMap.put("telephone", "电话");
-      
+      rentEquipmentMap.put("_keyOrder", CommonUtils.getMapKeyOrder(rentEquipmentMap));
       attributes.put("rentEquipment", rentEquipmentMap);
     }
     
@@ -1155,29 +1158,31 @@ public class HouseController extends BaseController {
     }
     
     if (saleMemo == 1) {
-      Map<Integer,String> saleMemoMap = new LinkedHashMap<Integer,String>();
-      saleMemoMap.put(0, "选择");
-      saleMemoMap.put(1, "税费各付价");
-      saleMemoMap.put(2, "房东到手价");
-      
+      Map<String,String> saleMemoMap = new LinkedHashMap<String,String>();
+      saleMemoMap.put("0", "不选");
+      saleMemoMap.put("1", "税费各付价");
+      saleMemoMap.put("2", "房东到手价");
+      saleMemoMap.put("_keyOrder", CommonUtils.getMapKeyOrder(saleMemoMap));
       attributes.put("saleMemo", saleMemoMap);
     }
     
     if (rentTag == 1) {
-      Map<Integer,String> rentTagMap = new LinkedHashMap<Integer,String>();
+      Map<String,String> rentTagMap = new LinkedHashMap<String,String>();
       List<HouseTag> rentTags = houseService.getTagOptionsByCategory("rent");
       for (HouseTag tag : rentTags) {
-        rentTagMap.put(tag.getId(), tag.getName());
+        rentTagMap.put(tag.getId().toString(), tag.getName());
       }
+      rentTagMap.put("_keyOrder", CommonUtils.getMapKeyOrder(rentTagMap));
       attributes.put("rentTag", rentTagMap);
     }
     
     if (rentTag == 1) {
-      Map<Integer,String> saleTagMap = new LinkedHashMap<Integer,String>();
+      Map<String,String> saleTagMap = new LinkedHashMap<String,String>();
       List<HouseTag> saleTags = houseService.getTagOptionsByCategory("sale");
       for (HouseTag tag : saleTags) {
-        saleTagMap.put(tag.getId(), tag.getName());
+        saleTagMap.put(tag.getId().toString(), tag.getName());
       }
+      saleTagMap.put("_keyOrder", CommonUtils.getMapKeyOrder(saleTagMap));
       attributes.put("saleTag", saleTagMap);
     }
     

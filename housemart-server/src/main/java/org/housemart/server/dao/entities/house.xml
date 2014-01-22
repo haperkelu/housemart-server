@@ -396,14 +396,15 @@
 			RoomType, Decorating, Floor, Memo, 
 			AddTime, UpdateTime, 
 			Creator,
-			SourceType, BuildingNo, CellNo, DetailName)
+			SourceType, BuildingNo, CellNo, DetailName, ClientType
+			)
 		VALUES (
 			#status#, #residenceId#, 
 			#direction#, #propertyArea#, #occupiedArea#, #buildDate#, #houseType#,
 			#roomType#, #decorating#, #floor#, #memo#,
 			NOW(), NOW(),
 			#creator#,
-			#sourceType#, #buildingNo#, #cellNo#, #detailName#);
+			#sourceType#, #buildingNo#, #cellNo#, #detailName#, #clientType#);
 		<selectKey resultClass="int" keyProperty="id">
 			SELECT @@IDENTITY AS id
 		</selectKey>

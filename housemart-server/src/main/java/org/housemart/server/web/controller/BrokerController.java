@@ -489,7 +489,9 @@ public class BrokerController extends BaseController {
 
 	@SuppressWarnings("unchecked")
 	@RequestMapping(value = "broker/house/edit.controller")
-	public ModelAndView houseEdit(@RequestParam String secret,
+	public ModelAndView houseEdit(
+			@RequestParam String appCode,
+			@RequestParam String secret,
 			@RequestParam(required = false) Integer id, 
 			@RequestParam Integer residenceId,
 			@RequestParam String detailName, @RequestParam String houseType,
@@ -573,6 +575,16 @@ public class BrokerController extends BaseController {
 				}
 		
 				if (id == null) {
+					
+					if (appCode.equals("iosClient"))
+					{
+						house.setClientType(HouseEntity.ClientTypeEnum.ios.value);
+					}
+					else 
+					{
+						house.setClientType(HouseEntity.ClientTypeEnum.android.value);
+					}
+					
 					id = houseDao.add("addHouse", house);
 					if (type.equals(1)) {
 						sale.setId(id);
@@ -651,7 +663,8 @@ public class BrokerController extends BaseController {
 			houseMap.put("cellNo", house.getCellNo());
 			houseMap.put("propertyArea", HouseEntity.formatFloat(house.getPropertyArea()));
 			houseMap.put("occupiedArea", HouseEntity.formatFloat(house.getOccupiedArea()));
-			houseMap.put("roomType", house.getRoomType());
+			String roomType = "0000" + house.getRoomType();
+			houseMap.put("roomType", roomType.substring(roomType.length() - 4));
 			houseMap.put("floor", house.getFloor());
 			houseMap.put("decorating", house.getDecorating());
 			houseMap.put("direction", house.getDirection());
@@ -856,11 +869,6 @@ public class BrokerController extends BaseController {
 			if (houseInfo.getBuildingNo() != null && houseInfo.getBuildingNo().length() > 0)
 			{
 				address += " " + houseInfo.getBuildingNo() + "栋（号）";
-			}
-			
-			if (houseInfo.getCellNo() != null && houseInfo.getCellNo().length() > 0)
-			{
-				address += " " + houseInfo.getBuildingNo() + "单元（室）";
 			}
 			
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
