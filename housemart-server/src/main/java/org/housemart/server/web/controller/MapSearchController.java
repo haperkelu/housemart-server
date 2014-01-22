@@ -62,6 +62,7 @@ public class MapSearchController extends BaseController {
   private static DecimalFormat df_decimal_1 = new DecimalFormat("0.0");
   
   // http://localhost:8080/house/residenceSale/mapSearchNew.controller?lat=31.1829450&lng=121.5204490&range=6000&pageIndex=1&pageSize=5
+  @Scope("request")
   @RequestMapping(value = "house/residenceSale/mapSearchNew.controller")
   public ModelAndView residenceSaleListByMap( double lat,  double lng,  int range,
        int pageIndex,  int pageSize) {
@@ -187,6 +188,7 @@ public class MapSearchController extends BaseController {
   }
   
   // http://localhost:8080/house/residenceRent/mapSearchNew.controller?lat=31.1829450&lng=121.5204490&range=6000&pageIndex=1&pageSize=1
+  @Scope("request")  
   @RequestMapping(value = "house/residenceRent/mapSearchNew.controller")
   public ModelAndView residenceRentListByMap(@RequestParam double lat, @RequestParam double lng, @RequestParam int range,
       @RequestParam int pageIndex, @RequestParam int pageSize) {

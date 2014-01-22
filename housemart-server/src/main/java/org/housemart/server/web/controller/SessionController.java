@@ -21,7 +21,6 @@ import org.housemart.server.beans.ChatMessageBean;
 import org.housemart.server.beans.ResultBean;
 import org.housemart.server.beans.ResutlCodeEnum;
 import org.housemart.server.beans.UserChatSummaryBean;
-import org.housemart.server.beans.UserUnreadCountsBean;
 import org.housemart.server.beans.house.HouseDetailBean;
 import org.housemart.server.dao.entities.AccountExtEntity;
 import org.housemart.server.dao.entities.HouseChatMessageEntity;
@@ -34,6 +33,7 @@ import org.housemart.server.util.PicSizeUtils;
 import org.housemart.server.util.PicSizeUtils.SizeType;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -581,7 +581,8 @@ public class SessionController {
 		
 		return new ModelAndView("jsonView", "json", bean);
 	}
-	
+
+	@Scope("request")
 	@RequestMapping(value = "house/chatSummary.controller")
 	public ModelAndView houseChatSummary(@RequestParam(required = false) String clientUId,
 			@RequestParam(required = false) Integer brokerId,
