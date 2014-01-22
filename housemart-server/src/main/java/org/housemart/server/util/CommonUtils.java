@@ -11,6 +11,8 @@ package org.housemart.server.util;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * @ClassName: CommonUtils
@@ -38,6 +40,19 @@ public class CommonUtils {
     String city = "上海";
     // TODO:
     return city;
+  }
+  
+  public static String getMapKeyOrder(Map map)
+  {
+	  String order = "";
+	  
+	  Iterator<String> it =  map.keySet().iterator();
+
+      while (it.hasNext()) {
+    	  order += (order == "" ? "" : ",") + it.next();
+      }
+      
+      return order;
   }
   
   public static SimpleDateFormat FORMAT_DATE_DECADE = new SimpleDateFormat("yyyy");

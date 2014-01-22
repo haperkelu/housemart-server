@@ -178,7 +178,7 @@
             rg.ParentID = #regionId#  
         </isNotNull>
         <isNotNull prepend="AND" property="keyword"> 
-            rd.name like '$keyword$' OR rd.AliasName like '$keyword$'
+            (rd.name like '$keyword$' OR rd.AliasName like '$keyword$')
         </isNotNull>        
 		<dynamic prepend="HAVING">
 			<isNotNull prepend="AND" property="onSaleCount"> 
@@ -207,10 +207,11 @@
 	<select id="findAccountResidenceList" resultMap="accountResidenceList" parameterClass="map">
 		SELECT rd.ID, rd.Address, rg.CityID, rg.ParentID as PlateID, rg.Name plateName, rg2.Name regionName, rd.Name as residenceName
 		FROM residence AS rd
-		JOIN region AS rg ON rd.regionID = rg.regionID
-		JOIN region AS rg2 ON rg.parentID = rg2.regionID
-		JOIN admin.account_residence_relationship rs ON rs.ResidenceID =  rd.ID
-		WHERE rd.status = 1 AND rs.accountID = #brokerId#
+			JOIN region AS rg ON rd.regionID = rg.regionID
+			JOIN region AS rg2 ON rg.parentID = rg2.regionID
+			JOIN admin.account_residence_relationship rs ON rs.ResidenceID =  rd.ID
+			JOIN mobile.google_map_place_base AS mg ON rd.ID = mg.ResidenceID
+		WHERE rd.status = 1 AND mg.IsMain = 1 AND rs.accountID = #brokerId#
 	</select>
 	
 </sqlMap>
