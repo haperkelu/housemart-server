@@ -166,7 +166,7 @@
 		FROM residence AS rd
 		JOIN region AS rg ON rd.RegionID = rg.RegionID
 		JOIN mobile.google_map_place_base AS mg ON rd.ID = mg.ResidenceID
-		LEFT JOIN (SELECT * FROM residence_month_data AS md WHERE rd.ID = md.ResidenceID AND md.Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID) AND md.Month = (SELECT MAX(Month) FROM residence_month_data WHERE Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID)) LIMIT 1) AS rmd ON rd.ID = rmd.ResidenceID
+		LEFT JOIN residence_month_data AS md ON rd.ID = md.ResidenceID AND md.Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID) AND md.Month = (SELECT MAX(Month) FROM residence_month_data WHERE Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID))
 		WHERE rd.status = 1  AND mg.IsMain = 1
 		<isNotNull prepend="AND" property="cityId"> 
             rg.CityID = #cityId#
