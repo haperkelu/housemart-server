@@ -178,7 +178,7 @@
             rg.ParentID = #regionId#  
         </isNotNull>
         <isNotNull prepend="AND" property="keyword"> 
-            rd.name like '$keyword$' OR rd.AliasName like '$keyword$'
+            (rd.name like '$keyword$' OR rd.AliasName like '$keyword$')
         </isNotNull>        
 		<dynamic prepend="HAVING">
 			<isNotNull prepend="AND" property="onSaleCount"> 
