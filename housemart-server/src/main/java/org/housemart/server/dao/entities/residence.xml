@@ -191,7 +191,6 @@
 	    <isNotNull> 
             ORDER BY concat((rd.name like '$keyword$'), (rd.AliasName like '$keyword$'))  desc; 
         </isNotNull> 
-	    Limit 200
 	</select>
 	
 	
