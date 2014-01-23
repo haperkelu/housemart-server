@@ -188,6 +188,10 @@
 	            <![CDATA[ (OnRentCount >= #onRentCount# OR ForceShow = 1)]]> 
 	        </isNotNull>
 	    </dynamic>
+	    <isNotNull prepend="AND" property="keyword"> 
+            ORDER BY concat((rd.name like '$keyword$'), (rd.AliasName like '$keyword$'))  desc; 
+        </isNotNull> 
+	    Limit 200;
 	</select>
 	
 	
