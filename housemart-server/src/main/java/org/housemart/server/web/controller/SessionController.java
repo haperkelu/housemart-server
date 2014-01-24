@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -40,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-public class SessionController {
+public class SessionController extends BaseController  {
 	
 	private Log log = LogFactory.getLog(this.getClass());
 	
@@ -593,6 +592,27 @@ public class SessionController {
 			) {
 		
 		ResultBean bean = new ResultBean();
+		
+		//adapting parameters
+		if(clientUId == null){
+			clientUId = this.getQueryString("clientUId");
+		}
+		if(secret == null){
+			secret = this.getQueryString("secret");
+		}		
+		if(brokerId == null && this.getQueryString("brokerId") != null){
+			brokerId = Integer.parseInt(this.getQueryString("brokerId").toString());
+		}		
+		if(totalOnly == null && this.getQueryString("totalOnly") != null){
+			totalOnly = Integer.parseInt(this.getQueryString("totalOnly").toString());
+		}
+		if(groupBy == null && this.getQueryString("groupBy") != null){
+			groupBy = Integer.parseInt(this.getQueryString("groupBy").toString());
+		}		
+		if(showAll == null && this.getQueryString("showAll") != null){
+			showAll = Integer.parseInt(this.getQueryString("showAll").toString());
+		}		
+		
 		
 		totalOnly = (totalOnly == null ? 0 : totalOnly); 
 		groupBy = (secret == null ? 0 : (groupBy == null ? 0 : groupBy)); 

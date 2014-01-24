@@ -1,14 +1,18 @@
 package org.housemart.server.handler;
 
+import java.io.UnsupportedEncodingException;
 import java.net.InetAddress;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.brilliance.middleware.client.ClientWrapper;
@@ -47,6 +51,29 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 	private GenericDao clientRegisterDao = SpringContextHolder.getBean("clientRegisterDao");
 	
 	private static final Logger logger = LoggerFactory.getLogger("CommonLogger");
+
+	private static class GetAndPutAdapter {
+		
+		static void populateParameters(final HttpServletRequest request) throws UnsupportedEncodingException {
+			
+			String queryString = request.getQueryString();
+			String decoded = URLDecoder.decode(queryString, "UTF-8");
+			String[] pares = decoded.split("&");
+			Map<String, String> parameters = new HashMap<String, String>();
+			if(pares != null && pares.length >= 1){
+				for(String pare : pares) {
+				    String[] nameAndValue = pare.split("=");
+				    if(nameAndValue != null && nameAndValue.length == 2){
+					    parameters.put(nameAndValue[0], nameAndValue[1]);
+				    }
+				}
+			}
+			
+			request.setAttribute("QueryString", parameters);
+			return;
+		}
+		
+	}
 	
 	//before the actual handler will be executed
 	@SuppressWarnings("unchecked")
@@ -57,6 +84,13 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		
 		setCurrentHttpSessionID(request);
 		super.preHandle(request, response, handler);			
+		
+		try {
+			GetAndPutAdapter.populateParameters(request);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			request.setAttribute("QueryString", new HashMap<String, String>());
+		}
 		
 		final String requestKey = String.valueOf(Calendar.getInstance().getTime().getTime());
 		String URL = request.getRequestURI();
