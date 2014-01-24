@@ -127,7 +127,7 @@ import org.springframework.web.util.WebUtils;
  */
 public class DispatcherServletExt extends FrameworkServlet {
 
-	private static final Logger logger = LoggerFactory.getLogger("CommonLogger");
+	private static final Logger commonlogger = LoggerFactory.getLogger("CommonLogger");
 	
 	/**
 	 * 
@@ -702,13 +702,14 @@ public class DispatcherServletExt extends FrameworkServlet {
 		}
 				
 		if(request != null){
+			@SuppressWarnings("unchecked")
 			Enumeration<String> paraNames = request.getParameterNames();
 			StringBuilder para = new StringBuilder();
 			while(paraNames.hasMoreElements()){
 				String name = (String) paraNames.nextElement();
 				para.append(name + ":" + request.getParameter(name) + ";");
 			}
-			logger.info("original parameters: " + para);
+			commonlogger.info("original parameters: " + para);
 		}
 		
 		// Keep a snapshot of the request attributes in case of an include,
