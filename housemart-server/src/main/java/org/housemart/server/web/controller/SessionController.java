@@ -585,27 +585,34 @@ public class SessionController {
 	@Scope("request")
 	@RequestMapping(value = "house/chatSummary.controller")
 	public ModelAndView houseChatSummary(@RequestParam(required = false) String clientUId,
-			@RequestParam(required = false) Integer brokerId,
-			@RequestParam(required = false) Integer totalOnly,
+			@RequestParam(required = false) String brokerId,
+			@RequestParam(required = false) String totalOnly,
 			@RequestParam(required = false) String secret,
-			@RequestParam(required = false) Integer groupBy,
-			@RequestParam(required = false) Integer showAll
+			@RequestParam(required = false) String groupBy,
+			@RequestParam(required = false) String showAll
 			) {
 		
 		ResultBean bean = new ResultBean();
 		
-		totalOnly = (totalOnly == null ? 0 : totalOnly); 
-		groupBy = (secret == null ? 0 : (groupBy == null ? 0 : groupBy)); 
+		int totalOnlyValue = 0;
+		if(!StringUtils.isEmpty(totalOnly) && !totalOnly.equalsIgnoreCase("null")){
+			totalOnlyValue = Integer.parseInt(totalOnly);
+		}
+		
+		int groupByValue = 0;
+		if(secret != null && (groupBy != null && !groupBy.equalsIgnoreCase("null"))){
+			groupByValue = Integer.parseInt(groupBy);
+		}
 		
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		
 		int request_user_id = -1;
-		
+		int showAllValue = 0;
 		if (clientUId != null)
 		{
 			//客户端请求
 			map.put("clientUID", clientUId);
-			showAll = 0;
+			showAllValue = 0;
 		}
 		else
 		{
@@ -651,7 +658,7 @@ public class SessionController {
 		}
 		
 		
-		if (totalOnly.equals(1))
+		if (totalOnlyValue == 1)
 		{
 			if (clientUId != null)
 			{
@@ -781,7 +788,7 @@ public class SessionController {
 						}
 					}
 					
-					if (groupBy.equals(1))
+					if (groupByValue == 1)
 					{
 						Map<Object, Object> clientGroup;
 						
