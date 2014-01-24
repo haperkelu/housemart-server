@@ -57,6 +57,9 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		static void populateParameters(final HttpServletRequest request) throws UnsupportedEncodingException {
 			
 			String queryString = request.getQueryString();
+			if(queryString == null || queryString.trim().equalsIgnoreCase("")){
+				return;
+			}
 			String decoded = URLDecoder.decode(queryString, "UTF-8");
 			String[] pares = decoded.split("&");
 			Map<String, String> parameters = new HashMap<String, String>();
