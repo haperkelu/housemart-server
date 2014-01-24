@@ -26,7 +26,7 @@ public class BaseController {
 			
 			Map<String, String> map = (Map<String, String>) req.getAttribute("QueryString");
 			if(map != null ){
-				return map.get(name).toString();
+				return map.get(name) == null ? null : map.get(name).toString();
 			}
 		}
 		return null;
