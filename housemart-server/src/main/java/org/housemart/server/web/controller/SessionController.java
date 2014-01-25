@@ -625,7 +625,11 @@ public class SessionController extends BaseController  {
 		{
 			//客户端请求
 			map.put("clientUID", clientUId);
-			showAll = 0;
+			showAll = (showAll == null ? 0 : showAll);
+			if (showAll.equals(1))
+			{
+				map.put("showAll", 1);
+			}
 		}
 		else
 		{
