@@ -510,6 +510,44 @@ public class BrokerController extends BaseController {
 		int brokerId = authenticationService.decodeBrokerId(secret);
 
 		Date rentDealTime = null;
+		
+		String msg = "";
+		
+		Float propertyAreaVal = Float.parseFloat(propertyArea);
+		Float occupiedAreaVal = null;
+		Float priceVal = null;
+		
+		if (propertyAreaVal > 2000000000)
+		{
+			msg += "产证面积不能大于2000000000;";
+		}
+		
+		if (occupiedArea != null && occupiedArea.length() > 0)
+		{
+			occupiedAreaVal = Float.parseFloat(occupiedArea);
+			if (propertyAreaVal > 2000000000)
+			{
+				msg += "占地面积不能大于2000000000;";
+			}
+			
+		}
+		
+		if (price != null && price.length() > 0)
+		{
+			priceVal = Float.parseFloat(price) * (type.equals(1) ? 10000 : 1);
+			if (priceVal > 2000000000)
+			{
+				msg += (type.equals(1) ? "售价不能大于200000万;" : "租金不能大于2000000000元");
+			}
+		}
+		
+		if (msg.length() > 0)
+		{
+			bean.setCode(ResutlCodeEnum.ERROR.getType());
+			bean.setMsg(msg);
+			
+			return new ModelAndView("jsonView", "json", bean);
+		}
 
 		try
 		{
@@ -535,11 +573,10 @@ public class BrokerController extends BaseController {
 				house.setHouseType(houseType);
 				house.setBuildingNo(buildingNo);
 				house.setCellNo(cellNo == null ? "" : cellNo);
-				house.setPropertyArea(Float.parseFloat(propertyArea));
-				if (occupiedArea != null && occupiedArea.length() > 0)
-				{
-					house.setOccupiedArea(Float.parseFloat(occupiedArea));
-				}
+				
+				house.setPropertyArea(propertyAreaVal);
+				house.setOccupiedArea(occupiedAreaVal);
+				
 				house.setRoomType(Integer.parseInt(roomType));
 				house.setFloor(floor);
 				house.setDecorating(decorating);
@@ -558,7 +595,7 @@ public class BrokerController extends BaseController {
 		
 				if (type.equals(1)) {
 					// 售房
-					sale.setPriceValue(Float.parseFloat(price) * 10000);
+					sale.setPriceValue(priceVal);
 					sale.setTagList(tags);
 				} else {
 					// 租房
@@ -568,7 +605,7 @@ public class BrokerController extends BaseController {
 						rentDealTime = format.parse(dealTime);
 						rent.setDealTime(rentDealTime);
 					}
-					rent.setPriceValue(Float.parseFloat(price));
+					rent.setPriceValue(priceVal);
 					rent.setTagList(tags);
 					rent.setEquipmentList(equipments);
 					
