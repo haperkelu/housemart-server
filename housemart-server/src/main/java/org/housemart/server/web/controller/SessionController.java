@@ -760,12 +760,20 @@ public class SessionController extends BaseController  {
 						map.put("houseID", summary.getHouseId());
 						map.put("brokerID", summary.getBrokerId());
 						
-						if (showAll == 0)
+						if (showAll.equals(0))
 						{
 							map.put("status", "0");
 						}
 						map.put("type", summary.getType());
-						map.put("fromTo", fromTo);
+						
+						if (showAll.equals(1) && fromTo == 2)
+						{
+						}
+						else
+						{
+							map.put("fromTo", fromTo);
+						}
+						
 						map.put("limit", true);
 						map.put("limitStart", 0);
 						map.put("limitSize", 1);

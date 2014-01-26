@@ -134,9 +134,9 @@
 			a.Name AS brokerName, COUNT(*) AS countChat 
 		FROM house_chat_message AS hcm
 		INNER JOIN admin.account AS a ON a.ID = hcm.BrokerID
-		WHERE hcm.FromTo = 2 AND hcm.clientDelete = 0
+		WHERE hcm.clientDelete = 0
 		<isNull prepend="AND" property="showAll">
-			hcm.Status = 0 
+			hcm.Status = 0 AND hcm.FromTo = 2
 		</isNull>
         <isNotNull prepend="AND" property="clientUID"> 
             hcm.ClientUID = #clientUID#
