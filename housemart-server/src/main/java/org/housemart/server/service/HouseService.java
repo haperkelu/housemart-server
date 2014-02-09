@@ -58,7 +58,6 @@ import org.springframework.stereotype.Service;
 public class HouseService {
   private static Log log = LogFactory.getLog(HouseService.class);
   
-  @SuppressWarnings("rawtypes")
   SearchService searchService = SpringContextHolder.getBean("searchService");
   
   @SuppressWarnings("rawtypes")
@@ -75,6 +74,7 @@ public class HouseService {
   
   @SuppressWarnings("rawtypes")
   private GenericDao housePicDao = SpringContextHolder.getBean("housePicDao");
+  @SuppressWarnings("rawtypes")
   private GenericDao housePicSortDao = SpringContextHolder.getBean("housePicSortDao");
   
   private ResourceProvider resourceProvider = SpringContextHolder.getBean("resourceProvider");
@@ -231,13 +231,13 @@ public class HouseService {
           sort = new Sort(new SortField(HouseEntity.FIELD.onboardTime.toString(), SortField.LONG, true));
           break;
         case price:
-          sort = new Sort(new SortField(HouseEntity.FIELD.price.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.price.toString(), SortField.INT, false));
           break;
         case avg:
-          sort = new Sort(new SortField(HouseEntity.FIELD.avg.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.avg.toString(), SortField.INT, false));
           break;
         case area:
-          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.INT, false));
           break;
         default:
           sort = new Sort(new SortField(HouseEntity.FIELD.createTime.toString(), SortField.LONG, true));
@@ -295,10 +295,10 @@ public class HouseService {
           sort = new Sort(new SortField(HouseEntity.FIELD.onboardTime.toString(), SortField.LONG, true));
           break;
         case price:
-          sort = new Sort(new SortField(HouseEntity.FIELD.rentPrice.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.rentPrice.toString(), SortField.INT, false));
           break;
         case area:
-          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.FLOAT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.FLOAT, false));
           break;
         default:
           sort = new Sort(new SortField(HouseEntity.FIELD.onboardTime.toString(), SortField.LONG, true));
@@ -376,13 +376,13 @@ public class HouseService {
           sort = new Sort(new SortField(HouseEntity.FIELD.onboardTime.toString(), SortField.LONG, true));
           break;
         case price:
-          sort = new Sort(new SortField(HouseEntity.FIELD.price.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.price.toString(), SortField.INT, false));
           break;
         case avg:
-          sort = new Sort(new SortField(HouseEntity.FIELD.avg.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.avg.toString(), SortField.INT, false));
           break;
         case area:
-          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.INT, false));
           break;
         default:
           sort = new Sort(new SortField(HouseEntity.FIELD.createTime.toString(), SortField.LONG, true));
@@ -523,10 +523,10 @@ public class HouseService {
           sort = new Sort(new SortField(HouseEntity.FIELD.onboardTime.toString(), SortField.LONG, true));
           break;
         case price:
-          sort = new Sort(new SortField(HouseEntity.FIELD.rentPrice.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.rentPrice.toString(), SortField.INT, false));
           break;
         case area:
-          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.INT, true));
+          sort = new Sort(new SortField(HouseEntity.FIELD.area.toString(), SortField.INT, false));
           break;
         default:
           sort = new Sort(new SortField(HouseEntity.FIELD.createTime.toString(), SortField.LONG, true));
