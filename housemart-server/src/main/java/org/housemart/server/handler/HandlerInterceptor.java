@@ -85,11 +85,11 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		HttpServletResponse response, Object handler)
 	    throws Exception {
 		
-		setCurrentHttpSessionID(request);
+		//setCurrentHttpSessionID(request);
 		super.preHandle(request, response, handler);			
 		
 		try {
-			GetAndPutAdapter.populateParameters(request);
+			//GetAndPutAdapter.populateParameters(request);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			request.setAttribute("QueryString", new HashMap<String, String>());
@@ -173,6 +173,8 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 			throws Exception {
 		
 		super.afterCompletion(request, response, handler, ex);
+		
+		/**
 		StopWatch watch = threadSession.get();
 		watch.stop();
 		final long timeDiff = watch.getTime();
@@ -206,7 +208,7 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 			}
 			
 		});
-		
+		**/
 		
 	}
 	
