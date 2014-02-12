@@ -85,11 +85,11 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		HttpServletResponse response, Object handler)
 	    throws Exception {
 		
-		//setCurrentHttpSessionID(request);
+		setCurrentHttpSessionID(request);
 		super.preHandle(request, response, handler);			
 		
 		try {
-			//GetAndPutAdapter.populateParameters(request);
+			GetAndPutAdapter.populateParameters(request);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			request.setAttribute("QueryString", new HashMap<String, String>());
@@ -174,19 +174,22 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		
 		super.afterCompletion(request, response, handler, ex);
 		
-		/**
+		
 		StopWatch watch = threadSession.get();
 		watch.stop();
 		final long timeDiff = watch.getTime();
 		logger.info("begin data tracking!");
+		
+		final String URL = request.getRequestURL() == null ? "" : request.getRequestURL().toString();
+		final String contextStr = generateContext(request);
+		final String timeDiffStr = generateTimeDiffString(request, timeDiff);
 		TheadServiceProvider.getThreadService().execute(new Runnable(){
 
 			@Override
 			public void run() {																						
 								
 				try {
-					Object urlObj = request.getRequestURL();
-					USER_ACCESS_REMOTE_INSTANCE.access("Page Request Context", -1, urlObj == null? "":urlObj.toString(), generateContext(request));				
+					USER_ACCESS_REMOTE_INSTANCE.access("Page Request Context", -1, URL, contextStr);				
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}	
@@ -200,15 +203,14 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 			public void run() {																						
 								
 				try {
-					Object urlObj = request.getRequestURL();
-					USER_ACCESS_REMOTE_INSTANCE.access("Page Load Performance", -1, urlObj == null? "":urlObj.toString(), generateTimeDiffString(request, timeDiff));
+					USER_ACCESS_REMOTE_INSTANCE.access("Page Load Performance", -1, URL, timeDiffStr);
 				} catch (Exception e) {
 					logger.error(e.getMessage(), e);
 				}	
 			}
 			
 		});
-		**/
+		
 		
 	}
 	
