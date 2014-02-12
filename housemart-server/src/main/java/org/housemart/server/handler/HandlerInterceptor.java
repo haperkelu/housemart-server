@@ -174,7 +174,7 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		
 		super.afterCompletion(request, response, handler, ex);
 		
-		
+		/**
 		StopWatch watch = threadSession.get();
 		watch.stop();
 		final long timeDiff = watch.getTime();
@@ -208,7 +208,7 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 			}
 			
 		});
-		
+		**/
 		
 	}
 	
