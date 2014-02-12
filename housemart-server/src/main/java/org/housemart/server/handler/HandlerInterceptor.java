@@ -89,7 +89,7 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		super.preHandle(request, response, handler);			
 		
 		try {
-			GetAndPutAdapter.populateParameters(request);
+			//GetAndPutAdapter.populateParameters(request);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			request.setAttribute("QueryString", new HashMap<String, String>());
