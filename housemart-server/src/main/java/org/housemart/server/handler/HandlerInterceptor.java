@@ -85,7 +85,7 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		HttpServletResponse response, Object handler)
 	    throws Exception {
 		
-		setCurrentHttpSessionID(request);
+		//setCurrentHttpSessionID(request);
 		super.preHandle(request, response, handler);			
 		
 		try {
