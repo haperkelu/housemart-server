@@ -299,6 +299,7 @@ public class HouseFollowController {
 		
 	}
 	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@RequestMapping(value = "residence/favorite.controller")
 	public ModelAndView residenceFavrite(@RequestParam String clientUId) {
 		
@@ -321,6 +322,9 @@ public class HouseFollowController {
 			for(ResidenceFollowEntity item: newList){
 				ResidenceEntity entity = (ResidenceEntity) residenceDao.load("loadResidence",
 						item.getResidenceId());
+				if(entity == null || entity.getZombie() == 1){ //过滤暗小区
+					continue;
+				}
 				ResidenceBean rBean = ResidenceUtils.residenceEntity2Bean(entity);
 				rBean.setIsFollow(true);
 				rBean.setPicURLWithSize(PicSizeUtils.URL2URLWithSize(rBean.getPicURL(), clientUId, "residence/favorite.controller", SizeType.Default));
