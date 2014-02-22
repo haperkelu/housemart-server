@@ -35,6 +35,8 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 
+	private static final boolean SWITCH_RPC = false;
+	
 	private static final ThreadLocal<StopWatch> threadSession = new ThreadLocal<StopWatch>(){
 	    protected synchronized StopWatch initialValue() {
 	        return new StopWatch();
@@ -167,6 +169,7 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	@Override
 	public void afterCompletion(final HttpServletRequest request,
 			HttpServletResponse response, Object handler, Exception ex)
@@ -183,34 +186,36 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		final String URL = request.getRequestURL() == null ? "" : request.getRequestURL().toString();
 		final String contextStr = generateContext(request);
 		final String timeDiffStr = generateTimeDiffString(request, timeDiff);
-		TheadServiceProvider.getThreadService().execute(new Runnable(){
-
-			@Override
-			public void run() {																						
-								
-				try {
-					USER_ACCESS_REMOTE_INSTANCE.access("Page Request Context", -1, URL, contextStr);				
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-				}	
-			}
-			
-		});
 		
-		TheadServiceProvider.getThreadService().execute(new Runnable(){
+		if(SWITCH_RPC == true){
+			TheadServiceProvider.getThreadService().execute(new Runnable(){
 
-			@Override
-			public void run() {																						
-								
-				try {
-					USER_ACCESS_REMOTE_INSTANCE.access("Page Load Performance", -1, URL, timeDiffStr);
-				} catch (Exception e) {
-					logger.error(e.getMessage(), e);
-				}	
-			}
+				@Override
+				public void run() {																						
+									
+					try {
+						USER_ACCESS_REMOTE_INSTANCE.access("Page Request Context", -1, URL, contextStr);				
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}	
+				}
+				
+			});
 			
-		});
-		
+			TheadServiceProvider.getThreadService().execute(new Runnable(){
+
+				@Override
+				public void run() {																						
+									
+					try {
+						USER_ACCESS_REMOTE_INSTANCE.access("Page Load Performance", -1, URL, timeDiffStr);
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+					}	
+				}
+				
+			});
+		}	
 		
 	}
 	
