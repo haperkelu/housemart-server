@@ -4,6 +4,7 @@ public class UserChatSummaryBean {
 	
 	private String residenceName;
 	private int houseId;
+	private String housePicURL;
 	private int brokerId;
 	private int realBrokerId;
 	private String brokerName;
@@ -101,4 +102,11 @@ public class UserChatSummaryBean {
 	public void setBrokerPicURL(String brokerPicURL) {
 		this.brokerPicURL = brokerPicURL;
 	}
+	public String getHousePicURL() {
+		return housePicURL;
+	}
+	public void setHousePicURL(String housePicURL) {
+		this.housePicURL = housePicURL;
+	}
+	
 }

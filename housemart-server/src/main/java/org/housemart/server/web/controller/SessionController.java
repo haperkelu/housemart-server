@@ -588,7 +588,8 @@ public class SessionController extends BaseController  {
 			@RequestParam(required = false) Integer totalOnly,
 			@RequestParam(required = false) String secret,
 			@RequestParam(required = false) Integer groupBy,
-			@RequestParam(required = false) Integer showAll
+			@RequestParam(required = false) Integer showAll,
+			@RequestParam(required = false) Integer withPic
 			) {
 		
 		ResultBean bean = new ResultBean();
@@ -616,6 +617,7 @@ public class SessionController extends BaseController  {
 		
 		totalOnly = (totalOnly == null ? 0 : totalOnly); 
 		groupBy = (secret == null ? 0 : (groupBy == null ? 0 : groupBy)); 
+		withPic = (withPic == null ? 0 : withPic);
 		
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		
@@ -752,6 +754,25 @@ public class SessionController extends BaseController  {
 					summary.setRealBrokerId(account.getId());
 					summary.setBrokerName(account.getName());
 					summary.setBrokerPicURL(account.getPicURL() != null ? account.getPicURL() + "?imageView/2/w/200/h/200" : "");
+					
+					String picUrl = "";
+					if (withPic.equals(1))
+					{
+						
+						HouseDetailBean house = houseService.loadDetail(summary.getHouseId());
+						if (house != null)
+						{
+							String urls[] = new String[1];
+							String housePics[] = house.getPicURL();
+							if (housePics != null && housePics.length > 0)
+							{
+								urls[0] = housePics[0];
+								urls = PicSizeUtils.URL2URLWithSize(urls, clientUId, "house/chat/brokerSend.controller", SizeType.Default);
+								picUrl = urls[0];
+							}
+						}
+					}
+					summary.setHousePicURL(picUrl);
 					
 					if (summary.getCount() > 0)
 					{
