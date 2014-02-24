@@ -759,17 +759,24 @@ public class SessionController extends BaseController  {
 					if (withPic.equals(1))
 					{
 						
-						HouseDetailBean house = houseService.loadDetail(summary.getHouseId());
-						if (house != null)
+						try
 						{
-							String urls[] = new String[1];
-							String housePics[] = house.getPicURL();
-							if (housePics != null && housePics.length > 0)
+							HouseDetailBean house = houseService.loadDetail(summary.getHouseId());
+							if (house != null)
 							{
-								urls[0] = housePics[0];
-								urls = PicSizeUtils.URL2URLWithSize(urls, clientUId, "house/chat/brokerSend.controller", SizeType.Default);
-								picUrl = urls[0];
+								String urls[] = new String[1];
+								String housePics[] = house.getPicURL();
+								if (housePics != null && housePics.length > 0)
+								{
+									urls[0] = housePics[0];
+									urls = PicSizeUtils.URL2URLWithSize(urls, clientUId, "house/chat/brokerSend.controller", SizeType.Default);
+									picUrl = urls[0];
+								}
 							}
+						}
+						catch(Exception ex)
+						{
+							
 						}
 					}
 					summary.setHousePicURL(picUrl);
