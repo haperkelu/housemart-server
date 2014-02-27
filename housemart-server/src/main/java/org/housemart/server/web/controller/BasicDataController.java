@@ -107,9 +107,10 @@ public class BasicDataController {
 		ResultBean bean = new ResultBean();
 		List<CityBean> list = new  ArrayList<CityBean>();		
 		list.add(new CityBean(1, "上海"));
+		list.add(new CityBean(2, "南加州"));
 		bean.setData(list);
 		bean.setCode(ResutlCodeEnum.SUCCESS.getType());
-		bean.setVersion("5.0");
+		bean.setVersion("5.1");
 		
 		return new ModelAndView("jsonView", "json", bean);
 
