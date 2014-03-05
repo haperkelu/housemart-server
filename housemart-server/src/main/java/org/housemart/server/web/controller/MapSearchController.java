@@ -164,6 +164,7 @@ public class MapSearchController extends BaseController {
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
     bean.setTotalCount(totalCount);
     bean.setData(rBeans);
+    bean.setExtData(currentCity);
     return new ModelAndView("jsonView", "json", bean);
   }
   
@@ -298,6 +299,7 @@ public class MapSearchController extends BaseController {
     bean.setCount(rBeans.size());
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
     bean.setData(rBeans);
+    bean.setExtData(currentCity);
     return new ModelAndView("jsonView", "json", bean);
   }
   
