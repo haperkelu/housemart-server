@@ -81,6 +81,7 @@ public class MapSearchController extends BaseController {
 		@Override
 		public String call() throws Exception {
 			String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
+			LOGGER.info("" + lat + "," + lng + ":" + cityCode);
 			return cityCode;
 		}
 		
