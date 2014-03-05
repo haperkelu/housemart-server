@@ -7,12 +7,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.housemart.framework.baiduapi.BaiduAPIWrapper;
 import org.housemart.framework.dao.generic.GenericDao;
+import org.housemart.server.beans.CurrenCityBean;
 import org.housemart.server.beans.MonthTrendWrapper;
 import org.housemart.server.beans.ResidenceBean;
 import org.housemart.server.beans.ResultBean;
@@ -42,7 +49,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MapSearchController extends BaseController {
-  private Log log = LogFactory.getLog(this.getClass());
+	
+  private static final Logger LOGGER = LoggerFactory.getLogger(MapSearchController.class);
   @SuppressWarnings("rawtypes")
   @Autowired
   GenericDao areaPositionDao;
@@ -64,8 +72,20 @@ public class MapSearchController extends BaseController {
   // http://localhost:8080/house/residenceSale/mapSearchNew.controller?lat=31.1829450&lng=121.5204490&range=6000&pageIndex=1&pageSize=5
   @Scope("request")
   @RequestMapping(value = "house/residenceSale/mapSearchNew.controller")
-  public ModelAndView residenceSaleListByMap( double lat,  double lng,  int range,
+  public ModelAndView residenceSaleListByMap(final double lat, final double lng,  int range,
        int pageIndex,  int pageSize) {
+	  
+	ExecutorService singleThreadPool =  Executors.newSingleThreadExecutor();  
+	Future<String> future = singleThreadPool.submit(new Callable<String>() {
+
+		@Override
+		public String call() throws Exception {
+			String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
+			return cityCode;
+		}
+		
+	}); 
+	  
     GooglePlaceBaseEntity[] gEntities = new GooglePlaceBaseEntity[0];
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
     int totalCount = 0;
@@ -124,9 +144,21 @@ public class MapSearchController extends BaseController {
         }
       }
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+    	LOGGER.error(e.getMessage(), e);
     }
-    
+    CurrenCityBean currentCity = new CurrenCityBean();
+    currentCity.setBizTag("Current City");
+    try {
+		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
+		if(cityCode.equalsIgnoreCase("289")){
+			currentCity.setCityID(1);
+		} else {
+			currentCity.setCityID(-1);
+		};
+	} catch(Exception e) {
+		LOGGER.error(e.getMessage(), e);
+		currentCity.setCityID(1);
+	}
     ResultBean bean = new ResultBean();
     bean.setCount(rBeans.size());
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
@@ -190,9 +222,21 @@ public class MapSearchController extends BaseController {
   // http://localhost:8080/house/residenceRent/mapSearchNew.controller?lat=31.1829450&lng=121.5204490&range=6000&pageIndex=1&pageSize=1
   @Scope("request")  
   @RequestMapping(value = "house/residenceRent/mapSearchNew.controller")
-  public ModelAndView residenceRentListByMap(@RequestParam double lat, @RequestParam double lng, @RequestParam int range,
+  public ModelAndView residenceRentListByMap(final @RequestParam double lat, final @RequestParam double lng, @RequestParam int range,
       @RequestParam int pageIndex, @RequestParam int pageSize) {
-    GooglePlaceBaseEntity[] gEntities = new GooglePlaceBaseEntity[0];
+    
+	ExecutorService singleThreadPool =  Executors.newSingleThreadExecutor();  
+	Future<String> future = singleThreadPool.submit(new Callable<String>() {
+
+		@Override
+		public String call() throws Exception {
+			String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
+			return cityCode;
+		}
+		
+	}); 
+		    
+	GooglePlaceBaseEntity[] gEntities = new GooglePlaceBaseEntity[0];
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
     try {
       gEntities = searchService.searchGooglePlace(lat, lng, range, false, true);
@@ -235,9 +279,21 @@ public class MapSearchController extends BaseController {
         }
       }
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+    	LOGGER.error(e.getMessage(), e);
     }
-    
+    CurrenCityBean currentCity = new CurrenCityBean();
+    currentCity.setBizTag("Current City");
+    try {
+		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
+		if(cityCode.equalsIgnoreCase("289")){
+			currentCity.setCityID(1);
+		} else {
+			currentCity.setCityID(-1);
+		};
+	} catch(Exception e) {
+		LOGGER.error(e.getMessage(), e);
+		currentCity.setCityID(1);
+	}
     ResultBean bean = new ResultBean();
     bean.setCount(rBeans.size());
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
