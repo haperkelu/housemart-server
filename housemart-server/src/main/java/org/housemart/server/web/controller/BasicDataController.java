@@ -105,9 +105,15 @@ public class BasicDataController {
 	public ModelAndView cityList() {
 
 		ResultBean bean = new ResultBean();
-		List<CityBean> list = new  ArrayList<CityBean>();		
-		list.add(new CityBean(1, "上海"));
-		list.add(new CityBean(2, "南加州"));
+		List<CityBean> list = new  ArrayList<CityBean>();	
+		CityBean bean1 = new CityBean(1, "上海");
+		bean1.setDefaultCity(false);
+		bean1.setOverseaCity(false);
+		list.add(bean1);
+		CityBean bean2 = new CityBean(2, "南加州");
+		bean2.setDefaultCity(true);
+		bean2.setOverseaCity(true);
+		list.add(bean2);
 		bean.setData(list);
 		bean.setCode(ResutlCodeEnum.SUCCESS.getType());
 		bean.setVersion("5.1");

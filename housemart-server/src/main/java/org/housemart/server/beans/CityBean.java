@@ -20,6 +20,10 @@ public class CityBean {
 	public CityBean(int id, String name) {this.id = id; this.name = name;}
 	private int id;
 	private String name;
+	
+	private boolean isDefaultCity;
+	private boolean isOverseaCity;
+	
 	/**
 	 * @return the id
 	 */
@@ -44,5 +48,29 @@ public class CityBean {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+	/**
+	 * @return the isDefaultCity
+	 */
+	public boolean isDefaultCity() {
+		return isDefaultCity;
+	}
+	/**
+	 * @param isDefaultCity the isDefaultCity to set
+	 */
+	public void setDefaultCity(boolean isDefaultCity) {
+		this.isDefaultCity = isDefaultCity;
+	}
+	/**
+	 * @return the isOverseaCity
+	 */
+	public boolean isOverseaCity() {
+		return isOverseaCity;
+	}
+	/**
+	 * @param isOverseaCity the isOverseaCity to set
+	 */
+	public void setOverseaCity(boolean isOverseaCity) {
+		this.isOverseaCity = isOverseaCity;
+	}
+
 }
