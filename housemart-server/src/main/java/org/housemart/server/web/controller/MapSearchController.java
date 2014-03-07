@@ -31,6 +31,7 @@ import org.housemart.server.dao.entities.RegionEntity;
 import org.housemart.server.dao.entities.RegionExtEntity;
 import org.housemart.server.dao.entities.ResidenceEntity;
 import org.housemart.server.dao.entities.ResidenceEntity.ForceShowEnum;
+import org.housemart.server.data.RegionComlexData;
 import org.housemart.server.data.UserInfoData;
 import org.housemart.server.map.MapSearchUtils;
 import org.housemart.server.service.HouseService;
@@ -80,9 +81,23 @@ public class MapSearchController extends BaseController {
 
 		@Override
 		public String call() throws Exception {
-			String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
-			LOGGER.info("" + lat + "," + lng + ":" + cityCode);
-			return cityCode;
+			
+			if(lng < 0) {
+				List<AreaPositionEntity> list = RegionComlexData.getPlates();
+				if(!CollectionUtils.isEmpty(list)){
+					boolean isWithin = false;
+					for(AreaPositionEntity item: list){
+						double distance = MapSearchUtils.getDistance(lat, lng, Double.parseDouble(item.getLat()), Double.parseDouble(item.getLng()));
+						if(distance <= 1000 * 5){
+							return "CA";
+						}
+					}
+				}
+			} else {
+				String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
+				return cityCode;
+			}			
+			return "";
 		}
 		
 	}); 
@@ -153,7 +168,9 @@ public class MapSearchController extends BaseController {
 		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
 		if(cityCode.equalsIgnoreCase("289")){
 			currentCity.setCityID(1);
-		} else {
+		} else if(cityCode.equalsIgnoreCase("CA")){
+			currentCity.setCityID(2);
+		}else {
 			currentCity.setCityID(-1);
 		};
 	} catch(Exception e) {
@@ -232,8 +249,22 @@ public class MapSearchController extends BaseController {
 
 		@Override
 		public String call() throws Exception {
-			String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
-			return cityCode;
+			if(lng < 0) {
+				List<AreaPositionEntity> list = RegionComlexData.getPlates();
+				if(!CollectionUtils.isEmpty(list)){
+					boolean isWithin = false;
+					for(AreaPositionEntity item: list){
+						double distance = MapSearchUtils.getDistance(lat, lng, Double.parseDouble(item.getLat()), Double.parseDouble(item.getLng()));
+						if(distance <= 1000 * 5){
+							return "CA";
+						}
+					}
+				}
+			} else {
+				String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
+				return cityCode;
+			}			
+			return "";
 		}
 		
 	}); 
@@ -289,7 +320,9 @@ public class MapSearchController extends BaseController {
 		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
 		if(cityCode.equalsIgnoreCase("289")){
 			currentCity.setCityID(1);
-		} else {
+		} else if(cityCode.equalsIgnoreCase("CA")){
+			currentCity.setCityID(2);
+		}else {
 			currentCity.setCityID(-1);
 		};
 	} catch(Exception e) {

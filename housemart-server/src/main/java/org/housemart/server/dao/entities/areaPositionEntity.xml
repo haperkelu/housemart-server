@@ -20,5 +20,9 @@
 	<select id="findAllPlates" resultMap="areaPosition">
 		SELECT * FROM area_position WHERE type = 3
 	</select>
+	
+	<select id="findAllPlatesByCityId" resultMap="areaPosition">
+		SELECT * FROM area_position WHERE type = 3 and CityID = #cityId#
+	</select>	
 </sqlMap>
 		
