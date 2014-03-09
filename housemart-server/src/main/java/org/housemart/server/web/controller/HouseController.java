@@ -126,7 +126,7 @@ public class HouseController extends BaseController {
         house.setResidencePicURLWithOriginSize(PicSizeUtils.URL2URLWithSize(house.getResidencePicURL(), clientUID,
             "house/detailNew.controller", SizeType.Large));
         String saleRent;
-        if (StringUtils.isNotBlank(house.getPrice().trim()) || StringUtils.isNotBlank(house.getTitle().trim())) {
+        if (StringUtils.isNotBlank(house.getTitle().trim())) {
           saleRent = "sale";
           house.setMsiteDesc(house.getTitle());
         } else {
