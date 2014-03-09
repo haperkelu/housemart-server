@@ -66,6 +66,9 @@ public class HouseDetailBean {
   private String plateName = ""; // 板块 小区名称 区域
   private int interaction = 0;
   
+  private String msiteUrl = "";
+  private String msiteDesc = "";
+      
   public Integer getId() {
     return id;
   }
@@ -490,4 +493,21 @@ public class HouseDetailBean {
     this.cellNo = cellNo;
   }
 
+  public String getMsiteUrl() {
+    return msiteUrl;
+  }
+
+  public void setMsiteUrl(String msiteUrl) {
+    this.msiteUrl = msiteUrl;
+  }
+
+  public String getMsiteDesc() {
+    return msiteDesc;
+  }
+
+  public void setMsiteDesc(String msiteDesc) {
+    this.msiteDesc = msiteDesc;
+  }
+
+  
 }

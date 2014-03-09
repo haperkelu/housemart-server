@@ -4,6 +4,7 @@
  */
 package org.housemart.server.web.controller;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import org.housemart.server.dao.entities.HousePicSortEntity;
 import org.housemart.server.dao.entities.HouseTag;
 import org.housemart.server.dao.entities.ResidenceEntity;
 import org.housemart.server.data.UserInfoData;
+import org.housemart.server.resource.ResourceProvider;
 import org.housemart.server.service.AuthenticationService;
 import org.housemart.server.service.HouseService;
 import org.housemart.server.service.HouseServiceMock;
@@ -67,6 +69,8 @@ public class HouseController extends BaseController {
   AuthenticationService authenticationService;
   @Autowired
   ResidenceService residenceService;
+  @Autowired
+  ResourceProvider resourceProvider;
   
   @SuppressWarnings({"unchecked", "rawtypes"})
   @RequestMapping(value = "house/status.controller")
@@ -121,6 +125,17 @@ public class HouseController extends BaseController {
             "house/detailNew.controller", SizeType.Default));
         house.setResidencePicURLWithOriginSize(PicSizeUtils.URL2URLWithSize(house.getResidencePicURL(), clientUID,
             "house/detailNew.controller", SizeType.Large));
+        String saleRent;
+        if (StringUtils.isNotBlank(house.getPrice().trim()) || StringUtils.isNotBlank(house.getTitle().trim())) {
+          saleRent = "sale";
+          house.setMsiteDesc(house.getTitle());
+        } else {
+          saleRent = "rent";
+          house.setMsiteDesc(house.getRentTitle());
+        }
+        String mHouseDetailLink = resourceProvider.getValue("housemart.msite.host")
+            + MessageFormat.format(resourceProvider.getValue("housemart.msite.house.detail"), house.getId(), clientUID, saleRent);
+        house.setMsiteUrl(mHouseDetailLink);
       }
       if ((clientUID = this.getRequest().getParameter("clientUId")) != null
           && (type = this.getRequest().getParameter("type")) != null) {
