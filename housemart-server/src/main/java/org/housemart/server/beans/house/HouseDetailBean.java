@@ -67,6 +67,7 @@ public class HouseDetailBean {
   private int interaction = 0;
   
   private String msiteUrl = "";
+  private String msiteTitle = "";
   private String msiteDesc = "";
       
   public Integer getId() {
@@ -509,5 +510,12 @@ public class HouseDetailBean {
     this.msiteDesc = msiteDesc;
   }
 
-  
+  public String getMsiteTitle() {
+    return msiteTitle;
+  }
+
+  public void setMsiteTitle(String msiteTitle) {
+    this.msiteTitle = msiteTitle;
+  }
+
 }
