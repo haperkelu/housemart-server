@@ -23,6 +23,7 @@ public class CityBean {
 	
 	private boolean isDefaultCity;
 	private boolean isOverseaCity;
+	private boolean isHotCity;
 	
 	/**
 	 * @return the id
@@ -72,5 +73,12 @@ public class CityBean {
 	public void setOverseaCity(boolean isOverseaCity) {
 		this.isOverseaCity = isOverseaCity;
 	}
+  public boolean isHotCity() {
+    return isHotCity;
+  }
+  public void setHotCity(boolean isHotCity) {
+    this.isHotCity = isHotCity;
+  }
 
+	
 }
