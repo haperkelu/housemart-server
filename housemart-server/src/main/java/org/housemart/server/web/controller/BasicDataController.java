@@ -109,10 +109,12 @@ public class BasicDataController {
 		CityBean bean1 = new CityBean(1, "上海");
 		bean1.setDefaultCity(false);
 		bean1.setOverseaCity(false);
+		bean1.setHotCity(true);
 		list.add(bean1);
 		CityBean bean2 = new CityBean(2, "南加州");
 		bean2.setDefaultCity(true);
 		bean2.setOverseaCity(true);
+		bean2.setHotCity(true);
 		list.add(bean2);
 		bean.setData(list);
 		bean.setCode(ResutlCodeEnum.SUCCESS.getType());
