@@ -682,18 +682,26 @@ public class BrokerController extends BaseController {
 		String clientUId = brokerInfo.get("clientUId");
 		
 		HouseEntity house = (HouseEntity) houseDao.load("loadHouse", id);
+		HouseDetailBean houseDetail = house.getHouseDetailBean();
 		
 		if (house.getCreator() != null && house.getCreator().equals(brokerId))
 		{
 			HouseSale sale = (HouseSale) houseDao.load("loadHouseSale", id);
 			HouseRent rent = (HouseRent) houseDao.load("loadHouseRent", id);
+			ResidenceEntity residence = residenceService.loadResidence(house.getResidenceId());
+			
+			house.setPrice(sale != null ? sale.getPriceValue().intValue() : 0);
+			house.setRentPrice(rent != null ? rent.getPriceValue().intValue() : 0);
+			house.setResidenceName(residence.getResidenceName());
+			house.setRegionName(residence.getRegionName());
+			house.setPlateName(residence.getPlateName());
+			house.setAddress(residence.getAddress() + " " + house.getBuildingNo() + "号");
 			
 			Map<String, Object> houseMap = new HashMap<String, Object>();
 			houseMap.put("id", house.getId());
 			houseMap.put("residenceId", house.getResidenceId());
-			ResidenceEntity residence = residenceService.loadResidence(house.getResidenceId());
-			houseMap.put("residenceName", residence.getResidenceName());
-			houseMap.put("address", residence.getAddress() + " " + house.getBuildingNo() + "号");
+			houseMap.put("residenceName", house.getResidenceName());
+			houseMap.put("address", house.getAddress());
 			houseMap.put("detailName", house.getDetailName());
 			houseMap.put("houseType", house.getHouseType());
 			houseMap.put("buildingNo", house.getBuildingNo());
@@ -708,7 +716,6 @@ public class BrokerController extends BaseController {
 			Date buildDate = house.getBuildDate();
 			houseMap.put("buildTime", buildDate.getYear() + 1900);
 			
-			
 			if (sale != null)
 			{
 				houseMap.put("salePrice", HouseEntity.formatFloat(sale.getPriceValue() / 10000));
@@ -722,6 +729,9 @@ public class BrokerController extends BaseController {
 				{
 					houseMap.put("saleMemo", house.getMemo().length() == 0 ? "0" : house.getMemo());
 				}
+				
+				houseMap.put("msiteTitle", houseDetail.getResidenceName() + "," + houseDetail.getPrice());
+				
 			}
 			if (rent != null)
 			{
@@ -733,7 +743,19 @@ public class BrokerController extends BaseController {
 				houseMap.put("dealTime", rent.getDealTime() != null ? df.format(rent.getDealTime()) : "");
 				houseMap.put("type", 2);
 				houseMap.put("rentMemo", house.getMemo());
+				
+				houseMap.put("msiteTitle", houseDetail.getResidenceName() + "," + houseDetail.getRentPrice());
 			}
+			
+			houseMap.put("msiteDesc", houseDetail.getRoomType() + "<br/>" + 
+					houseDetail.getArea() + "<br/>" + 
+					houseDetail.getPlateName());
+			String mHouseDetailLink = resourceProvider.getValue("housemart.msite.host") + 
+		    		MessageFormat.format(resourceProvider.getValue("housemart.msite.house.detail"), 
+		            house.getId().toString(), 
+		            clientUId,
+		            sale != null ? "sale" : "rent");
+			houseMap.put("msiteUrl", mHouseDetailLink);
 	
 			houseMap.put("picURL", houseService.getHousePics(id, clientUId));
 			
