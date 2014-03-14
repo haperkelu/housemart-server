@@ -133,7 +133,7 @@ public class HouseController extends BaseController {
           saleRent = "rent";
           house.setMsiteTitle(house.getResidenceName() + "," + house.getRentPrice());
         }
-        house.setMsiteDesc(house.getRoomType() + " " + house.getArea() + " " + house.getPlateName());
+        house.setMsiteDesc(house.getRoomType() + "\n" + house.getArea() + "\n" + house.getPlateName());
         String mHouseDetailLink = resourceProvider.getValue("housemart.msite.host")
             + MessageFormat.format(resourceProvider.getValue("housemart.msite.house.detail"), house.getId().toString(), clientUID,
                 saleRent);

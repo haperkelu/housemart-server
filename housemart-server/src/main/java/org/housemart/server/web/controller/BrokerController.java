@@ -748,8 +748,8 @@ public class BrokerController extends BaseController {
 				houseMap.put("msiteTitle", houseDetail.getResidenceName() + "," + houseDetail.getRentPrice());
 			}
 			
-			houseMap.put("msiteDesc", houseDetail.getRoomType() + "<br/>" + 
-					houseDetail.getArea() + "<br/>" + 
+			houseMap.put("msiteDesc", houseDetail.getRoomType() + "\n" + 
+					houseDetail.getArea() + "\n" + 
 					houseDetail.getPlateName());
 			String mHouseDetailLink = resourceProvider.getValue("housemart.msite.host") + 
 		    		MessageFormat.format(resourceProvider.getValue("housemart.msite.house.detail"), 
