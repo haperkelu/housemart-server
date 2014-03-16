@@ -168,8 +168,10 @@ public class MapSearchController extends BaseController {
 		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
 		if(cityCode.equalsIgnoreCase("289")){
 			currentCity.setCityID(1);
+			currentCity.setBizTag("上海");
 		} else if(cityCode.equalsIgnoreCase("CA")){
 			currentCity.setCityID(2);
+			currentCity.setBizTag("南加州");
 		}else {
 			currentCity.setCityID(-1);
 		};
@@ -320,8 +322,10 @@ public class MapSearchController extends BaseController {
 		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
 		if(cityCode.equalsIgnoreCase("289")){
 			currentCity.setCityID(1);
+			currentCity.setBizTag("上海");
 		} else if(cityCode.equalsIgnoreCase("CA")){
 			currentCity.setCityID(2);
+			currentCity.setBizTag("南加州");
 		}else {
 			currentCity.setCityID(-1);
 		};
