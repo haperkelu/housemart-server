@@ -754,7 +754,6 @@ public class BrokerController extends BaseController {
 			String mHouseDetailLink = resourceProvider.getValue("housemart.msite.host") + 
 		    		MessageFormat.format(resourceProvider.getValue("housemart.msite.house.detail"), 
 		            house.getId().toString(), 
-		            clientUId,
 		            sale != null ? "sale" : "rent");
 			houseMap.put("msiteUrl", mHouseDetailLink);
 	

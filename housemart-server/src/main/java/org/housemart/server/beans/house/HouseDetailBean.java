@@ -69,7 +69,10 @@ public class HouseDetailBean {
   private String msiteUrl = "";
   private String msiteTitle = "";
   private String msiteDesc = "";
-      
+  
+  private int saleStatus;
+  private int rentStatus;
+  
   public Integer getId() {
     return id;
   }
@@ -518,4 +521,20 @@ public class HouseDetailBean {
     this.msiteTitle = msiteTitle;
   }
 
+  public int getSaleStatus() {
+    return saleStatus;
+  }
+
+  public void setSaleStatus(int saleStatus) {
+    this.saleStatus = saleStatus;
+  }
+
+  public int getRentStatus() {
+    return rentStatus;
+  }
+
+  public void setRentStatus(int rentStatus) {
+    this.rentStatus = rentStatus;
+  }
+  
 }

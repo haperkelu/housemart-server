@@ -125,18 +125,18 @@ public class HouseController extends BaseController {
             "house/detailNew.controller", SizeType.Default));
         house.setResidencePicURLWithOriginSize(PicSizeUtils.URL2URLWithSize(house.getResidencePicURL(), clientUID,
             "house/detailNew.controller", SizeType.Large));
-        String saleRent;
-        if (StringUtils.isNotBlank(house.getTitle().trim())) {
-          saleRent = "sale";
-          house.setMsiteTitle(house.getResidenceName() + "," + house.getPrice());
-        } else {
+        String saleRent = "sale";
+        if (house.getRentStatus() == 1) {
           saleRent = "rent";
+          house.setMsiteTitle(house.getResidenceName() + "," + house.getPrice());
+        }
+        if (house.getSaleStatus() == 1) {
+          saleRent = "sale";
           house.setMsiteTitle(house.getResidenceName() + "," + house.getRentPrice());
         }
         house.setMsiteDesc(house.getRoomType() + "\n" + house.getArea() + "\n" + house.getPlateName());
         String mHouseDetailLink = resourceProvider.getValue("housemart.msite.host")
-            + MessageFormat.format(resourceProvider.getValue("housemart.msite.house.detail"), house.getId().toString(), clientUID,
-                saleRent);
+            + MessageFormat.format(resourceProvider.getValue("housemart.msite.house.detail"), house.getId().toString(), saleRent);
         house.setMsiteUrl(mHouseDetailLink);
       }
       if ((clientUID = this.getRequest().getParameter("clientUId")) != null
