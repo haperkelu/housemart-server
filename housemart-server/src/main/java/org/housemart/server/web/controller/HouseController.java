@@ -4,7 +4,9 @@
  */
 package org.housemart.server.web.controller;
 
+import java.text.DecimalFormat;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -18,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.housemart.framework.dao.generic.GenericDao;
+import org.housemart.framework.web.context.SpringContextHolder;
 import org.housemart.server.beans.HousePic;
 import org.housemart.server.beans.ResultBean;
 import org.housemart.server.beans.ResutlCodeEnum;
@@ -26,6 +29,7 @@ import org.housemart.server.beans.house.HouseDetailBean;
 import org.housemart.server.beans.house.HouseRentBean;
 import org.housemart.server.beans.house.HouseSaleBean;
 import org.housemart.server.dao.entities.GooglePlaceBaseEntity;
+import org.housemart.server.dao.entities.HouseAuditHistoryEntity;
 import org.housemart.server.dao.entities.HouseEntity;
 import org.housemart.server.dao.entities.HousePicEntity;
 import org.housemart.server.dao.entities.HousePicSortEntity;
@@ -38,6 +42,9 @@ import org.housemart.server.service.HouseService;
 import org.housemart.server.service.HouseServiceMock;
 import org.housemart.server.service.ResidenceService;
 import org.housemart.server.service.SearchService;
+import org.housemart.server.service.enums.AuditTypeEnum;
+import org.housemart.server.service.enums.RentSortType;
+import org.housemart.server.service.enums.SortType;
 import org.housemart.server.util.CommonUtils;
 import org.housemart.server.util.PicSizeUtils;
 import org.housemart.server.util.PicSizeUtils.SizeType;
@@ -71,6 +78,10 @@ public class HouseController extends BaseController {
   ResidenceService residenceService;
   @Autowired
   ResourceProvider resourceProvider;
+  @SuppressWarnings("rawtypes")
+  private GenericDao houseDao = SpringContextHolder.getBean("houseDao");
+  
+  DecimalFormat df_decimal_2 = new DecimalFormat("0.00");
   
   @SuppressWarnings({"unchecked", "rawtypes"})
   @RequestMapping(value = "house/status.controller")
@@ -742,6 +753,7 @@ public class HouseController extends BaseController {
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
     
     List<ResidenceEntity> residences = new ArrayList<ResidenceEntity>();
+    int brokerId = authenticationService.decodeBrokerId(secret);
     
     if (houseId != null) {
       // 根据houseId推荐
@@ -749,8 +761,6 @@ public class HouseController extends BaseController {
       if (house != null && house.getResidenceId() != null) {
         residenceId = house.getResidenceId();
       }
-      
-      int brokerId = authenticationService.decodeBrokerId(secret);
       
       residences = residenceService.getBrokerResidences(brokerId);
       
@@ -832,26 +842,37 @@ public class HouseController extends BaseController {
       
     } else {
       // 根据residenceId推荐
+      //
+      // if (type == 1) {
+      // // sale
+      // List<HouseSaleBean> saleList = new ArrayList<HouseSaleBean>();
+      //
+      // ResultBean rBean = (ResultBean) saleDetailedListByPosition(null, null,
+      // null, null, null, null, orderType, pageIndex,
+      // pageSize, null, residenceId).getModel().get("json");
+      // saleList = (List<HouseSaleBean>) rBean.getData();
+      //
+      // bean.setData(saleList);
+      // }
+      // if (type == 2) {
+      // // rent
+      // List<HouseRentBean> rentList = new ArrayList<HouseRentBean>();
+      //
+      // ResultBean rBean = (ResultBean) rentDetailedListByPosition(null, null,
+      // null, null, null, null, orderType, pageIndex,
+      // pageSize, null, residenceId).getModel().get("json");
+      // rentList = (List<HouseRentBean>) rBean.getData();
+      //
+      // bean.setData(rentList);
+      // }
       
-      if (type == 1) {
-        // sale
-        List<HouseSaleBean> saleList = new ArrayList<HouseSaleBean>();
-        
-        ResultBean rBean = (ResultBean) saleDetailedListByPosition(null, null, null, null, null, null, orderType, pageIndex,
-            pageSize, null, residenceId).getModel().get("json");
-        saleList = (List<HouseSaleBean>) rBean.getData();
-        
-        bean.setData(saleList);
-      }
-      if (type == 2) {
-        // rent
-        List<HouseRentBean> rentList = new ArrayList<HouseRentBean>();
-        
-        ResultBean rBean = (ResultBean) rentDetailedListByPosition(null, null, null, null, null, null, orderType, pageIndex,
-            pageSize, null, residenceId).getModel().get("json");
-        rentList = (List<HouseRentBean>) rBean.getData();
-        
-        bean.setData(rentList);
+      List<Object> houseList = houseList(brokerId, residenceId, pageIndex, pageSize, orderType, 1, type);
+      if (houseList != null) {
+        bean.setData(houseList);
+        bean.setCount(houseList.size());
+      } else {
+        bean.setData(new ArrayList<Object>());
+        bean.setCount(0);
       }
       
     }
@@ -1207,5 +1228,163 @@ public class HouseController extends BaseController {
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
     bean.setData(attributes);
     return new ModelAndView("jsonView", "json", bean);
+  }
+  
+  public List<Object> houseList(int brokerId, Integer residenceId, Integer page, Integer pageSize, int order, Integer tabIndex,
+      Integer saleRent) {
+    
+    tabIndex = tabIndex == null ? 1 : tabIndex;
+    saleRent = saleRent == null ? 1 : saleRent;
+    page = page == null ? 0 : page;
+    pageSize = pageSize == null ? 50 : pageSize;
+    
+    Map<Object,Object> map = new HashMap<Object,Object>();
+    if (residenceId != null && residenceId > 0) {
+      map.put("residenceId", residenceId);
+    }
+    map.put("sourceType", HouseEntity.SourceTypeEnum.external.value);
+    map.put("creator", brokerId);
+    
+    if (tabIndex == 1) {
+      // 上架
+      map.put("status", HouseEntity.StatusEnum.Valid.status);
+      map.put("onboard", true);
+      map.put("auditType", AuditTypeEnum.LoggingAudit.getValue());
+    } else if (tabIndex == 2) {
+      // 审核中, status = 0
+      map.put("status", HouseEntity.StatusEnum.Default.status);
+      map.put("auditResult", HouseAuditHistoryEntity.ResultEnum.Default.getValue());
+      map.put("auditType", AuditTypeEnum.LoggingAudit.getValue());
+    } else if (tabIndex == 3) {
+      // 拒绝
+      map.put("status", HouseEntity.StatusEnum.InvalidExt.status);
+      map.put("auditResult", HouseAuditHistoryEntity.ResultEnum.Reject.getValue());
+      map.put("auditType", AuditTypeEnum.LoggingAudit.getValue());
+    } else if (tabIndex == 4) {
+      // 下架
+      map.put("status", HouseEntity.StatusEnum.OffBoard.status);
+      map.put("auditType", AuditTypeEnum.OffboardAudit.getValue());
+    } else if (tabIndex == 5) {
+      // 未提交审核
+      map.put("status", HouseEntity.StatusEnum.Default.status);
+      map.put("auditResultNull", true);
+      map.put("auditTypeNull", true);
+    }
+    
+    if (saleRent.equals(2)) {
+      map.put("rentStatus", 1);
+    } else if (saleRent.equals(1)) {
+      map.put("saleStatus", 1);
+    }
+    
+    if (saleRent.equals(1)) {
+      SortType sortType = SortType.typeOf(order);
+      if (sortType != null) {
+        switch (sortType) {
+          case onboardTime:
+            map.put("orderByClause", "onboardTime DESC");
+            break;
+          case price:
+            map.put("orderByClause", "salePrice DESC");
+            break;
+          case avg:
+            map.put("orderByClause", "avg DESC");
+            break;
+          case area:
+            map.put("orderByClause", "area DESC");
+            break;
+          default:
+            map.put("orderByClause", "onboardTime DESC");
+        }
+      }
+      
+    } else if (saleRent.equals(2)) {
+      RentSortType sortType = RentSortType.typeOf(order);
+      switch (sortType) {
+        case onboardTime:
+          map.put("orderByClause", "onboardTime DESC");
+          break;
+        case price:
+          map.put("orderByClause", "rentPrice DESC");
+          break;
+        case area:
+          map.put("orderByClause", "area DESC");
+          break;
+        default:
+          map.put("orderByClause", "onboardTime DESC");
+      }
+    }
+    
+    map.put("tabIndex", tabIndex);
+    
+    Integer totalCount = houseDao.count("countHouseExt", map);
+    
+    // for pagination query
+    map.put("skip", page);
+    map.put("count", pageSize);
+    
+    List<HouseEntity> houseList = (List<HouseEntity>) houseDao.select("findHouseExtList", map);
+    
+    List<Object> saleList = new ArrayList<Object>();
+    List<Object> rentList = new ArrayList<Object>();
+    
+    for (HouseEntity houseInfo : houseList) {
+      String address = houseInfo.getResidenceName();
+      
+      if (houseInfo.getBuildingNo() != null && houseInfo.getBuildingNo().length() > 0) {
+        address += " " + houseInfo.getBuildingNo() + "栋（号）";
+      }
+      
+      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+      
+      String onboardTimeStr = "";
+      String applyTimeStr = "";
+      String updateTimeStr = "";
+      
+      if (houseInfo.getStatus().equals(HouseEntity.StatusEnum.Valid.status)) {
+        onboardTimeStr = df.format(houseInfo.getOnboardTime());
+      }
+      
+      applyTimeStr = df.format(houseInfo.getApplyTime());
+      
+      updateTimeStr = df.format(houseInfo.getUpdateTime());
+      
+      if (saleRent.equals(1)) {
+        HouseSaleBean houseSale = houseInfo.getHouseSaleBean();
+        houseSale.setResidenceName(address);
+        houseSale.setOnboardTimeString(onboardTimeStr);
+        houseSale.setApplyTimeString(applyTimeStr);
+        houseSale.setAuditComments(houseInfo.getAuditComments());
+        houseSale.setUpdateTimeString(updateTimeStr);
+        if (houseInfo.getArea() != null) {
+          houseSale.setArea(String.valueOf(houseInfo.getArea().intValue()) + "平米");
+        } else {
+          houseSale.setArea("");
+        }
+        if (houseInfo.getAvg() != null) {
+          houseSale.setAvg(df_decimal_2.format((float) houseInfo.getAvg() / 10000) + "万/平米");
+        } else {
+          houseSale.setAvg("万/平米");
+        }
+        saleList.add(houseSale);
+      } else if (saleRent.equals(2)) {
+        HouseRentBean houseRent = houseInfo.getHouseRentBean();
+        houseRent.setResidenceName(address);
+        houseRent.setOnboardTimeString(onboardTimeStr);
+        houseRent.setApplyTimeString(applyTimeStr);
+        houseRent.setAuditComments(houseInfo.getAuditComments());
+        houseRent.setUpdateTimeString(updateTimeStr);
+        houseRent.setRentPrice(houseRent.getPrice());
+        
+        rentList.add(houseRent);
+      }
+    }
+    
+    if (saleRent.equals(1)) {
+      return saleList;
+    } else {
+      return rentList;
+    }
+    
   }
 }

@@ -96,6 +96,10 @@
 		<result property="applyTime" column="applyTime" nullValue="1900/01/01 00:00:00"/>
 		<result property="auditComments" column="auditComments" nullValue=""/>
 		<result property="updateTime" column="UpdateTime"  nullValue="1900/01/01 00:00:00"/>
+		<result property="avg" column="Avg" nullValue="0"/>
+		<result property="area" column="Area" nullValue="0"/>
+		<result property="regionName" column="RegionName" nullValue=""/>
+		<result property="plateName" column="PlateName" nullValue=""/>
 	</resultMap>
 	
 	<resultMap id="houseExt" class="org.housemart.server.dao.entities.HouseEntity">
@@ -353,16 +357,19 @@
 			R.Price rentPrice, R.RentStatus,
 			S.Price salePrice, S.SaleStatus,
 			RES.Name AS residenceName, 
-			REG.Name AS regionName, REG.CityID,
+			REG.Name AS plateName, REG.CityID,
+			RGN2.Name AS regionName, REG.CityID,
 			HAH.UpdateTime AS onboardTime,
 			HAH.AddTime AS applyTime,
 			HAH.Comments AS auditComments,
-			(SELECT HP.CloudURL FROM house_pic HP WHERE HP.HouseID = H.ID AND HP.Type in (2,3) AND HP.Status = 1 ORDER BY HP.TYPE DESC, HP.UpdateTime DESC LIMIT 0, 1) AS picURL
+			(SELECT HP.CloudURL FROM house_pic HP WHERE HP.HouseID = H.ID AND HP.Type in (2,3) AND HP.Status = 1 ORDER BY HP.TYPE DESC, HP.UpdateTime DESC LIMIT 0, 1) AS picURL,
+			H.PropertyArea area,  floor(S.Price/H.PropertyArea) avg
 		FROM house AS H 
 		LEFT JOIN house_rent AS R ON H.ID = R.HouseID
 		LEFT JOIN house_sale AS S ON H.ID = S.HouseID
 		LEFT JOIN residence AS RES ON H.ResidenceID = RES.ID
 		LEFT JOIN region AS REG ON REG.RegionID = RES.RegionID
+		LEFT JOIN region AS RGN2 ON RGN2.RegionID = REG.parentID
 		<isNotNull property="auditType"> 
 		LEFT JOIN house_audit_history AS HAH ON HAH.HouseID = H.ID AND HAH.AddTime = (
 			SELECT MAX(AddTime) FROM house_audit_history WHERE HouseID = H.ID AND Type = #auditType#
