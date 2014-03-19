@@ -50,7 +50,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class MapSearchController extends BaseController {
-	
+  
   private static final Logger LOGGER = LoggerFactory.getLogger(MapSearchController.class);
   @SuppressWarnings("rawtypes")
   @Autowired
@@ -73,35 +73,35 @@ public class MapSearchController extends BaseController {
   // http://localhost:8080/house/residenceSale/mapSearchNew.controller?lat=31.1829450&lng=121.5204490&range=6000&pageIndex=1&pageSize=5
   @Scope("request")
   @RequestMapping(value = "house/residenceSale/mapSearchNew.controller")
-  public ModelAndView residenceSaleListByMap(final double lat, final double lng,  int range,
-       int pageIndex,  int pageSize) {
-	  
-	ExecutorService singleThreadPool =  Executors.newSingleThreadExecutor();  
-	Future<String> future = singleThreadPool.submit(new Callable<String>() {
-
-		@Override
-		public String call() throws Exception {
-			
-			if(lng < 0) {
-				List<AreaPositionEntity> list = RegionComlexData.getPlates();
-				if(!CollectionUtils.isEmpty(list)){
-					boolean isWithin = false;
-					for(AreaPositionEntity item: list){
-						double distance = MapSearchUtils.getDistance(lat, lng, Double.parseDouble(item.getLat()), Double.parseDouble(item.getLng()));
-						if(distance <= 1000 * 5){
-							return "CA";
-						}
-					}
-				}
-			} else {
-				String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
-				return cityCode;
-			}			
-			return "";
-		}
-		
-	}); 
-	  
+  public ModelAndView residenceSaleListByMap(final double lat, final double lng, int range, int pageIndex, int pageSize) {
+    
+    ExecutorService singleThreadPool = Executors.newSingleThreadExecutor();
+    Future<String> future = singleThreadPool.submit(new Callable<String>() {
+      
+      @Override
+      public String call() throws Exception {
+        
+        if (lng < 0) {
+          List<AreaPositionEntity> list = RegionComlexData.getPlates();
+          if (!CollectionUtils.isEmpty(list)) {
+            boolean isWithin = false;
+            for (AreaPositionEntity item : list) {
+              double distance = MapSearchUtils.getDistance(lat, lng, Double.parseDouble(item.getLat()),
+                  Double.parseDouble(item.getLng()));
+              if (distance <= 1000 * 5) {
+                return "CA";
+              }
+            }
+          }
+        } else {
+          String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
+          return cityCode;
+        }
+        return "";
+      }
+      
+    });
+    
     GooglePlaceBaseEntity[] gEntities = new GooglePlaceBaseEntity[0];
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
     int totalCount = 0;
@@ -118,67 +118,73 @@ public class MapSearchController extends BaseController {
         Set<Integer> deDuplicate = new HashSet<Integer>();
         
         for (GooglePlaceBaseEntity gEntity : gEntities) {
-          if (!deDuplicate.contains(gEntity.getResidenceId())) {
-            ResidenceEntity rEntity = (ResidenceEntity) residenceDao.load("loadResidence", gEntity.getResidenceId());
-            if (rEntity != null) {
-              if (rEntity.getZombie() == 1 || (rEntity.getOnSaleCount() < 1 && rEntity.getForceShow() != ForceShowEnum.Show.value)) {
-                continue;
-              }
-              
-              MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
-              residenceService.getPriceStrategy().populatePrice(rEntity, trends);
-              
-              ResidenceBean rBean = ResidenceUtils.residenceEntity2Bean(rEntity);
-              // Sort
-              List<HousePicEntity> list = searchService.findResidencePicWithSort(gEntity.getResidenceId());
-              String[] picURLs = null;
-              if (CollectionUtils.isNotEmpty(list)) {
-                picURLs = new String[list.size()];
-                for (int i = 0; i < list.size(); i++) {
-                  picURLs[i] = list.get(i).getCloudUrl();
+          try {
+            if (!deDuplicate.contains(gEntity.getResidenceId())) {
+              ResidenceEntity rEntity = (ResidenceEntity) residenceDao.load("loadResidence", gEntity.getResidenceId());
+              if (rEntity != null) {
+                if (rEntity.getZombie() == 1
+                    || (rEntity.getOnSaleCount() < 1 && rEntity.getForceShow() != ForceShowEnum.Show.value)) {
+                  continue;
                 }
-              } else {
-                picURLs = rBean.getPicURL();
+                
+                MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
+                residenceService.getPriceStrategy().populatePrice(rEntity, trends);
+                
+                ResidenceBean rBean = ResidenceUtils.residenceEntity2Bean(rEntity);
+                // Sort
+                List<HousePicEntity> list = searchService.findResidencePicWithSort(gEntity.getResidenceId());
+                String[] picURLs = null;
+                if (CollectionUtils.isNotEmpty(list)) {
+                  picURLs = new String[list.size()];
+                  for (int i = 0; i < list.size(); i++) {
+                    picURLs[i] = list.get(i).getCloudUrl();
+                  }
+                } else {
+                  picURLs = rBean.getPicURL();
+                }
+                rBean.setPicURL(picURLs);
+                
+                if (rEntity.getLat() != null && rEntity.getLng() != null) {
+                  rBean.setDistance(df_decimal_1.format(MapSearchUtils.getDistance(lat, lng, Double.valueOf(rEntity.getLat()),
+                      Double.valueOf(rEntity.getLng())) / 1000) + "公里");
+                }
+                if (clientUID != null) {
+                  rBean.setIsFollow(UserInfoData.getInstance().isUserFollowResidence(gEntity.getResidenceId(), clientUID));
+                  rBean.setPicURLWithSize(PicSizeUtils.URL2URLWithSize(picURLs, clientUID,
+                      "house/residenceSale/mapSearchNew.controller", SizeType.Default));
+                }
+                
+                rBeans.add(rBean);
+                deDuplicate.add(gEntity.getResidenceId());
               }
-              rBean.setPicURL(picURLs);
-              
-              if (rEntity.getLat() != null && rEntity.getLng() != null) {
-                rBean.setDistance(df_decimal_1.format(MapSearchUtils.getDistance(lat, lng, Double.valueOf(rEntity.getLat()),
-                    Double.valueOf(rEntity.getLng())) / 1000)
-                    + "公里");
-              }
-              if (clientUID != null) {
-                rBean.setIsFollow(UserInfoData.getInstance().isUserFollowResidence(gEntity.getResidenceId(), clientUID));
-                rBean.setPicURLWithSize(PicSizeUtils.URL2URLWithSize(picURLs, clientUID,
-                    "house/residenceSale/mapSearchNew.controller", SizeType.Default));
-              }
-              
-              rBeans.add(rBean);
-              deDuplicate.add(gEntity.getResidenceId());
             }
+            
+          } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
           }
         }
       }
     } catch (Exception e) {
-    	LOGGER.error(e.getMessage(), e);
+      LOGGER.error(e.getMessage(), e);
     }
     CurrenCityBean currentCity = new CurrenCityBean();
     currentCity.setBizTag("Current City");
     try {
-		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
-		if(cityCode.equalsIgnoreCase("289")){
-			currentCity.setCityID(1);
-			currentCity.setBizTag("上海");
-		} else if(cityCode.equalsIgnoreCase("CA")){
-			currentCity.setCityID(2);
-			currentCity.setBizTag("南加州");
-		}else {
-			currentCity.setCityID(-1);
-		};
-	} catch(Exception e) {
-		LOGGER.error(e.getMessage(), e);
-		currentCity.setCityID(1);
-	}
+      String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
+      if (cityCode.equalsIgnoreCase("289")) {
+        currentCity.setCityID(1);
+        currentCity.setBizTag("上海");
+      } else if (cityCode.equalsIgnoreCase("CA")) {
+        currentCity.setCityID(2);
+        currentCity.setBizTag("南加州");
+      } else {
+        currentCity.setCityID(-1);
+      }
+      ;
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage(), e);
+      currentCity.setCityID(1);
+    }
     ResultBean bean = new ResultBean();
     bean.setCount(rBeans.size());
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
@@ -241,37 +247,38 @@ public class MapSearchController extends BaseController {
   }
   
   // http://localhost:8080/house/residenceRent/mapSearchNew.controller?lat=31.1829450&lng=121.5204490&range=6000&pageIndex=1&pageSize=1
-  @Scope("request")  
+  @Scope("request")
   @RequestMapping(value = "house/residenceRent/mapSearchNew.controller")
-  public ModelAndView residenceRentListByMap(final @RequestParam double lat, final @RequestParam double lng, @RequestParam int range,
-      @RequestParam int pageIndex, @RequestParam int pageSize) {
+  public ModelAndView residenceRentListByMap(final @RequestParam double lat, final @RequestParam double lng,
+      @RequestParam int range, @RequestParam int pageIndex, @RequestParam int pageSize) {
     
-	ExecutorService singleThreadPool =  Executors.newSingleThreadExecutor();  
-	Future<String> future = singleThreadPool.submit(new Callable<String>() {
-
-		@Override
-		public String call() throws Exception {
-			if(lng < 0) {
-				List<AreaPositionEntity> list = RegionComlexData.getPlates();
-				if(!CollectionUtils.isEmpty(list)){
-					boolean isWithin = false;
-					for(AreaPositionEntity item: list){
-						double distance = MapSearchUtils.getDistance(lat, lng, Double.parseDouble(item.getLat()), Double.parseDouble(item.getLng()));
-						if(distance <= 1000 * 5){
-							return "CA";
-						}
-					}
-				}
-			} else {
-				String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
-				return cityCode;
-			}			
-			return "";
-		}
-		
-	}); 
-		    
-	GooglePlaceBaseEntity[] gEntities = new GooglePlaceBaseEntity[0];
+    ExecutorService singleThreadPool = Executors.newSingleThreadExecutor();
+    Future<String> future = singleThreadPool.submit(new Callable<String>() {
+      
+      @Override
+      public String call() throws Exception {
+        if (lng < 0) {
+          List<AreaPositionEntity> list = RegionComlexData.getPlates();
+          if (!CollectionUtils.isEmpty(list)) {
+            boolean isWithin = false;
+            for (AreaPositionEntity item : list) {
+              double distance = MapSearchUtils.getDistance(lat, lng, Double.parseDouble(item.getLat()),
+                  Double.parseDouble(item.getLng()));
+              if (distance <= 1000 * 5) {
+                return "CA";
+              }
+            }
+          }
+        } else {
+          String cityCode = BaiduAPIWrapper.invokeRequestCityCodeByLatLng(String.valueOf(lat), String.valueOf(lng));
+          return cityCode;
+        }
+        return "";
+      }
+      
+    });
+    
+    GooglePlaceBaseEntity[] gEntities = new GooglePlaceBaseEntity[0];
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
     try {
       gEntities = searchService.searchGooglePlace(lat, lng, range, false, true);
@@ -314,25 +321,26 @@ public class MapSearchController extends BaseController {
         }
       }
     } catch (Exception e) {
-    	LOGGER.error(e.getMessage(), e);
+      LOGGER.error(e.getMessage(), e);
     }
     CurrenCityBean currentCity = new CurrenCityBean();
     currentCity.setBizTag("Current City");
     try {
-		String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
-		if(cityCode.equalsIgnoreCase("289")){
-			currentCity.setCityID(1);
-			currentCity.setBizTag("上海");
-		} else if(cityCode.equalsIgnoreCase("CA")){
-			currentCity.setCityID(2);
-			currentCity.setBizTag("南加州");
-		}else {
-			currentCity.setCityID(-1);
-		};
-	} catch(Exception e) {
-		LOGGER.error(e.getMessage(), e);
-		currentCity.setCityID(1);
-	}
+      String cityCode = future.get(1000, TimeUnit.MILLISECONDS);
+      if (cityCode.equalsIgnoreCase("289")) {
+        currentCity.setCityID(1);
+        currentCity.setBizTag("上海");
+      } else if (cityCode.equalsIgnoreCase("CA")) {
+        currentCity.setCityID(2);
+        currentCity.setBizTag("南加州");
+      } else {
+        currentCity.setCityID(-1);
+      }
+      ;
+    } catch (Exception e) {
+      LOGGER.error(e.getMessage(), e);
+      currentCity.setCityID(1);
+    }
     ResultBean bean = new ResultBean();
     bean.setCount(rBeans.size());
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
