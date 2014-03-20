@@ -116,6 +116,11 @@ public class BasicDataController {
 		bean2.setOverseaCity(true);
 		bean2.setHotCity(true);
 		list.add(bean2);
+		CityBean bean3 = new CityBean(3, "北加州");
+		bean2.setDefaultCity(false);
+		bean2.setOverseaCity(true);
+		bean2.setHotCity(true);
+		list.add(bean3);
 		bean.setData(list);
 		bean.setCode(ResutlCodeEnum.SUCCESS.getType());
 		bean.setVersion("5.1");
