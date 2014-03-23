@@ -420,9 +420,20 @@ public class MapSearchController extends BaseController {
       RegionExtEntity r = rO == null ? null : (RegionExtEntity) rO;
       
       if (r != null) {
+        if(r.getCityId().equals("1")){
+          r.setCityName("上海");
+        }
+        if(r.getCityId().equals("2")){
+          r.setCityName("南加州");
+        }
+        if(r.getCityId().equals("3")){
+          r.setCityName("北加州");
+        }
         plate.setId(r.getId());
         plate.setName(r.getCityName() + " " + r.getParentName() + " " + r.getName());
         plate.setLevel(r.getLevel());
+        
+        
       }
     }
     bean.setData(plate);
