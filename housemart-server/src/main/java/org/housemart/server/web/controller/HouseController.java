@@ -139,11 +139,11 @@ public class HouseController extends BaseController {
         String saleRent = "sale";
         if (house.getRentStatus() == 1) {
           saleRent = "rent";
-          house.setMsiteTitle(house.getResidenceName() + "," + house.getPrice());
+          house.setMsiteTitle(house.getResidenceName() + "," + house.getRentPrice());
         }
         if (house.getSaleStatus() == 1) {
           saleRent = "sale";
-          house.setMsiteTitle(house.getResidenceName() + "," + house.getRentPrice());
+          house.setMsiteTitle(house.getResidenceName() + "," + house.getPrice());
         }
         house.setMsiteDesc(house.getRoomType() + "\n" + house.getArea() + "\n" + house.getPlateName());
         String mHouseDetailLink = resourceProvider.getValue("housemart.msite.host")
