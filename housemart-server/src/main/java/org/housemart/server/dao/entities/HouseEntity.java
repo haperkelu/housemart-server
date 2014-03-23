@@ -826,7 +826,7 @@ public class HouseEntity {
     detail.setRegionId(getRegionId() == null ? 0 : getRegionId());
     
     if (getRentPrice() != null) {
-      detail.setRentPrice("￥" + getRentPrice().toString() + "元/月");
+      detail.setRentPrice("￥" + getRentPrice().toString() + "/月");
     } else {
       detail.setRentPrice("");
     }
@@ -943,8 +943,8 @@ public class HouseEntity {
       rent.setResidencePicURL(new String[0]);
     }
     
-    if (getPrice() != null) rent.setPrice(getRentPrice().toString() + "元/月");
-    else rent.setPrice("元/月");
+    if (getPrice() != null) rent.setPrice(getRentPrice().toString() + "/月");
+    else rent.setPrice("/月");
     
     rent.setRentStatus(getRentStatus() == null ? 0 : getRentStatus());
     
