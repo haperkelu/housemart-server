@@ -140,8 +140,7 @@ public class HouseController extends BaseController {
         if (house.getRentStatus() == 1) {
           saleRent = "rent";
           house.setMsiteTitle(house.getResidenceName() + "," + house.getRentPrice());
-        }
-        if (house.getSaleStatus() == 1) {
+        } else {
           saleRent = "sale";
           house.setMsiteTitle(house.getResidenceName() + "," + house.getPrice());
         }
