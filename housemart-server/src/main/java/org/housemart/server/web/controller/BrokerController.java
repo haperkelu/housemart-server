@@ -683,7 +683,6 @@ public class BrokerController extends BaseController {
 		String clientUId = brokerInfo.get("clientUId");
 		
 		HouseEntity house = (HouseEntity) houseDao.load("loadHouse", id);
-		HouseDetailBean houseDetail = house.getHouseDetailBean();
 		
 		if (house.getCreator() != null && house.getCreator().equals(brokerId))
 		{
@@ -697,6 +696,8 @@ public class BrokerController extends BaseController {
 			house.setRegionName(residence.getRegionName());
 			house.setPlateName(residence.getPlateName());
 			house.setAddress(residence.getAddress() + " " + house.getBuildingNo() + "号");
+			
+			HouseDetailBean houseDetail = house.getHouseDetailBean();
 			
 			Map<String, Object> houseMap = new HashMap<String, Object>();
 			houseMap.put("id", house.getId());
