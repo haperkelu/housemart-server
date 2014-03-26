@@ -215,7 +215,7 @@ public class MapSearchController extends BaseController {
     int skip = PageUtils.generateSkipNumber(pageIndex, pageSize);
     param.put("skip", skip);
     param.put("count", pageSize);
-    totalCount = residenceDao.count("countResidence", param);
+//    totalCount = residenceDao.count("countResidence", param);
     List<ResidenceEntity> rEntities = (List<ResidenceEntity>) residenceDao.select("findResidence", param);
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
     
