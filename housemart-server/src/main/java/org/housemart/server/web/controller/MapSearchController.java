@@ -223,9 +223,9 @@ public class MapSearchController extends BaseController {
       
       String clientUID = this.getRequest().getParameter("clientUId");
       for (ResidenceEntity rEntity : rEntities) {
-        if (rEntity.getOnSaleCount() < 1) {
-          continue;
-        }
+//        if (rEntity.getOnSaleCount() < 1) {
+//          continue;
+//        }
         
         // month trend
         MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
@@ -363,20 +363,22 @@ public class MapSearchController extends BaseController {
     if (regionId > 0) param.put("regionId", regionId);
     if (plateId > 0) param.put("plateId", plateId);
     param.put("onRentCount", 1);
+    
+    int skip = PageUtils.generateSkipNumber(pageIndex, pageSize);
+    param.put("skip", skip);
+    param.put("count", pageSize);
+//    totalCount = residenceDao.count("countResidence", param);
+    
     List<ResidenceEntity> rEntities = (List<ResidenceEntity>) residenceDao.select("findResidence", param);
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
     
     if (CollectionUtils.isNotEmpty(rEntities)) {
       
-      int skip = PageUtils.generateSkipNumber(pageIndex, pageSize);
-      int size = PageUtils.generateSize(rEntities.size(), skip, pageSize);
-      rEntities = rEntities.subList(skip, skip + size);
-      
       String clientUID = this.getRequest().getParameter("clientUId");
       for (ResidenceEntity rEntity : rEntities) {
-        if (rEntity.getOnRentCount() < 1) {
-          continue;
-        }
+//        if (rEntity.getOnRentCount() < 1) {
+//          continue;
+//        }
         
         // month trend
         MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
