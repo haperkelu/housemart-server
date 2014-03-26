@@ -180,6 +180,7 @@ public class HouseController extends BaseController {
       @RequestParam Integer pageIndex, @RequestParam Integer pageSize) {
     ResultBean bean = new ResultBean();
     SearchResultBean<HouseSaleBean> saleList = null;
+    Map<String, Object> extData = new HashMap<String, Object>();
     try {
       saleList = houseService.findResidenceSaleHouse(HouseEntity.SaleStatusEnum.Saling.saleStatus, residenceId, orderType,
           pageIndex, pageSize);
@@ -192,7 +193,6 @@ public class HouseController extends BaseController {
       
       UserInfoData data = UserInfoData.getInstance();
       String clientUID;
-      Map<String, Object> extData = new HashMap<String, Object>();
       
       if ((clientUID = this.getRequest().getParameter("clientUId")) != null) {
         for (HouseSaleBean item : saleList.getData()) {
@@ -317,7 +317,7 @@ public class HouseController extends BaseController {
     ResultBean bean = new ResultBean();
     SearchResultBean<HouseRentBean> rentList = new SearchResultBean<HouseRentBean>();
     rentList.setData(new ArrayList<HouseRentBean>());
-    
+    Map<String, Object> extData = new HashMap<String, Object>();
     try {
       rentList = houseService.findResidenceRentHouse(HouseEntity.RentStatusEnum.Renting.value, residenceId, orderType, pageIndex,
           pageSize);
@@ -329,7 +329,6 @@ public class HouseController extends BaseController {
       }
       
       UserInfoData data = UserInfoData.getInstance();
-      Map<String, Object> extData = new HashMap<String, Object>();
       
       String clientUID;
       if ((clientUID = this.getRequest().getParameter("clientUId")) != null) {
