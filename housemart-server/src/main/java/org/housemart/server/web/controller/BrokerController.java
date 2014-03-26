@@ -734,7 +734,7 @@ public class BrokerController extends BaseController {
 				houseMap.put("msiteTitle", houseDetail.getResidenceName() + "," + houseDetail.getPrice());
 				
 			}
-			if (rent != null)
+			else if (rent != null)
 			{
 				houseMap.put("rentPrice", HouseEntity.formatFloat(rent.getPriceValue()));
 				houseMap.put("tags", rent.getTagList());
