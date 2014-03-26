@@ -188,12 +188,47 @@
 	            <![CDATA[ (OnRentCount >= #onRentCount# OR ForceShow = 1)]]> 
 	        </isNotNull>
 	    </dynamic>
-	    <isNotNull property="keyword"> 
+        <include refid="common.limit" />
+        <isNotNull property="keyword"> 
             ORDER BY concat((rd.name like '$keyword$'), (IF(rd.AliasName IS NULL , '', rd.AliasName) like '$keyword$'))  desc
-        </isNotNull> 
-        Limit 200
+        </isNotNull> 	
 	</select>
 	
+	<select id="countResidence" resultClass="int" parameterClass="map">
+		SELECT count(*) FROM (
+			SELECT
+			rd.ForceShow, 
+			(SELECT count(Distinct HouseID) FROM basedata.house_sale S LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = S.HouseID
+				WHERE rd.ID = H.ResidenceID AND S.SaleStatus = 1) OnSaleCount,
+			(SELECT count(Distinct HouseID) FROM basedata.house_rent R LEFT JOIN ( <include refid="allValideHouses"/> ) H ON H.ID = R.HouseID
+				WHERE rd.ID = H.ResidenceID AND R.RentStatus = 1) OnRentCount
+			FROM residence AS rd
+			JOIN region AS rg ON rd.RegionID = rg.RegionID
+			JOIN mobile.google_map_place_base AS mg ON rd.ID = mg.ResidenceID
+			LEFT JOIN residence_month_data AS md ON rd.ID = md.ResidenceID AND md.Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID) AND md.Month = (SELECT MAX(Month) FROM residence_month_data WHERE Year = (SELECT MAX(Year) FROM residence_month_data WHERE ResidenceID = rd.ID))
+			WHERE rd.status = 1  AND mg.IsMain = 1
+			<isNotNull prepend="AND" property="cityId"> 
+	            rg.CityID = #cityId#
+	        </isNotNull> 
+			<isNotNull prepend="AND" property="plateId"> 
+	            rg.RegionID = #plateId#
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="regionId"> 
+	            rg.ParentID = #regionId#  
+	        </isNotNull>
+	        <isNotNull prepend="AND" property="keyword"> 
+	            (rd.name like '$keyword$' OR rd.AliasName like '$keyword$')
+	        </isNotNull>        
+			<dynamic prepend="HAVING">
+				<isNotNull prepend="AND" property="onSaleCount"> 
+		            <![CDATA[ (OnSaleCount >= #onSaleCount# OR ForceShow = 1)]]> 
+		        </isNotNull>
+		        <isNotNull prepend="AND" property="onRentCount"> 
+		            <![CDATA[ (OnRentCount >= #onRentCount# OR ForceShow = 1)]]> 
+		        </isNotNull>
+		    </dynamic>
+		    ) as total
+	</select>
 	
 	<resultMap id="residencePrice" class="org.housemart.server.dao.entities.ResidenceEntity">
 		<result property="id" column="ID" />	
