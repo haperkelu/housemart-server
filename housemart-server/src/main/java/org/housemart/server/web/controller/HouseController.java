@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.housemart.framework.dao.generic.GenericDao;
 import org.housemart.framework.web.context.SpringContextHolder;
 import org.housemart.server.beans.HousePic;
+import org.housemart.server.beans.ResidenceDetail;
 import org.housemart.server.beans.ResultBean;
 import org.housemart.server.beans.ResutlCodeEnum;
 import org.housemart.server.beans.SearchResultBean;
@@ -47,6 +48,7 @@ import org.housemart.server.service.enums.RentSortType;
 import org.housemart.server.service.enums.SortType;
 import org.housemart.server.util.CommonUtils;
 import org.housemart.server.util.PicSizeUtils;
+import org.housemart.server.util.ResidenceUtils;
 import org.housemart.server.util.PicSizeUtils.SizeType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -190,6 +192,8 @@ public class HouseController extends BaseController {
       
       UserInfoData data = UserInfoData.getInstance();
       String clientUID;
+      Map<String, Object> extData = new HashMap<String, Object>();
+      
       if ((clientUID = this.getRequest().getParameter("clientUId")) != null) {
         for (HouseSaleBean item : saleList.getData()) {
           item.setIsFollow(data.isUserFollowHouse(item.getId(), 1, clientUID));
@@ -203,6 +207,25 @@ public class HouseController extends BaseController {
           item.setResidencePicURLWithOriginSize(PicSizeUtils.URL2URLWithSize(item.getResidencePicURL(), clientUID,
               "residenceSale/houseListNew.controller", SizeType.ResidenceLarge));
         }
+        
+        if (residenceId != null)
+        {
+        	List<HousePicEntity> list = searchService.findResidencePicWithSort(residenceId);
+        	String[] picURLs = null;
+            if (CollectionUtils.isNotEmpty(list))
+            {
+            	picURLs = new String[list.size()];
+            	for (int i = 0; i < list.size(); i++) 
+            	{
+            		picURLs[i] = list.get(i).getCloudUrl();
+            	}
+            	
+            	extData.put("residencePicURLWithSize", PicSizeUtils.URL2URLWithSize(picURLs, clientUID, 
+            			"residenceSale/houseListNew.controller", SizeType.ResidenceDefault));
+            	extData.put("residencePicURLWithOriginSize", PicSizeUtils.URL2URLWithSize(picURLs, clientUID, 
+            			"residenceSale/houseListNew.controller", SizeType.ResidenceLarge));
+            }
+        }
       }
       
     } catch (Exception e) {
@@ -212,10 +235,12 @@ public class HouseController extends BaseController {
     }
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
     bean.setData(saleList.getData());
+    bean.setExtData(extData);
     bean.setTotalCount(saleList.getTotalCount());
     if (CollectionUtils.isNotEmpty(saleList.getData())) {
       bean.setCount(CollectionUtils.size(saleList.getData()));
     }
+    
     return new ModelAndView("jsonView", "json", bean);
   }
   
@@ -304,6 +329,8 @@ public class HouseController extends BaseController {
       }
       
       UserInfoData data = UserInfoData.getInstance();
+      Map<String, Object> extData = new HashMap<String, Object>();
+      
       String clientUID;
       if ((clientUID = this.getRequest().getParameter("clientUId")) != null) {
         for (HouseRentBean item : rentList.getData()) {
@@ -318,14 +345,36 @@ public class HouseController extends BaseController {
           item.setResidencePicURLWithOriginSize(PicSizeUtils.URL2URLWithSize(item.getResidencePicURL(), clientUID,
               "residenceRent/houseListNew.controller", SizeType.ResidenceLarge));
         }
+        
+        if (residenceId != null)
+        {
+        	List<HousePicEntity> list = searchService.findResidencePicWithSort(residenceId);
+        	String[] picURLs = null;
+            if (CollectionUtils.isNotEmpty(list))
+            {
+            	picURLs = new String[list.size()];
+            	for (int i = 0; i < list.size(); i++) 
+            	{
+            		picURLs[i] = list.get(i).getCloudUrl();
+            	}
+            	
+            	extData.put("residencePicURLWithSize", PicSizeUtils.URL2URLWithSize(picURLs, clientUID, 
+            			"residenceSale/houseListNew.controller", SizeType.ResidenceDefault));
+            	extData.put("residencePicURLWithOriginSize", PicSizeUtils.URL2URLWithSize(picURLs, clientUID, 
+            			"residenceSale/houseListNew.controller", SizeType.ResidenceLarge));
+            }
+        }
       }
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       rentList = new SearchResultBean<HouseRentBean>();
       rentList.setData(new ArrayList<HouseRentBean>());
     }
+    
     bean.setCode(ResutlCodeEnum.SUCCESS.getType());
     bean.setData(rentList.getData());
+    bean.setExtData(extData);
+    
     bean.setTotalCount(rentList.getTotalCount());
     if (CollectionUtils.isNotEmpty(rentList.getData())) {
       bean.setCount(rentList.getData().size());
