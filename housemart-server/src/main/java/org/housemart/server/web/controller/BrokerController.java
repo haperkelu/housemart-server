@@ -311,11 +311,11 @@ public class BrokerController extends BaseController {
 			if (isClient) {
 				if (alias != null) {
 					map.put("type", 0);
+					map.put("brokerId", brokerId);
 					List<ClientNotesEntity> clientNoteList = (List<ClientNotesEntity>) clientNotesDao
 							.select("findClientNotes", map);
 
 					if (clientNoteList.size() == 1) {
-						map.put("brokerId", brokerId);
 						map.put("note", alias);
 						clientNotesDao.update("updateClientNotes", map);
 					} else {
