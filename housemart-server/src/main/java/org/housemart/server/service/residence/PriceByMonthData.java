@@ -89,6 +89,9 @@ public class PriceByMonthData implements IPriceStrategy {
       trends = new MonthTrend[finalMonthPrice.size()];
       int i = 0;
       for (Entry<Integer,Double> m : finalMonthPrice.entrySet()) {
+        if (m == null || m.getValue() == null) {
+          continue;
+        }
         int mInt = m.getKey();
         DecimalFormat df = new DecimalFormat("00");
         String mString = String.valueOf(mInt / 100) + "-" + df.format(mInt % 100);
