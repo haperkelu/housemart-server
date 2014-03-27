@@ -215,7 +215,7 @@ public class MapSearchController extends BaseController {
     int skip = PageUtils.generateSkipNumber(pageIndex, pageSize);
     param.put("skip", skip);
     param.put("count", pageSize);
-//    totalCount = residenceDao.count("countResidence", param);
+    // totalCount = residenceDao.count("countResidence", param);
     List<ResidenceEntity> rEntities = (List<ResidenceEntity>) residenceDao.select("findResidence", param);
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
     
@@ -223,14 +223,17 @@ public class MapSearchController extends BaseController {
       
       String clientUID = this.getRequest().getParameter("clientUId");
       for (ResidenceEntity rEntity : rEntities) {
-//        if (rEntity.getOnSaleCount() < 1) {
-//          continue;
-//        }
+        if (rEntity == null) {
+          continue;
+        }
         
-        // month trend
-        MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
-        residenceService.getPriceStrategy().populatePrice(rEntity, trends);
-        
+        try {
+          // month trend
+          MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
+          residenceService.getPriceStrategy().populatePrice(rEntity, trends);
+        } catch (Exception e) {
+          LOGGER.error(e.getMessage(), e);
+        }
         ResidenceBean rBean = ResidenceUtils.residenceEntity2Bean(rEntity);
         if (clientUID != null) {
           rBean.setIsFollow(UserInfoData.getInstance().isUserFollowResidence(rEntity.getId(), clientUID));
@@ -367,7 +370,7 @@ public class MapSearchController extends BaseController {
     int skip = PageUtils.generateSkipNumber(pageIndex, pageSize);
     param.put("skip", skip);
     param.put("count", pageSize);
-//    totalCount = residenceDao.count("countResidence", param);
+    // totalCount = residenceDao.count("countResidence", param);
     
     List<ResidenceEntity> rEntities = (List<ResidenceEntity>) residenceDao.select("findResidence", param);
     List<ResidenceBean> rBeans = new ArrayList<ResidenceBean>();
@@ -376,14 +379,17 @@ public class MapSearchController extends BaseController {
       
       String clientUID = this.getRequest().getParameter("clientUId");
       for (ResidenceEntity rEntity : rEntities) {
-//        if (rEntity.getOnRentCount() < 1) {
-//          continue;
-//        }
+        if (rEntity == null) {
+          continue;
+        }
         
         // month trend
-        MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
-        residenceService.getPriceStrategy().populatePrice(rEntity, trends);
-        
+        try {
+          MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
+          residenceService.getPriceStrategy().populatePrice(rEntity, trends);
+        } catch (Exception e) {
+          LOGGER.error(e.getMessage(), e);
+        }
         ResidenceBean rBean = ResidenceUtils.residenceEntity2Bean(rEntity);
         if (clientUID != null) {
           rBean.setIsFollow(UserInfoData.getInstance().isUserFollowResidence(rEntity.getId(), clientUID));
