@@ -34,7 +34,5 @@
         </dynamic> 
         ORDER BY Year DESC, Month DESC
 	</select>
-			
-	 
 		
 </sqlMap>

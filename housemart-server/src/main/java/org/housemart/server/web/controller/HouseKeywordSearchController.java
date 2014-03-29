@@ -16,12 +16,14 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.housemart.framework.dao.generic.GenericDao;
+import org.housemart.framework.web.context.SpringContextHolder;
 import org.housemart.server.beans.MonthTrend;
 import org.housemart.server.beans.MonthTrendWrapper;
 import org.housemart.server.beans.ResidenceBean;
 import org.housemart.server.beans.ResultBean;
 import org.housemart.server.beans.ResutlCodeEnum;
 import org.housemart.server.dao.entities.ResidenceEntity;
+import org.housemart.server.dao.entities.ResidenceMonthDataEntity;
 import org.housemart.server.dao.entities.ResidenceEntity.ForceShowEnum;
 import org.housemart.server.data.UserInfoData;
 import org.housemart.server.service.ResidenceService;
@@ -50,6 +52,9 @@ public class HouseKeywordSearchController extends BaseController {
   
   @Autowired
   private ResidenceService residenceService;
+  
+  @SuppressWarnings("rawtypes")
+  private GenericDao residenceMonthDataDao = SpringContextHolder.getBean("residenceMonthDataDao");
   
   @SuppressWarnings("unchecked")
   @RequestMapping(value = "house/searchKeyword.controller")
@@ -118,6 +123,18 @@ public class HouseKeywordSearchController extends BaseController {
       for (ResidenceEntity rEntity : rEntities) {
         if (rEntity.getZombie() == 1 || (rEntity.getOnSaleCount() < 1 && rEntity.getForceShow() != ForceShowEnum.Show.value)) {
           continue;
+        }
+        
+        // avgprice, turnover rate ..
+        Map<String,Object> monthDataParam = new HashMap<String,Object>();
+        monthDataParam.put("residenceId", rEntity.getId());
+        List<ResidenceMonthDataEntity> monthTrends = residenceMonthDataDao.select("findMonthData", monthDataParam);
+        if(monthTrends!=null && monthTrends.size() > 0 && monthTrends.get(0)!=null){
+          ResidenceMonthDataEntity monthData = monthTrends.get(0);
+          rEntity.setAnnualPriceIncrement(monthData.getAnnualPriceIncrement());
+          rEntity.setAnnualTurnoverRate(monthData.getAnnualTurnoverRate());
+          rEntity.setAnnualTurnoverPercent(monthData.getAnnualTurnoverPercent());
+          rEntity.setRentRevenue(monthData.getRentRevenue());
         }
         
         // month trend

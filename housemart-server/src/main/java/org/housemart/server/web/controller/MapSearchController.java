@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.housemart.framework.baiduapi.BaiduAPIWrapper;
 import org.housemart.framework.dao.generic.GenericDao;
+import org.housemart.framework.web.context.SpringContextHolder;
 import org.housemart.server.beans.CurrenCityBean;
 import org.housemart.server.beans.MonthTrendWrapper;
 import org.housemart.server.beans.ResidenceBean;
@@ -30,6 +31,7 @@ import org.housemart.server.dao.entities.HousePicEntity;
 import org.housemart.server.dao.entities.RegionEntity;
 import org.housemart.server.dao.entities.RegionExtEntity;
 import org.housemart.server.dao.entities.ResidenceEntity;
+import org.housemart.server.dao.entities.ResidenceMonthDataEntity;
 import org.housemart.server.dao.entities.ResidenceEntity.ForceShowEnum;
 import org.housemart.server.data.RegionComlexData;
 import org.housemart.server.data.UserInfoData;
@@ -67,6 +69,8 @@ public class MapSearchController extends BaseController {
   HouseService houseService;
   @Autowired
   ResidenceService residenceService;
+  @SuppressWarnings("rawtypes")
+  private GenericDao residenceMonthDataDao = SpringContextHolder.getBean("residenceMonthDataDao");
   
   private static DecimalFormat df_decimal_1 = new DecimalFormat("0.0");
   
@@ -228,6 +232,18 @@ public class MapSearchController extends BaseController {
         }
         
         try {
+          // avgprice, turnover rate ..
+          Map<String,Object> monthDataParam = new HashMap<String,Object>();
+          monthDataParam.put("residenceId", rEntity.getId());
+          List<ResidenceMonthDataEntity> monthTrends = residenceMonthDataDao.select("findMonthData", monthDataParam);
+          if(monthTrends!=null && monthTrends.size() > 0 && monthTrends.get(0)!=null){
+            ResidenceMonthDataEntity monthData = monthTrends.get(0);
+            rEntity.setAnnualPriceIncrement(monthData.getAnnualPriceIncrement());
+            rEntity.setAnnualTurnoverRate(monthData.getAnnualTurnoverRate());
+            rEntity.setAnnualTurnoverPercent(monthData.getAnnualTurnoverPercent());
+            rEntity.setRentRevenue(monthData.getRentRevenue());
+          }
+          
           // month trend
           MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
           residenceService.getPriceStrategy().populatePrice(rEntity, trends);
@@ -385,6 +401,18 @@ public class MapSearchController extends BaseController {
         
         // month trend
         try {
+          // avgprice, turnover rate ..
+          Map<String,Object> monthDataParam = new HashMap<String,Object>();
+          monthDataParam.put("residenceId", rEntity.getId());
+          List<ResidenceMonthDataEntity> monthTrends = residenceMonthDataDao.select("findMonthData", monthDataParam);
+          if(monthTrends!=null && monthTrends.size() > 0 && monthTrends.get(0)!=null){
+            ResidenceMonthDataEntity monthData = monthTrends.get(0);
+            rEntity.setAnnualPriceIncrement(monthData.getAnnualPriceIncrement());
+            rEntity.setAnnualTurnoverRate(monthData.getAnnualTurnoverRate());
+            rEntity.setAnnualTurnoverPercent(monthData.getAnnualTurnoverPercent());
+            rEntity.setRentRevenue(monthData.getRentRevenue());
+          }
+          
           MonthTrendWrapper trends = residenceService.getPriceStrategy().getResidenceMonthTrendWrapper(rEntity);
           residenceService.getPriceStrategy().populatePrice(rEntity, trends);
         } catch (Exception e) {
