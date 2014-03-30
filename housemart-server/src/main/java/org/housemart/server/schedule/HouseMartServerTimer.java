@@ -4,6 +4,8 @@
  */
 package org.housemart.server.schedule;
 
+import java.util.Timer;
+
 import org.housemart.server.schedule.tasks.APNSTask;
 import org.housemart.server.schedule.tasks.GooglePlaceIndexTask;
 import org.housemart.server.schedule.tasks.HouseIndexTask;
@@ -18,11 +20,11 @@ public class HouseMartServerTimer {
   
   public HouseMartServerTimer() {
     
-    //Timer timer = new Timer();
-    //timer.schedule(new HouseIndexTask(), 1000 * 5, INTERVAL * 2);
-    //timer.schedule(new GooglePlaceIndexTask(), 1000 * 20, INTERVAL * 48);
-    //timer.schedule(new APNSTask(), 1000 * 60, INTERVAL / 6);
-    //timer.schedule(new ResidencePriceTask(), 1000 * 5, INTERVAL * 48 * 10);
+    Timer timer = new Timer();
+    timer.schedule(new HouseIndexTask(), 1000 * 5, INTERVAL * 2);
+    timer.schedule(new GooglePlaceIndexTask(), 1000 * 20, INTERVAL * 48);
+    timer.schedule(new APNSTask(), 1000 * 60, INTERVAL / 6);
+    timer.schedule(new ResidencePriceTask(), 1000 * 5, INTERVAL * 48 * 10);
     
     final HouseIndexTask task1 = new HouseIndexTask();
     Thread t1 = new Thread(new Runnable() {
