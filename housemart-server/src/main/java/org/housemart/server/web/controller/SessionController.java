@@ -472,6 +472,11 @@ public class SessionController extends BaseController  {
 		if (secret != null)
 		{
 			realBrokerId = authenticationService.decodeBrokerId(secret);
+			
+			if (realBrokerId == 0)
+			{
+				realBrokerId = brokerId;
+			}
 		}
 		
 		HouseInteractionTransferExtEntity transfer = houseService.getInteractionTransfer(houseId, realBrokerId);
