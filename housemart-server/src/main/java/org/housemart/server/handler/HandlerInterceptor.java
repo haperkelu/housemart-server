@@ -15,17 +15,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
-import org.brilliance.middleware.client.ClientWrapper;
 import org.housemart.framework.dao.generic.GenericDao;
 import org.housemart.framework.web.context.SpringContextHolder;
-import org.housemart.rpc.stubs.log.UserAccessLoggerServiceStub;
 import org.housemart.server.concurrent.TheadServiceProvider;
 import org.housemart.server.dao.entities.ClientRegisterEntity;
+import org.housemart.server.dao.entities.UserAccessEntity;
 import org.housemart.server.service.AuthenticationService;
-import org.housemart.server.util.RPCUtils;
+import org.housemart.server.service.UserAccessService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 
@@ -35,19 +33,21 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  */
 public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 
-	private static final boolean SWITCH_RPC = false;
+	private static final boolean SWITCH_RPC = true;
 	
 	private static final ThreadLocal<StopWatch> threadSession = new ThreadLocal<StopWatch>(){
 	    protected synchronized StopWatch initialValue() {
 	        return new StopWatch();
 	      }
 	    }; 
+	/**
 	final static UserAccessLoggerServiceStub USER_ACCESS_REMOTE_INSTANCE = (UserAccessLoggerServiceStub) ClientWrapper.powerStub(UserAccessLoggerServiceStub.class, 
 			 RPCUtils.getDefaultRPCServer(), RPCUtils.getDefaultRPCServerPort());
 
+	**/
+	private UserAccessService userAccessService = SpringContextHolder.getBean("userAccessService");
 	    
-	@Autowired
-	AuthenticationService authenticationService = SpringContextHolder.getBean("authenticationService");
+	private AuthenticationService authenticationService = SpringContextHolder.getBean("authenticationService");
 	
 	@SuppressWarnings("rawtypes")
 	private GenericDao clientRegisterDao = SpringContextHolder.getBean("clientRegisterDao");
@@ -188,13 +188,23 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 		final String timeDiffStr = generateTimeDiffString(request, timeDiff);
 		
 		if(SWITCH_RPC == true){
+			
+			
+			
 			TheadServiceProvider.getThreadService().execute(new Runnable(){
 
 				@Override
 				public void run() {																						
 									
 					try {
-						USER_ACCESS_REMOTE_INSTANCE.access("Page Request Context", -1, URL, contextStr);				
+						//USER_ACCESS_REMOTE_INSTANCE.access("Page Request Context", -1, URL, contextStr);				
+						UserAccessEntity entity = new UserAccessEntity();
+						entity.setBizTag("Page Request Context");
+						entity.setUserId(-1);
+						entity.setUrl(URL);
+						entity.setAccessText(contextStr);
+						entity.setAddTime(Calendar.getInstance().getTime());
+						userAccessService.addUserAccess(entity);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}	
@@ -207,8 +217,15 @@ public class HandlerInterceptor  extends HandlerInterceptorAdapter {
 				@Override
 				public void run() {																						
 									
-					try {
-						USER_ACCESS_REMOTE_INSTANCE.access("Page Load Performance", -1, URL, timeDiffStr);
+					try {						
+						//USER_ACCESS_REMOTE_INSTANCE.access("Page Load Performance", -1, URL, timeDiffStr);
+						UserAccessEntity entity = new UserAccessEntity();
+						entity.setBizTag("Page Load Performance");
+						entity.setUserId(-1);
+						entity.setUrl(URL);
+						entity.setAccessText(timeDiffStr);
+						entity.setAddTime(Calendar.getInstance().getTime());
+						userAccessService.addUserAccess(entity);
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
 					}	

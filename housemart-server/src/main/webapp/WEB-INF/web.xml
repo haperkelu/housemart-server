@@ -10,7 +10,8 @@
 		<param-value>
                 classpath*:beans/spring-web-beans.xml,
                 classpath*:beans/spring-web-dao.xml,
-                classpath*:beans/spring-web-schedule.xml
+                classpath*:beans/spring-web-schedule.xml,
+                classpath*:beans/spring-jpa.xml
         </param-value>
 	</context-param>
 	<listener>
