@@ -24,7 +24,7 @@
     </bean>
     
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"> 
-        <property name="persistenceXmlLocation" value="classpath:persistence.xml"/>
+        <property name="persistenceXmlLocation" value="classpath:jpa-config.xml"/>
         <property name="persistenceUnitName" value="mysqlPersistence"/>
         <property name="dataSource" ref="jpaDataSource"/>
 
