@@ -8,11 +8,15 @@
 */
 package org.housemart.dao;
 
+import java.util.Date;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+
 import org.housemart.framework.web.context.SpringContextHolder;
 import org.housemart.server.dao.entities.UserAccessEntity;
+import org.housemart.server.service.UserAccessService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +31,20 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 public class UserAccessTestcase {
 
 	@Test
+	public void test1() {
+		
+		UserAccessService userAccessService = SpringContextHolder.getBean("userAccessService");
+		UserAccessEntity test = new UserAccessEntity();
+        test.setBizTag("222");
+        test.setUserId(1);
+        test.setUrl("http://");
+        test.setAccessText("text");
+        test.setAddTime(new Date());
+		userAccessService.addUserAccess(test);
+		System.out.println(test.getId());
+	}
+	
+	
 	public void test() {
 		
 		EntityManagerFactory emf =  SpringContextHolder.getBean("entityManagerFactory");              

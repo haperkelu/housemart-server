@@ -23,6 +23,12 @@
 			<groupId>org.housemart</groupId>
 			<artifactId>housemart-framework</artifactId>
 			<version>0.0.9-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>spring-orm</artifactId>
+					<groupId>org.springframework</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
@@ -130,11 +136,6 @@
 			<artifactId>derby</artifactId>
 			<version>10.8.2.2</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-orm</artifactId>
-			<version>3.0.5.RELEASE</version>
 		</dependency>
 	</dependencies>
 	<properties>
