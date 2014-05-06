@@ -233,6 +233,9 @@
 		<isNotNull prepend="AND" property="lastID"> 
              <![CDATA[ ID <= #lastID# AND Status = 0 ]]>
         </isNotNull>
+        <isNull prepend="AND" property="lastID"> 
+             Status = 0
+        </isNull>
 	</update>
 	
 	<update id="deleteHouseChatMessage" parameterClass="uniqueObject">

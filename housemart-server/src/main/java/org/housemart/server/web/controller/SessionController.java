@@ -247,6 +247,11 @@ public class SessionController extends BaseController  {
 				//客户端
 				map.put("houseID", houseId);
 			}
+			else
+			{
+				//经纪人
+				map.put("clientUId", clientUId);
+			}
 			map.put(fromTo == 2 ? "brokerID" : "realBrokerID", brokerId);
 			map.put("transferBrokerID", transferBrokerId);
 			map.put("lastID", messageId);
@@ -549,6 +554,21 @@ public class SessionController extends BaseController  {
 			map.put("messageId", messageId);
 		
 			bean.setData(map);
+			
+			if (realBrokerId == 0)
+			{
+				map = new HashMap<Object, Object>();
+				map.put("clientUId", clientUId);
+				map.put("realBrokerID", brokerId);
+				map.put("houseID", houseId);
+				map.put("updateTime", new Date());
+				map.put("status", 1);
+				map.put("type", type);
+				map.put("fromTo", 1);
+		
+				houseChatMessageDao.update("updateHouseChatMessageStatus", map);
+			}
+			
 		}
 			
 		return new ModelAndView("jsonView", "json", bean);
