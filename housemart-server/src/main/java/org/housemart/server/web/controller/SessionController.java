@@ -191,6 +191,7 @@ public class SessionController extends BaseController  {
 				msgBean.setFormat(msg.getFormat());
 				msgBean.setType(msg.getType());
 				msgBean.setHouseId(msg.getHouseID());
+				msgBean.setStatus(msg.getStatus());
 				
 				list.add(msgBean);
 				

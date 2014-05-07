@@ -12,6 +12,7 @@ public class ChatMessageBean {
 	private int format;
 	private int type;
 	private int houseId;
+	private int status;
 	
 	public int getMessageId() {
 		return messageId;
@@ -73,5 +74,12 @@ public class ChatMessageBean {
 	public void setBrokerPicURL(String brokerPicURL) {
 		this.brokerPicURL = brokerPicURL;
 	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
 	
 }
