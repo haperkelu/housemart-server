@@ -127,7 +127,7 @@
 		<result property="memo" column="Memo" nullValue=""/>
 		<result property="buildDate" column="BuildTime" nullValue="1900/01/01 00:00:00"/>
 		<result property="creator" column="Creator" nullValue="-1"/>
-		<result property="area" column="Area" nullValue="0"/>
+		<result property="area" column="PropertyArea" nullValue="0"/>
 	</resultMap>
 	
 	<resultMap id="houseSale" class="org.housemart.server.dao.entities.HouseSale">
