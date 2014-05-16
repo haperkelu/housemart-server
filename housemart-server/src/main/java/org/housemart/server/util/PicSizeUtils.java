@@ -33,8 +33,9 @@ public class PicSizeUtils {
   // aHR0cDovL2hvdXNlbWFydC5xaW5pdWRuLmNvbS93YXRlcm1hcmslMjAwNF8xMzgxNDA0MTg1MTk0LnBuZw==
   // total
   // http://qiniuphotos.qiniudn.com/gogopher.jpg?watermark/1/image/aHR0cDovL2hvdXNlbWFydC5xaW5pdWRuLmNvbS93YXRlcm1hcmslMjAwNF8xMzgxNDA0MTg1MTk0LnBuZw==/dissolve/100/gravity/Center
-  
-  private static String SUFIX_WATER_MASK = "|watermark/1/image/aHR0cDovL2hvdXNlbWFydC5xaW5pdWRuLmNvbS93YXRlcm1hcmslMjAwNF8xMzgxNDA0MTg1MTk0LnBuZw==/dissolve/100/gravity/Center";
+  private static boolean ENABLE_WATER_MASK = false;  
+  private static String SUFIX_WATER_MASK = !ENABLE_WATER_MASK ? StringUtils.EMPTY:
+		  "|watermark/1/image/aHR0cDovL2hvdXNlbWFydC5xaW5pdWRuLmNvbS93YXRlcm1hcmslMjAwNF8xMzgxNDA0MTg1MTk0LnBuZw==/dissolve/100/gravity/Center";
   
   private static AuthenticationService clientInfoService = SpringContextHolder.getBean("authenticationService");
   
