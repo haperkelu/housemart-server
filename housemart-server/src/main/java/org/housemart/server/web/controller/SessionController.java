@@ -560,6 +560,7 @@ public class SessionController extends BaseController  {
 			{
 				map = new HashMap<Object, Object>();
 				map.put("clientUId", clientUId);
+				map.put("transferBrokerID", brokerId);
 				map.put("realBrokerID", brokerId);
 				map.put("houseID", houseId);
 				map.put("updateTime", new Date());
