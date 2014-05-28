@@ -475,6 +475,8 @@ public class SessionController extends BaseController  {
 		
 		int realBrokerId = brokerId;
 		
+		boolean isAdmin = false;
+		
 		if (secret != null)
 		{
 			realBrokerId = authenticationService.decodeBrokerId(secret);
@@ -482,6 +484,7 @@ public class SessionController extends BaseController  {
 			if (realBrokerId == 0)
 			{
 				realBrokerId = brokerId;
+				isAdmin = true;
 			}
 		}
 		
@@ -556,12 +559,11 @@ public class SessionController extends BaseController  {
 		
 			bean.setData(map);
 			
-			if (realBrokerId == 0)
+			if (isAdmin)
 			{
 				map = new HashMap<Object, Object>();
 				map.put("clientUId", clientUId);
-				map.put("transferBrokerID", brokerId);
-				map.put("realBrokerID", brokerId);
+				map.put("brokerID", brokerId);
 				map.put("houseID", houseId);
 				map.put("updateTime", new Date());
 				map.put("status", 1);
